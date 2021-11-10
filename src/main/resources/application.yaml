@@ -1,0 +1,83 @@
+provider:
+  name: UKB
+  author: Universitätsklinikum Bonn, Stabsstelle Medizinisch-Wissenschaftliche Technologieentwicklung und -koordination, Datenintegrationszentrum, Venusberg-Campus 1, 53127 Bonn
+# debug: true
+# encounter-contains-location-data: false
+
+fhir-server:
+  # the authentication method, one of NONE, SSL or BASIC (default) 
+  auth-method: BASIC 
+  rest-url: http://ukb3508.klinik.bn/fhir/ 
+  # BASIC
+  rest-user: x
+  rest-password: y
+  # SSL
+  key-store: src/main/resources/certs/clinical_domain_keystore.jks
+  key-store-password: Meine vorfahren und Nachfahren
+  trust-store: src/main/resources/certs/truststore.jks
+  trust-store-password: Scheme Dream Martinique 739 
+
+## Adjustment of FHIR search requests on the FHIR server
+fhir-search:
+## Comma-separated list of codes used for Corona patient identification (icd = Condition resources; loinc = Observation resources). 
+  inputcodes:
+    #ICD codes SARS-CoV-2
+    condition: U07.1!,U07.2!
+    #LOINC-Codes SARS-CoV-2 PCR tests
+    observation: 94640-0,94306-8,96763-8
+    #Ventilation snomed ct codes [Procedure.category.coding.code]
+    procedure: 40617009,182744004,57485005
+## Batch size of the parallelised partial FHIR searches 
+  batchsize: 500
+
+## Switching off data items in the output on demand. For data items that are excluded, please comment out the corresponding line(s). 
+data-items:
+  excludes:
+#    current.treatmentlevel: true
+#    current.maxtreatmentlevel: true
+#    cumulative.results: true
+#    cumulative.gender: true 
+#    cumulative.age: true 
+#    cumulative.age.alive: true 
+#    cumulative.age.dead: true 
+#    cumulative.maxtreatmentlevel: true 
+#    cumulative.zipcode: true 
+#    timeline.tests: true 
+#    timeline.test.positive: true 
+#    timeline.maxtreatmentlevel: true 
+#    cumulative.inpatient.gender: true 
+#    cumulative.outpatient.gender: true 
+#    cumulative.inpatient.age: true 
+#    cumulative.outpatient.age: true 
+#    timeline.deaths: true  
+#    cumulative.lengthofstay.icu: true 
+#    cumulative.lengthofstay.icu.alive: true
+#    cumulative.lengthofstay.icu.dead: true
+#    cumulative.lengthofstay.hospital: true
+#    cumulative.lengthofstay.hospital.alive: true
+#    cumulative.lengthofstay.hospital.dead: true
+## internal item of the ukb that is not helpful for other locations because its using zip codes of the Bonner region
+     ukb.crosstab: true 
+     current.treatmentlevel.newadmission.direct: true
+     current.treatmentlevel.newadmission.transfer: true
+     current.treatmentlevel.newadmission.complement: true
+     current.maxtreatment.age.normalstation: true
+     current.maxtreatment.age.icu: true
+     current.maxtreatment.age.icu_mit_beatmung: true
+     current.maxtreatment.age.icu_mit_ecmo: true
+     current.maxtreatment.age.inpatient: true
+     current.maxtreatment.age.total_icu: true
+     cumulative.maxtreatment.age.normalstation: true
+     cumulative.maxtreatment.age.icu: true
+     cumulative.maxtreatment.age.icu_mit_beatmung: true
+     cumulative.maxtreatment.age.icu_mit_ecmo: true
+     
+     
+server:
+  port: 9091
+    
+spring:
+  security:
+    user:
+      name: user
+      password: pwd
