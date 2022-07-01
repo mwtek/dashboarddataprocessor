@@ -20,25 +20,22 @@ package de.ukbonn.mwtek.dashboard.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * This class is used to parameterise the FHIR Search queries at the local FHIR server of the data
- * providers.
- * 
- * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
+ * This class is used to parameterize the FHIR Search queries at the local {@link
+ * de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum#FHIR FHIR} server of the data providers.
  *
+ * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
 @Configuration
-@ConfigurationProperties(prefix = "search")
+@ConfigurationProperties(prefix = "fhir.search")
 @Getter
 @Setter
-public class FhirSearchConfiguration {
+public class FhirSearchConfiguration extends SearchConfiguration {
 
   /**
    * Comma-separated list with input codes for FHIR Search
@@ -46,7 +43,13 @@ public class FhirSearchConfiguration {
   private Map<String, String> inputCodes = new HashMap<>();
 
   /**
-   * batch size of the parallelised partial FHIR searches
+   * batch size of the parallelized partial FHIR searches
    */
   private int batchSize = 500;
+
+  /**
+   * maximum 'count' size per fhir search request (e.g. if querying encounter resources by patient
+   * IDs). This value should never be reached (default: 1000000).
+   */
+  private int maxCountSize = 1000000;
 }

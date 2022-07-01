@@ -18,11 +18,14 @@
 
 package de.ukbonn.mwtek.dashboard.services;
 
-import java.util.List;
-
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 import de.ukbonn.mwtek.dashboard.auth.RestConsumer;
 import de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.FhirServerRestConfiguration;
+import de.ukbonn.mwtek.dashboard.interfaces.SearchService;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleLinkComponent;
@@ -31,26 +34,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.parser.IParser;
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * Service for providing the {@link FhirSearchConfiguration} (e.g. which Loinc codes are to be used)
  * from application.yaml
- * 
- * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  *
+ * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
 @Slf4j
 @Service
-public class SearchService extends RestConsumer {
+public class FhirSearchService extends RestConsumer implements SearchService {
+
   FhirContext ctx = FhirContext.forR4();
 
   protected FhirServerRestConfiguration fhirServerConf;
 
   @Autowired
-  public SearchService(FhirServerRestConfiguration fhirServerConf) {
+  public FhirSearchService(FhirServerRestConfiguration fhirServerConf) {
     super(fhirServerConf);
     this.fhirServerConf = fhirServerConf;
   }
@@ -58,19 +57,20 @@ public class SearchService extends RestConsumer {
   /**
    * Retrieve a FHIR search query and parse the result in FHIR {@link Bundle#getEntry() bundle entry
    * components} This method is used when pagination is not necessary.
-   * 
+   *
    * @param querySuffix The suffix with the FHIR search logic to be appended to the FHIR server
-   *          endpoint url (e.g. Patient?id=1).
+   *                    endpoint url (e.g. Patient?id=1).
    * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle#getEntry()
-   *         bundle entry components}
+   * bundle entry components}
    */
   public List<BundleEntryComponent> getBundleData(String querySuffix) {
     IParser parser = ctx.newJsonParser();
     String fhirServerEndpoint = this.fhirServerConf.getRestUrl();
 
     RestTemplate rest = this.getRestTemplate();
-    ResponseEntity<String> searchRequest =
-        rest.getForEntity(fhirServerEndpoint + querySuffix, String.class);
+    String restUrl = fhirServerEndpoint + querySuffix;
+    log.debug(restUrl);
+    ResponseEntity<String> searchRequest = rest.getForEntity(restUrl, String.class);
     Bundle requestBundle = parser.parseResource(Bundle.class, searchRequest.getBody());
     return requestBundle.getEntry();
   }
@@ -79,30 +79,31 @@ public class SearchService extends RestConsumer {
    * If the query of all entries of a particular FHIR resource needs to be split (for performance
    * reasons, for example), the meta-information must be retrieved at bundle level (e.g. the link to
    * the next offset), not at bundle entry level.
-   * 
+   *
    * @param querySuffix The suffix with the FHIR search logic to be appended to the FHIR server
-   *          endpoint url (e.g. Patient?id=1).
+   *                    endpoint url (e.g. Patient?id=1).
    * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle} object
    */
   public Bundle getInitialBundle(String querySuffix) {
     IParser parser = ctx.newJsonParser();
     String fhirServerEndpoint = this.fhirServerConf.getRestUrl();
     RestTemplate rest = this.getRestTemplate();
-    ResponseEntity<String> searchRequest =
-        rest.getForEntity(fhirServerEndpoint + querySuffix, String.class);
+    String restUrl = fhirServerEndpoint + querySuffix;
+    log.debug(restUrl);
+    ResponseEntity<String> searchRequest = rest.getForEntity(restUrl, String.class);
     return parser.parseResource(Bundle.class, searchRequest.getBody());
   }
 
   /**
    * After execution, the initial FHIR search query returns the attributes "self" and "next" within
    * the attribute "link" if the number of resources to be retrieved is too large. These values can
-   * be used to control pagination and are used to retrieve additional
-   * {@link BundleLinkComponent#getUrl() FhirBundleParts} Since the URL is already supplied in the
-   * "next" attribute (in contrast to method {@link #getInitialBundle(String)} simplified handling
-   * is possible here, since the FHIR search query no longer has to be assembled.
-   * 
+   * be used to control pagination and are used to retrieve additional {@link
+   * BundleLinkComponent#getUrl() FhirBundleParts} Since the URL is already supplied in the "next"
+   * attribute (in contrast to method {@link #getInitialBundle(String)}) simplified handling is
+   * possible here, since the FHIR search query no longer has to be assembled.
+   *
    * @param linkToNextPart The FHIR search query to retrieve the next FHIR {@link Bundle} block via
-   *          {@link Bundle#getLink()}
+   *                       {@link Bundle#getLink()}
    * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle} object
    */
   public Bundle getBundlePart(String linkToNextPart) {
@@ -111,6 +112,5 @@ public class SearchService extends RestConsumer {
     ResponseEntity<String> searchRequest = rest.getForEntity(linkToNextPart, String.class);
     return parser.parseResource(Bundle.class, searchRequest.getBody());
   }
-
 
 }

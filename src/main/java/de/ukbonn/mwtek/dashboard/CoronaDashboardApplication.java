@@ -23,9 +23,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * The base class of the Corona Dashboard project with the main method
- * 
- * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  *
+ * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
 @SpringBootApplication
 public class CoronaDashboardApplication {

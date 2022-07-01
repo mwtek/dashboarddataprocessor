@@ -24,11 +24,11 @@ import org.springframework.context.annotation.Configuration;
 /**
  * This class is used to read out the individual configuration of the FHIR servers of the data
  * providers
- * 
- * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  *
+ * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
 @Configuration
-@ConfigurationProperties(prefix = "fhir-server")
+@ConfigurationProperties(prefix = "fhir.server")
 public class FhirServerRestConfiguration extends AbstractRestConfiguration {
+
 }

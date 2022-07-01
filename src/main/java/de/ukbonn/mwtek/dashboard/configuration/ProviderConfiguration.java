@@ -18,18 +18,16 @@
 
 package de.ukbonn.mwtek.dashboard.configuration;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * This class is used to read out the individual configuration of the the provider information (e.g.
- * the provider name) of the data providers
- * 
- * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
+ * This class is used to read out the individual configuration of the provider information (e.g. the
+ * provider name) of the data providers
  *
+ * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
 @Configuration
 @ConfigurationProperties(prefix = "provider")
@@ -46,15 +44,4 @@ public class ProviderConfiguration {
    * The provider author
    */
   private String Author;
-
-  /**
-   * Flag to add debug information (e.g. case ids / resource ids) to the output.
-   */
-  private Boolean debug = false;
-
-  /**
-   * Do the Encounter resources of the data provider also contain location information? Default:
-   * true
-   */
-  private Boolean encounterContainsLocationData = true;
 }

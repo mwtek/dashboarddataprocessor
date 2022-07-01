@@ -19,28 +19,30 @@
 package de.ukbonn.mwtek.dashboard.misc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Class with auxiliary methods for list operations
- * 
- * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  *
+ * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
 public class ListHelper {
 
   /**
    * Splitting a list of any type into different batches
-   * 
-   * @param listInput List to be split into several lists
+   *
+   * @param listInput   List to be split into several lists
    * @param maxPartSize Maximum size of a batch
-   * @param <E> Any {@link Object}
+   * @param <E>         Any {@link Object}
    * @return Sublists of the given list
    */
   public static <E> List<List<E>> splitList(List<E> listInput, int maxPartSize) {
 
     List<List<E>> listOutput = new ArrayList<>();
-    int numSubLists = listInput.size() / maxPartSize + 1;
+
+    // Divide the size of the list by the maximum size of a list and round up.
+    int numSubLists = (int) Math.ceil((double) listInput.size() / maxPartSize);
 
     for (int i = 0; i < numSubLists; i++) {
       List<E> tempSubList = listInput.subList(i * maxPartSize,
@@ -49,5 +51,18 @@ public class ListHelper {
     }
     return listOutput;
   }
+
+  /**
+   * Transformation of a comma separated string (e.g. "U07.1,U07.2") into a List with an entry for
+   * each item
+   *
+   * @param inputString comma separated string (e.g. "U07.1,U07.2") like in the standard syntax in
+   *                    the .yaml
+   * @return List with an entry for each item
+   */
+  public static List<String> commaSeparatedStringIntoList(String inputString) {
+    return Arrays.asList(inputString.split(",", -1));
+  }
+
 
 }

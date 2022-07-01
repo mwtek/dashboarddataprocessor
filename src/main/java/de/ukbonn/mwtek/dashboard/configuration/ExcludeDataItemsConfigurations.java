@@ -20,31 +20,26 @@ package de.ukbonn.mwtek.dashboard.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import lombok.Getter;
-import lombok.Setter;
-
 
 /**
- * This class is used to parameterise an exclusion of data items of the Json specification on
+ * This class is used to parameterize an exclusion of data items of the Json specification on
  * request.
- * 
- * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  *
+ * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "data-items")
+@ConfigurationProperties(prefix = "data-items", ignoreInvalidFields = true)
 public class ExcludeDataItemsConfigurations {
 
   /**
    * a list with the data items that should be hide from the output
    */
   private Map<String, Boolean> excludes = new HashMap<>();
-
-
 }

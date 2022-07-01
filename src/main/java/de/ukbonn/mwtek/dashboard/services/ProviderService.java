@@ -19,17 +19,15 @@
 package de.ukbonn.mwtek.dashboard.services;
 
 import de.ukbonn.mwtek.dashboard.configuration.ProviderConfiguration;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service for providing the {@link ProviderConfiguration} (e.g. name of the participating
  * university hospital) from application.yaml
- * 
- * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  *
+ * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
 @Slf4j
 @Service

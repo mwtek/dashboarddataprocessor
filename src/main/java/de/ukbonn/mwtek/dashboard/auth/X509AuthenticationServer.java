@@ -25,16 +25,15 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 /**
  * Configuration of the server authentication via X509 certificate
- * 
- * @author rsattar
  *
+ * @author rsattar
  */
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class X509AuthenticationServer extends WebSecurityConfigurerAdapter {
 
-  /* 
-   * https://stackoverflow.com/questions/50486314/how-to-solve-403-error-in-spring-boot-post-request 
+  /*
+   * https://stackoverflow.com/questions/50486314/how-to-solve-403-error-in-spring-boot-post-request
    * This code taken from here, I knew I was facing issues from csrf, and adding the cors() call completely solved it
    * */
   @Override

@@ -1,83 +1,130 @@
 provider:
   name: UKB
   author: Universitätsklinikum Bonn, Stabsstelle Medizinisch-Wissenschaftliche Technologieentwicklung und -koordination, Datenintegrationszentrum, Venusberg-Campus 1, 53127 Bonn
-# debug: true
-# encounter-contains-location-data: false
 
-fhir-server:
-  # the authentication method, one of NONE, SSL or BASIC (default) 
-  auth-method: BASIC 
-  rest-url: http://ukb3508.klinik.bn/fhir/ 
-  # BASIC
-  rest-user: x
-  rest-password: y
-  # SSL
-  key-store: src/main/resources/certs/clinical_domain_keystore.jks
-  key-store-password: Meine vorfahren und Nachfahren
-  trust-store: src/main/resources/certs/truststore.jks
-  trust-store-password: Scheme Dream Martinique 739 
+global:
+  debug: true
+  ## The type of the server that is used for data retrieval whether its FHIR (any fhir server) or ACUWAVE
+  server-type: FHIR
+  ## Maximum 'count' size per fhir search request (e.g. if querying encounter resources by patient IDs). This value should never be reached (default: 1000000).
+  # max-count-size: 1000000
 
-## Adjustment of FHIR search requests on the FHIR server
-fhir-search:
-## Comma-separated list of codes used for Corona patient identification (icd = Condition resources; loinc = Observation resources). 
-  inputcodes:
-    #ICD codes SARS-CoV-2
-    condition: U07.1!,U07.2!
-    #LOINC-Codes SARS-CoV-2 PCR tests
-    observation: 94640-0,94306-8,96763-8
-    #Ventilation snomed ct codes [Procedure.category.coding.code]
-    procedure: 40617009,182744004,57485005
-## Batch size of the parallelised partial FHIR searches 
-  batchsize: 500
+fhir:
+  server:
+    ## The authentication method, one of NONE, SSL or BASIC (default)
+    auth-method: BASIC
+    ## the base url of the fhir server (needs to end with a "/")
+    rest-url: http://127.0.0.1/fhir/
+    ## BASIC
+    rest-user: x
+    rest-password: y
+    ## SSL
+    key-store: src/main/resources/certs/clinical_domain_keystore.jks
+    key-store-password: Meine vorfahren und Nachfahren
+    trust-store: src/main/resources/certs/truststore.jks
+    trust-store-password: Scheme Dream Martinique 739
 
-## Switching off data items in the output on demand. For data items that are excluded, please comment out the corresponding line(s). 
+  ## Adjustment of FHIR search requests on the FHIR server
+  search:
+    ## Comma-separated list of codes used for Corona patient identification (icd = Condition resources; loinc = Observation resources).
+    inputcodes:
+      #ICD codes SARS-CoV-2
+      condition: U07.1!,U07.2!
+      #LOINC-Codes SARS-CoV-2 PCR tests [96895-8 for variant results]
+      observation: 94640-0,94306-8,96763-8,96895-8
+      #Ventilation snomed ct codes [Procedure.category.coding.code]
+      procedure: 40617009,182744004,57485005
+    ## Batch size of the parallelized partial FHIR searches
+    batchsize: 500
+    ## Maximum 'count' size per fhir search request (e.g. if querying encounter resources by patient IDs). This value should never be reached (default: 1000000).
+    # max-count-size: 1000000
+    ## Filter the patient (and thus also the encounter) retrieval to SARS-CoV-2-patients only
+    filter-patient-retrieval: true
+    ## Should the encounter fhir search query be filtered by admission date (all cases by SARS-CoV-2 start reference date) ? Must be disabled if outpatient cases do not have an end date.
+    # filter-encounter-by-date: false
+
+## Switching off data items in the output on demand. For data items that are excluded, please comment out the corresponding line(s).
 data-items:
   excludes:
-#    current.treatmentlevel: true
-#    current.maxtreatmentlevel: true
-#    cumulative.results: true
-#    cumulative.gender: true 
-#    cumulative.age: true 
-#    cumulative.age.alive: true 
-#    cumulative.age.dead: true 
-#    cumulative.maxtreatmentlevel: true 
-#    cumulative.zipcode: true 
-#    timeline.tests: true 
-#    timeline.test.positive: true 
-#    timeline.maxtreatmentlevel: true 
-#    cumulative.inpatient.gender: true 
-#    cumulative.outpatient.gender: true 
-#    cumulative.inpatient.age: true 
-#    cumulative.outpatient.age: true 
-#    timeline.deaths: true  
-#    cumulative.lengthofstay.icu: true 
-#    cumulative.lengthofstay.icu.alive: true
-#    cumulative.lengthofstay.icu.dead: true
-#    cumulative.lengthofstay.hospital: true
-#    cumulative.lengthofstay.hospital.alive: true
-#    cumulative.lengthofstay.hospital.dead: true
-## internal item of the ukb that is not helpful for other locations because its using zip codes of the Bonner region
-     ukb.crosstab: true 
-     current.treatmentlevel.newadmission.direct: true
-     current.treatmentlevel.newadmission.transfer: true
-     current.treatmentlevel.newadmission.complement: true
-     current.maxtreatment.age.normalstation: true
-     current.maxtreatment.age.icu: true
-     current.maxtreatment.age.icu_mit_beatmung: true
-     current.maxtreatment.age.icu_mit_ecmo: true
-     current.maxtreatment.age.inpatient: true
-     current.maxtreatment.age.total_icu: true
-     cumulative.maxtreatment.age.normalstation: true
-     cumulative.maxtreatment.age.icu: true
-     cumulative.maxtreatment.age.icu_mit_beatmung: true
-     cumulative.maxtreatment.age.icu_mit_ecmo: true
-     
-     
+    current.treatmentlevel: false
+    current.maxtreatmentlevel: false
+    current.age.maxtreatmentlevel.normal_ward: false
+    current.age.maxtreatmentlevel.icu: false
+    current.age.maxtreatmentlevel.icu_with_ventilation: false
+    current.age.maxtreatmentlevel.icu_with_ecmo: false
+    cumulative.results: false
+    cumulative.gender: false
+    cumulative.age: false
+    cumulative.maxtreatmentlevel: false
+    cumulative.zipcode: false
+    cumulative.inpatient.gender: false
+    cumulative.outpatient.gender: false
+    cumulative.inpatient.age: false
+    cumulative.outpatient.age: false
+    cumulative.lengthofstay.icu: false
+    cumulative.lengthofstay.icu.alive: false
+    cumulative.lengthofstay.icu.dead: false
+    cumulative.lengthofstay.hospital: false
+    cumulative.lengthofstay.hospital.alive: false
+    cumulative.lengthofstay.hospital.dead: false
+    cumulative.varianttestresults: false
+    cumulative.age.maxtreatmentlevel.normal_ward: false
+    cumulative.age.maxtreatmentlevel.icu: false
+    cumulative.age.maxtreatmentlevel.icu_with_ventilation: false
+    cumulative.age.maxtreatmentlevel.icu_with_ecmo: false
+    timeline.tests: false
+    timeline.tests.positive: false
+    timeline.maxtreatmentlevel: false
+    timeline.varianttestresults: false
+    timeline.deaths: false
+    ## internal items of the ukb
+    current.treatmentlevel.crosstab: true
 server:
   port: 9091
-    
+
 spring:
   security:
     user:
       name: user
       password: pwd
+
+  #reports:
+  ## Should a file be generated with the case/encounter ids of active cases separated by treatment level?
+  # caseid-file-generation: true
+  # caseid-file-directory: C:\currentTreatmentlevelExport
+  # caseid-file-basename: Fallnummern_stationäre_C19_Patienten
+
+  #acuwave-server:
+  # rest-url: http://127.0.0.1/data/
+  ## BASIC auth settings
+  # rest-user: x
+  # rest-password: y
+  ## Adjustment of the search requests via acuwave module chain
+  ## Orbis internal lab codes for positive SARS-Cov-2 PCR fundings
+  # orbis-lab-codes: 19937,20057,20097,20117,20217,20238,20297,20298,20337,20517,20997,21857
+  ## Comma separated list of the used icd codes (without exclamation marks)
+  # icd-codes: U07.1,U07.2
+  ## Filter the patient (and thus also the encounter) retrieval to SARS-CoV-2-patients only
+  # filter-patient-retrieval: true
+  ## Filter the procedure retrieval to inpatient SARS-CoV-2-cases only (with at least one icu transfer) to reduce the requests on an external server (experimental state)
+  # filter-procedure-retrieval: true
+  ## Should procedures also be queried for specific non-ICU wards? If yes, specify the orbis internal OEBENEID here.
+  # filter-procedure-retrieval-additional-wards: 10170
+  ## Batch size of the parallelized partial ACUWAVE searches
+  # batchsize: 200
+
+  ## Logging
+  #logging:
+  #  level:
+  #    root: debug
+  #    de.ukbonn.mwtek.dashboard: ERROR
+  #    file.name: computeserver.log
+  #    file.max-size: 100MB
+
+  ## In order to handle covid variants that do not yet have a loinc code at the time of completion of the current program version, it is possible to check the "display" field of the loinc coding for free text entries.
+  ## Source of voc/voi variants: https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Virologische_Basisdaten_Varianten_Nomenklatur.html
+  #variants:
+  ## variants of concern that aren't supported by the dashboard yet
+  # other-voc:
+  ## variants of interest
+  # non-voc: Lambda,My,Epsilon,Zeta,Eta,Theta,Iota,Kappa

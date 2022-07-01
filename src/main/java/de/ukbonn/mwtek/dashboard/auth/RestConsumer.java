@@ -18,11 +18,11 @@
 
 package de.ukbonn.mwtek.dashboard.auth;
 
+import de.ukbonn.mwtek.dashboard.configuration.AbstractRestConfiguration;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-
 import javax.net.ssl.SSLContext;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
@@ -32,9 +32,6 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
-
-import lombok.extern.slf4j.Slf4j;
-import de.ukbonn.mwtek.dashboard.configuration.AbstractRestConfiguration;
 
 
 /**
@@ -56,10 +53,10 @@ public class RestConsumer {
 
   /**
    * Provides a {@link RestTemplate} depending on the chosen method.
-   * 
+   *
    * @return {@link RestTemplate} initialized with the settings from the runtime configuration
    */
-  public RestTemplate getRestTemplate() {
+  public synchronized RestTemplate getRestTemplate() {
     String method = restConfiguration.getAuthMethod();
 
     if ((method == null) || (method.isEmpty())) {
@@ -68,16 +65,16 @@ public class RestConsumer {
     } // if
 
     switch (method.toUpperCase()) {
-      case "BASIC": {
+      case "BASIC" -> {
         return getRestTemplateBasicAuth();
       } // case
-      case "SSL": {
+      case "SSL" -> {
         return getRestTemplateCertificateAuth();
       } // case
-      case "NONE": {
+      case "NONE" -> {
         return getRestTemplateNone();
       } // case
-      default: {
+      default -> {
         return getRestTemplateBasicAuth();
       } // default
     } // switch
@@ -100,9 +97,9 @@ public class RestConsumer {
    * @return a pre configured spring RestTemplate object
    */
   protected RestTemplate getRestTemplateBasicAuth() {
-    RestTemplate result = new RestTemplateBuilder()
-        .basicAuthentication(restConfiguration.getRestUser(), restConfiguration.getRestPassword())
-        .build();
+    RestTemplate result =
+        new RestTemplateBuilder().basicAuthentication(restConfiguration.getRestUser(),
+            restConfiguration.getRestPassword()).build();
     result.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
     return result;
   }
@@ -110,7 +107,7 @@ public class RestConsumer {
 
   /**
    * Helper for rest calls that use x509 cert authentication
-   * 
+   *
    * @return {@link RestTemplate} initialized with the settings from the runtime configuration
    */
   protected RestTemplate getRestTemplateCertificateAuth() {
@@ -135,8 +132,8 @@ public class RestConsumer {
       ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(client);
 
       // set the charset
-      resultTemplate.getMessageConverters().add(0,
-          new StringHttpMessageConverter(StandardCharsets.UTF_8));
+      resultTemplate.getMessageConverters()
+          .add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
       resultTemplate.setRequestFactory(requestFactory);
 
     } catch (Exception ex) {

@@ -18,66 +18,116 @@
 
 package de.ukbonn.mwtek.dashboard.misc;
 
+import de.ukbonn.mwtek.dashboard.CoronaDashboardApplication;
+import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * 
- * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
+ * Auxiliary class for processing/further processing of FHIR resources.
  *
+ * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
 public class ResourceHandler {
 
+  static Logger logger = LoggerFactory.getLogger(CoronaDashboardApplication.class);
+
   /**
-   * Reads the Fhir bundle, adds all entries of the Observation type to a list and adds the
-   * {@link Patient patient} ids and {@link Encounter encounter} ids to a given set.
-   * 
-   * @param bundleResponse A FHIR response bundle that contains {@link Observation} resources
+   * Reads the Fhir bundle, adds all entries of the Observation type to a list and adds the {@link
+   * Patient patient} ids and {@link Encounter encounter} ids to a given set.
+   *
+   * @param bundleResponse   A FHIR response bundle that contains {@link Observation} resources
    * @param listObservations List with FHIR-Observations in which the entries from the bundle are to
-   *          be stored
-   * @param patientIds List of ids of the {@link Patient} resource to be extended by entries from
-   *          the Observation resource.
-   * @param encounterIds List of ids of the {@link Encounter} resource to be extended by entries
-   *          from the Observation resource.
+   *                         be stored
+   * @param patientIds       List of ids of the {@link Patient} resource to be extended by entries
+   *                         from the Observation resource.
+   * @param encounterIds     List of ids of the {@link Encounter} resource to be extended by entries
+   *                         from the Observation resource.
+   * @param serverType       The connected {@link ServerTypeEnum server type} that delivers the fhir
+   *                         resources.
    */
   public static void handleObservationEntries(Bundle bundleResponse,
-      List<Observation> listObservations, Set<String> patientIds, Set<String> encounterIds) {
+      Collection<Observation> listObservations, Set<String> patientIds,
+      Set<String> encounterIds, ServerTypeEnum serverType) {
     bundleResponse.getEntry().forEach(entry -> {
       if (entry.getResource().getClass() == Observation.class) {
         Observation obs = (Observation) entry.getResource();
-        patientIds.add(obs.getSubject().getReference().split("/")[1]);
-        encounterIds.add(obs.getSubject().getReference().split("/")[1]);
+        storeObservationPatientKeys(obs, patientIds, encounterIds, serverType);
         listObservations.add(obs);
       }
     });
   }
 
+  public static void storeObservationPatientKeys(Observation obs, Set<String> outputPatientIds,
+      Set<String> outputEncounterIds, ServerTypeEnum serverType) {
+    try {
+      // fhir server usually store the references in the "resourceType/1234" format during import
+      // Until this referencing process (which may never occur), the acuwave server stores its business identifier in the tag 'identifier'
+      switch (serverType) {
+        case FHIR -> {
+          outputPatientIds.add(obs.getSubject().getReference().split("/")[1]);
+          outputEncounterIds.add(obs.getEncounter().getReference().split("/")[1]);
+        }
+        case ACUWAVE -> {
+          outputPatientIds.add(obs.getSubject().getIdentifier().getValue());
+          outputEncounterIds.add(obs.getEncounter().getIdentifier().getValue());
+        }
+      }
+    } catch (Exception ex) {
+      logger.warn(
+          "Unable to retrieve the patient or encounter ID for the observation ID: " + obs.getId());
+    }
+  }
+
+  public static void storeConditionPatientKeys(Condition cond, Set<String> outputPatientIds,
+      Set<String> outputEncounterIds, ServerTypeEnum serverType) {
+    try {
+      // fhir server usually store the references in the "resourceType/1234" format during import
+      // Until this referencing process (which may never occur), the acuwave server stores its business identifier in the tag 'identifier'
+      switch (serverType) {
+        case FHIR -> {
+          outputPatientIds.add(cond.getSubject().getReference().split("/")[1]);
+          outputEncounterIds.add(cond.getEncounter().getReference().split("/")[1]);
+        }
+        case ACUWAVE -> {
+          outputPatientIds.add(cond.getSubject().getIdentifier().getValue());
+          outputEncounterIds.add(cond.getEncounter().getIdentifier().getValue());
+        }
+      }
+    } catch (Exception ex) {
+      logger.warn(
+          "Unable to retrieve the patient or encounter ID for the condition ID: " + cond.getId());
+    }
+  }
 
   /**
-   * Reads the Fhir bundle, adds all entries of the Condition type to a list and adds the
-   * {@link Patient patient} ids and {@link Encounter encounter} ids to a given set.
-   * 
-   * @param initialBundle A FHIR response bundle that contains {@link Observation} resources
+   * Reads the Fhir bundle, adds all entries of the Condition type to a list and adds the {@link
+   * Patient patient} ids and {@link Encounter encounter} ids to a given set.
+   *
+   * @param initialBundle  A FHIR response bundle that contains {@link Observation} resources
    * @param listConditions List with FHIR-{@link Condition conditions} in which the entries from the
-   *          bundle are to be stored
-   * @param patientIds List of ids of the {@link Patient} resource to be extended by entries from
-   *          the Observation resource.
-   * @param encounterIds List of ids of the {@link Encounter} resource to be extended by entries
-   *          from the Observation resource.
+   *                       bundle are to be stored
+   * @param patientIds     List of ids of the {@link Patient} resource to be extended by entries
+   *                       from the Observation resource.
+   * @param encounterIds   List of ids of the {@link Encounter} resource to be extended by entries
+   *                       from the Observation resource.
+   * @param serverType     The connected {@link ServerTypeEnum server type} that delivers the fhir
+   *                       resources.
    */
   public static void handleConditionEntries(Bundle initialBundle, List<Condition> listConditions,
-      Set<String> patientIds, Set<String> encounterIds) {
+      Set<String> patientIds, Set<String> encounterIds, ServerTypeEnum serverType) {
     initialBundle.getEntry().forEach(entry -> {
       if (entry.getResource().getClass() == Condition.class) {
         Condition cond = (Condition) entry.getResource();
-        patientIds.add(cond.getSubject().getReference().split("/")[1]);
-        encounterIds.add(cond.getSubject().getReference().split("/")[1]);
+        storeConditionPatientKeys(cond, patientIds, encounterIds, serverType);
         listConditions.add(cond);
       }
     });
