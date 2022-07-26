@@ -17,7 +17,6 @@
  */
 package de.ukbonn.mwtek.dashboard.services;
 
-import static de.ukbonn.mwtek.dashboard.misc.ListHelper.commaSeparatedStringIntoList;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.encounterIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.locationIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.patientIdsCouldBeFound;
@@ -25,8 +24,11 @@ import static de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality.ext
 
 import de.ukbonn.mwtek.dashboard.CoronaDashboardApplication;
 import de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration;
+import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
 import de.ukbonn.mwtek.dashboard.interfaces.SearchService;
+import de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer;
+import de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.CONFIGURATION_CONTEXT;
 import de.ukbonn.mwtek.dashboard.misc.FhirServerQuerySuffixBuilder;
 import de.ukbonn.mwtek.dashboard.misc.ListHelper;
 import de.ukbonn.mwtek.dashboard.misc.ResourceHandler;
@@ -73,9 +75,9 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
   List<Bundle.BundleEntryComponent> reqBundleEntry = null;
 
   public FhirDataRetrievalService(SearchService searchService,
-      FhirSearchConfiguration fhirSearchConfiguration) {
+      FhirSearchConfiguration fhirSearchConfiguration, GlobalConfiguration globalConfiguration) {
     this.fhirSearchConfiguration = fhirSearchConfiguration;
-    initializeSearchService(searchService, fhirSearchConfiguration);
+    initializeSearchService(searchService, fhirSearchConfiguration, globalConfiguration);
   }
 
   /**
@@ -86,17 +88,22 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
    *                                application.yaml
    */
   private void initializeSearchService(SearchService searchService,
-      FhirSearchConfiguration fhirSearchConfiguration) {
+      FhirSearchConfiguration fhirSearchConfiguration, GlobalConfiguration globalConfiguration) {
     this.setSearchService(searchService);
     this.setSearchConfiguration(fhirSearchConfiguration);
+    this.setGlobalConfiguration(globalConfiguration);
     // Read the Sars-Cov2 PCR codes from the configuration and persist them in a list analogous to the Acuwave parameterization (FHIR servers expect a comma separated list of strings while the Acuwave needs an integer list)
-    this.setLabCodes(commaSeparatedStringIntoList(fhirSearchConfiguration.getInputCodes()
-        .getOrDefault("observation", "94640-0,94306-8,96763-8")));
-    this.setOpsCodes(commaSeparatedStringIntoList(fhirSearchConfiguration.getInputCodes()
-        .getOrDefault("procedure", "40617009,182744004,57485005")));
+    this.setLabPcrCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
+        CONFIGURATION_CONTEXT.OBSERVATIONS_PCR));
+    this.setLabVariantCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
+        CONFIGURATION_CONTEXT.OBSERVATIONS_VARIANTS));
+    this.setProcedureVentilationCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
+        CONFIGURATION_CONTEXT.PROCEDURES_VENTILATION));
+    this.setProcedureEcmoCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
+        CONFIGURATION_CONTEXT.PROCEDURES_ECMO));
     // Reading of the icd codes from the configuration and transforming it into a list
-    this.setIcdCodes(commaSeparatedStringIntoList(
-        fhirSearchConfiguration.getInputCodes().getOrDefault("condition", "U07.1,U07.2")));
+    this.setIcdCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
+        CONFIGURATION_CONTEXT.CONDITIONS));
     this.setMaxCountSize(fhirSearchConfiguration.getMaxCountSize());
   }
 
@@ -168,7 +175,9 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
     if (this.fhirSearchConfiguration.getFilterPatientRetrieval()) {
       // The global patient ID list is overwritten by exclusively SARS-CoV2-positive patients
       Set<String> patientIdsPositive =
-          CoronaResultFunctionality.getPidsPosFinding(listUkbObservations, listUkbConditions);
+          CoronaResultFunctionality.getPidsPosFinding(listUkbObservations, listUkbConditions,
+              ConfigurationTransformer.extractInputCodeSettings(
+                  this));
       if (patientIdsPositive.size() > 0) {
         patientIds = patientIdsPositive;
       } else

@@ -1,4 +1,4 @@
-package de.ukbonn.mwtek.dashboard.misc;/*
+/*
  * Copyright (C) 2021 University Hospital Bonn - All Rights Reserved You may use, distribute and
  * modify this code under the GPL 3 license. THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT
  * PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR
@@ -15,9 +15,11 @@ package de.ukbonn.mwtek.dashboard.misc;/*
  * OF THE POSSIBILITY OF SUCH DAMAGES. You should have received a copy of the GPL 3 license with *
  * this file. If not, visit http://www.gnu.de/documents/gpl-3.0.en.html
  */
+package de.ukbonn.mwtek.dashboard.misc;
 
 import de.ukbonn.mwtek.dashboard.interfaces.QuerySuffixBuilder;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
+import de.ukbonn.mwtek.dashboard.services.AcuwaveDataRetrievalService;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,42 +28,51 @@ import java.util.stream.Collectors;
  */
 public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
 
+  public static final String DELIMITER = ",";
+
   public String getObservations(AbstractDataRetrievalService acuwaveDataRetrievalService,
       Integer month) {
-    return "kdslabor?codes=" + acuwaveDataRetrievalService.getLabCodes().stream()
+    return "kdslabor?codes="
+        + ((AcuwaveDataRetrievalService) acuwaveDataRetrievalService).getOrbisLabPcrCodes()
+        .stream()
         .map(String::valueOf).collect(Collectors.joining(
-            ",")) + "&months=" + month + "&hideResourceTypes=ServiceRequest,DiagnosticReport";
+            DELIMITER)) + DELIMITER
+        + ((AcuwaveDataRetrievalService) acuwaveDataRetrievalService).getOrbisLabVariantCodes()
+        .stream()
+        .map(String::valueOf).collect(Collectors.joining(
+            DELIMITER)) + "&months=" + month + "&hideResourceTypes=ServiceRequest,DiagnosticReport";
   }
 
   public String getConditions(AbstractDataRetrievalService acuwaveDataRetrievalService,
       Integer month) {
-    return "kdsdiagnose?codes=" + String.join(",",
+    return "kdsdiagnose?codes=" + String.join(DELIMITER,
         acuwaveDataRetrievalService.getIcdCodes()) + "&months=" + month;
   }
 
   @Override
   public String getPatients(AbstractDataRetrievalService abstractRestConfiguration,
       List<String> patientIdList) {
-    return "kdsperson?patients=" + String.join(",",
+    return "kdsperson?patients=" + String.join(DELIMITER,
         patientIdList) + "&hideResourceTypes=Observation";
   }
 
   @Override
   public String getEncounters(AbstractDataRetrievalService abstractRestConfiguration,
       List<String> patientIdList) {
-    return "kdsfall?patients=" + String.join(",", patientIdList) + "&admissionDateFrom=2020-03-01";
+    return "kdsfall?patients=" + String.join(DELIMITER, patientIdList)
+        + "&admissionDateFrom=2020-03-01";
   }
 
   @Override
   public String getProcedures(AbstractDataRetrievalService abstractRestConfiguration,
       List<String> encounterIdList) {
-    return "kdsicu?cases=" + String.join(",", encounterIdList) + "&skipDuplicateCheck=true";
+    return "kdsicu?cases=" + String.join(DELIMITER, encounterIdList) + "&skipDuplicateCheck=true";
   }
 
   @Override
   public String getLocations(AbstractDataRetrievalService abstractRestConfiguration,
       List<?> locationIdSublist) {
     return "location?ids=" + locationIdSublist.stream().map(String::valueOf)
-        .collect(Collectors.joining(","));
+        .collect(Collectors.joining(DELIMITER));
   }
 }

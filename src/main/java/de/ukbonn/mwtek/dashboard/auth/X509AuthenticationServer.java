@@ -24,7 +24,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 /**
- * Configuration of the server authentication via X509 certificate
+ * Configuration of the server authentication via X509 certificate.
  *
  * @author rsattar
  */

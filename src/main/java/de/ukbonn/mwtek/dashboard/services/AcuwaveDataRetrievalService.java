@@ -22,9 +22,12 @@ import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.patientIdsCouldBeFoun
 
 import de.ukbonn.mwtek.dashboard.CoronaDashboardApplication;
 import de.ukbonn.mwtek.dashboard.configuration.AcuwaveSearchConfiguration;
+import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
 import de.ukbonn.mwtek.dashboard.interfaces.SearchService;
 import de.ukbonn.mwtek.dashboard.misc.AcuwaveQuerySuffixBuilder;
+import de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer;
+import de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.CONFIGURATION_CONTEXT;
 import de.ukbonn.mwtek.dashboard.misc.ListHelper;
 import de.ukbonn.mwtek.dashboard.misc.ResourceHandler;
 import de.ukbonn.mwtek.dashboardlogic.enums.CoronaFixedValues;
@@ -39,6 +42,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.Encounter;
@@ -49,6 +54,7 @@ import org.hl7.fhir.r4.model.Procedure;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.client.HttpServerErrorException;
 
 /**
  * All methods to retrieve the data necessary for the corona dashboard from an Acuwave server.
@@ -62,11 +68,22 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
    */
   private final List<Integer> setMonths = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
   private final AcuwaveSearchConfiguration acuwaveSearchConfiguration;
+  private final GlobalConfiguration globalConfiguration;
+  @Getter
+  @Setter
+  private List<Integer> orbisLabPcrCodes;
+  @Getter
+  @Setter
+  private List<Integer> orbisLabVariantCodes;
+
+
   Logger logger = LoggerFactory.getLogger(CoronaDashboardApplication.class);
 
   public AcuwaveDataRetrievalService(SearchService searchService,
-      AcuwaveSearchConfiguration acuwaveSearchConfiguration) {
+      AcuwaveSearchConfiguration acuwaveSearchConfiguration,
+      GlobalConfiguration globalConfiguration) {
     this.acuwaveSearchConfiguration = acuwaveSearchConfiguration;
+    this.globalConfiguration = globalConfiguration;
     initializeSearchService(searchService);
   }
 
@@ -77,9 +94,21 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
    */
   private void initializeSearchService(SearchService searchService) {
     this.setSearchService(searchService);
-    this.setLabCodes(acuwaveSearchConfiguration.getOrbisLabCodes());
-    this.setIcdCodes(acuwaveSearchConfiguration.getIcdCodes());
+    this.setOrbisLabPcrCodes(acuwaveSearchConfiguration.getOrbisLabPcrCodes());
+    this.setOrbisLabVariantCodes(acuwaveSearchConfiguration.getOrbisLabVariantCodes());
+    this.setLabPcrCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
+        CONFIGURATION_CONTEXT.OBSERVATIONS_PCR));
+    this.setLabVariantCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
+        CONFIGURATION_CONTEXT.OBSERVATIONS_VARIANTS));
+    this.setProcedureVentilationCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
+        CONFIGURATION_CONTEXT.PROCEDURES_VENTILATION));
+    this.setProcedureEcmoCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
+        CONFIGURATION_CONTEXT.PROCEDURES_ECMO));
+    // Reading of the icd codes from the configuration and transforming it into a list
+    this.setIcdCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
+        CONFIGURATION_CONTEXT.CONDITIONS));
   }
+
 
   @Override
   public List<Observation> getObservations() {
@@ -98,11 +127,14 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
             setObservations.add(obs);
           }
         });
+      } catch (HttpServerErrorException e) {
+        throw new HttpServerErrorException(e.getStatusCode(),
+            "Retrieval of the observation resources failed because of the following remote server error: "
+                + e.getMessage());
       } catch (Exception e) {
-        logger.error("Retrieval observation resources: " + e.getMessage());
+        logger.error("Retrieval of the observation resources failed. " + month, e);
       }
     });
-
     return new ArrayList<>(setObservations);
   }
 
@@ -146,7 +178,9 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
     // The global patient ID list is overwritten by exclusively SARS-CoV2-positive patients
     {
       patientIds =
-          CoronaResultFunctionality.getPidsPosFinding(listUkbObservations, listUkbConditions);
+          CoronaResultFunctionality.getPidsPosFinding(listUkbObservations, listUkbConditions,
+              ConfigurationTransformer.extractInputCodeSettings(
+                  this));
     }
 
     // Splitting the entire list into smaller lists to parallelize requests
@@ -249,8 +283,10 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
       // figure out if encounter is inpatient
       List<UkbEncounter> listEncountersInpatient =
           listUkbEncounters.parallelStream().filter(Encounter::hasClass_)
-              .filter(x -> x.getClass_().hasCode()).filter(x -> x.getClass_().getCode()
-                  .equals(CoronaFixedValues.CASECLASS_INPATIENT.getValue())).toList();
+              .filter(x -> x.getClass_().hasCode()).filter(
+                  x -> CoronaFixedValues.ENCOUNTER_CLASS_INPATIENT_CODES.contains(
+                      x.getClass_().getCode()))
+              .toList();
 
       // get all the inpatient encounter ids with at least one icu transfer
       Set<String> listPatientsIcu = ConcurrentHashMap.newKeySet();
@@ -265,7 +301,9 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
 
       // Get all icu case ids where the patient got at least one positive SARS-CoV-2 lab finding
       Set<String> listPidsIcuPositiveFinding =
-          CoronaResultFunctionality.getPidsWithPosCovidLabResult(listUkbObservations)
+          CoronaResultFunctionality.getPidsWithPosCovidLabResult(listUkbObservations,
+                  ConfigurationTransformer.extractInputCodeSettings(
+                      this))
               .parallelStream().filter(listPatientsIcu::contains)
               .collect(Collectors.toSet());
 
@@ -275,7 +313,9 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
 
       // get all cases with at least 1 icu transfer AND an U07.1 or U07.2 diagnosis and add them to the set with the positive lab findings
       listPidsIcuPositiveFinding.addAll(
-          CoronaResultFunctionality.getPidsWithCovidDiagnosis(listUkbConditions)
+          CoronaResultFunctionality.getPidsWithCovidDiagnosis(listUkbConditions,
+                  ConfigurationTransformer.extractInputCodeSettings(
+                      this))
               .parallelStream().filter(listPatientsIcu::contains)
               .collect(Collectors.toSet()));
 

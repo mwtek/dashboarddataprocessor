@@ -1,3 +1,29 @@
+# Release Notes - Version V0.3.0-alpha1
+
+26/Jul/22
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* Making the Encounter.class checks compatible with previous CDS case module versions
+* Implementation of manual configuration of loinc codes for covid lab codes
+* Expansion of the value set of qualitative laboratory results
+
+</div>
+
+## Improvements
+
+No improvements were part of this version.
+
+## Tasks
+
+No tasks were part of this version.
+
+## Bugs
+
+No bug fixes were part of this version.
+
 # Release Notes - Version V0.3.0
 
 30/Jun/22

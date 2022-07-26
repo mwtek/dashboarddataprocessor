@@ -24,7 +24,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * This class is used to read out the report configuration of the dashboard processor
+ * This class is used to read out the report configuration of the dashboard processor.
  *
  * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */

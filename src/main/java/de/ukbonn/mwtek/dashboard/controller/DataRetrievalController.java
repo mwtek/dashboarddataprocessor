@@ -15,10 +15,8 @@
  * OF THE POSSIBILITY OF SUCH DAMAGES. You should have received a copy of the GPL 3 license with *
  * this file. If not, visit http://www.gnu.de/documents/gpl-3.0.en.html
  */
-
 package de.ukbonn.mwtek.dashboard.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -31,7 +29,8 @@ import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.ReportsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.VariantConfiguration;
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
-import de.ukbonn.mwtek.dashboard.interfaces.DataRetrievalService;
+import de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer;
+import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboard.services.AcuwaveDataRetrievalService;
 import de.ukbonn.mwtek.dashboard.services.AcuwaveSearchService;
 import de.ukbonn.mwtek.dashboard.services.FhirDataRetrievalService;
@@ -41,6 +40,7 @@ import de.ukbonn.mwtek.dashboardlogic.logic.CoronaLogic;
 import de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality;
 import de.ukbonn.mwtek.dashboardlogic.models.CoronaDataItem;
 import de.ukbonn.mwtek.dashboardlogic.models.CoronaResults;
+import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
 import de.ukbonn.mwtek.utilities.fhir.misc.Converter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
@@ -84,7 +84,7 @@ public class DataRetrievalController {
   private final AcuwaveSearchService acuwaveSearchService;
   private final FhirSearchService fhirSearchService;
 
-  private final ProviderService providerSer;
+  private final ProviderService providerService;
   @Autowired
   private GlobalConfiguration globalConfiguration;
   @Autowired
@@ -102,10 +102,10 @@ public class DataRetrievalController {
 
   @Autowired
   public DataRetrievalController(AcuwaveSearchService acuwaveSearchService,
-      FhirSearchService fhirSearchService, ProviderService providerSer) {
+      FhirSearchService fhirSearchService, ProviderService providerService) {
     this.acuwaveSearchService = acuwaveSearchService;
     this.fhirSearchService = fhirSearchService;
-    this.providerSer = providerSer;
+    this.providerService = providerService;
   }
 
   /**
@@ -124,12 +124,10 @@ public class DataRetrievalController {
    * Ukb resources, calling dashboard logic and providing Json output.
    *
    * @return String with the json corona dashboard specification or alternatively an error message
-   * @throws JsonProcessingException Error in Json processing
    */
   @SuppressWarnings("unchecked")
   @GetMapping
-  public ResponseEntity<String> createJson()
-      throws JsonProcessingException {
+  public ResponseEntity<String> createJson() {
 
     // initialize new request
     ObjectMapper mapper = new ObjectMapper();
@@ -138,64 +136,69 @@ public class DataRetrievalController {
     resultStream = null;
 
     // Determine the data retrieval service for the server type used
-    DataRetrievalService dataRetrievalService;
+    AbstractDataRetrievalService dataRetrievalService;
     if (globalConfiguration.getServerType() == ServerTypeEnum.ACUWAVE) {
       dataRetrievalService = new AcuwaveDataRetrievalService(acuwaveSearchService,
-          this.acuwaveSearchConfiguration);
+          this.acuwaveSearchConfiguration, this.globalConfiguration);
     } else {
       dataRetrievalService =
-          new FhirDataRetrievalService(fhirSearchService, this.fhirSearchConfiguration);
+          new FhirDataRetrievalService(fhirSearchService, this.fhirSearchConfiguration,
+              this.globalConfiguration);
     }
 
     // debug mode (extended output)
     boolean debugMode = this.globalConfiguration.getDebug();
 
-    try {
+    // If custom codes are set in the yaml file -> update the default values.
+    InputCodeSettings inputCodeSettings = ConfigurationTransformer.extractInputCodeSettings(
+        dataRetrievalService);
 
+    try {
       // Retrieval of the Observation resources
-      startTimeLogging(ResourceType.Observation);
+      startLoggingTime(ResourceType.Observation);
       List<UkbObservation> listUkbObservations =
           (List<UkbObservation>) Converter.convert(dataRetrievalService.getObservations());
-      stopTimeLogging(listUkbObservations);
+      stopLoggingTime(listUkbObservations);
 
       // Retrieval of the Condition resources
-      startTimeLogging(ResourceType.Condition);
+      startLoggingTime(ResourceType.Condition);
       // map fhir resources into ukb resources
       List<UkbCondition> listUkbConditions =
           (List<UkbCondition>) Converter.convert(dataRetrievalService.getConditions());
-      stopTimeLogging(listUkbConditions);
+      stopLoggingTime(listUkbConditions);
 
       // Retrieval of the Patient resources
-      startTimeLogging(ResourceType.Patient);
+      startLoggingTime(ResourceType.Patient);
       List<UkbPatient> listUkbPatients = (List<UkbPatient>) Converter.convert(
           dataRetrievalService.getPatients(listUkbObservations, listUkbConditions));
-      stopTimeLogging(listUkbPatients);
+      stopLoggingTime(listUkbPatients);
 
       // Retrieval of the Encounter resources
-      startTimeLogging(ResourceType.Encounter);
+      startLoggingTime(ResourceType.Encounter);
       List<UkbEncounter> listUkbEncounters =
           (List<UkbEncounter>) Converter.convert(dataRetrievalService.getEncounters());
-      stopTimeLogging(listUkbEncounters);
+      stopLoggingTime(listUkbEncounters);
 
       // Retrieval of the Location resources
-      startTimeLogging(ResourceType.Location);
+      startLoggingTime(ResourceType.Location);
       List<UkbLocation> listUkbLocations =
           (List<UkbLocation>) Converter.convert(dataRetrievalService.getLocations());
-      stopTimeLogging(listUkbLocations);
+      stopLoggingTime(listUkbLocations);
 
       // Retrieval of the Procedure resources
-      startTimeLogging(ResourceType.Procedure);
+      startLoggingTime(ResourceType.Procedure);
       List<UkbProcedure> listUkbProcedures = (List<UkbProcedure>) Converter.convert(
           dataRetrievalService.getProcedures(listUkbEncounters, listUkbLocations,
               listUkbObservations, listUkbConditions));
-      stopTimeLogging(listUkbProcedures);
+      stopLoggingTime(listUkbProcedures);
 
       logger.info("Processing logic started");
       startTimeProcess = System.currentTimeMillis();
       // Start of the processing logic
-      // Flagging of all c19 positive cases
+      // Marking encounter resources as covid positive via setting of extensions
       List<UkbEncounter> listUkbEncountersFlagged =
-          CoronaLogic.flagCases(listUkbEncounters, listUkbConditions, listUkbObservations);
+          CoronaLogic.flagCases(listUkbEncounters, listUkbConditions, listUkbObservations,
+              inputCodeSettings);
 
       // Formatting of resources in json specification
       CoronaResults coronaResults =
@@ -205,7 +208,7 @@ public class DataRetrievalController {
       // Creation of the data items of the dataset specification
       ArrayList<CoronaDataItem> dataItems =
           coronaResults.getDataItems(exclDataItems.getExcludes(), debugMode,
-              variantConfiguration);
+              variantConfiguration, inputCodeSettings);
 
       // Generate an export with current case/encounter ids by treatment level on demand
       if (reportConfiguration.getCaseIdFileGeneration()) {
@@ -222,9 +225,9 @@ public class DataRetrievalController {
       ArrayNode array = mapper.valueToTree(dataItems);
 
       result.putArray("dataitems").addAll(array);
-      result.put("provider", this.providerSer.provConf.getName());
+      result.put("provider", this.providerService.provConf.getName());
       result.put("corona_dashboard_dataset_version", "0.3.0");
-      result.put("author", this.providerSer.provConf.getAuthor());
+      result.put("author", this.providerService.provConf.getAuthor());
       result.put("exporttimestamp", DateTools.getCurrentUnixTime());
 
       if (debugMode) {
@@ -249,8 +252,9 @@ public class DataRetrievalController {
           ex.getStatusCode());
     } catch (HttpServerErrorException ex) {
       // Server unavailable
-      logger.error("Workflow aborted: " + ex.getResponseBodyAsString());
-      return new ResponseEntity<>("Connection to the FHIR server failed:\n\n " + ex.getMessage(),
+      logger.error("Workflow aborted: " + ex.getMessage());
+      return new ResponseEntity<>(
+          "Error in the data retrieval from the FHIR server:\n\n " + ex.getMessage(),
           HttpStatus.valueOf(ex.getRawStatusCode()));
     } catch (ResourceAccessException ex) {
       logger.error("Workflow aborted: " + ex.getMessage());
@@ -263,13 +267,14 @@ public class DataRetrievalController {
     }
   }
 
-  private void stopTimeLogging(List<?> listResources) {
+
+  private void stopLoggingTime(List<?> listResources) {
     logger.info(
         "Loading " + currentResourceType + "s took " + (System.currentTimeMillis()
             - startTimeProcess) + " milliseconds for " + listResources.size() + " resources");
   }
 
-  private void startTimeLogging(ResourceType fhirResourceType) {
+  private void startLoggingTime(ResourceType fhirResourceType) {
     currentResourceType = fhirResourceType.name();
     startTimeProcess = System.currentTimeMillis();
     logger.info("Retrieval of the " + currentResourceType + " resources started");

@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * This class is used to read out the individual configuration of the provider information (e.g. the
- * provider name) of the data providers
+ * provider name) of the data providers.
  *
  * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */

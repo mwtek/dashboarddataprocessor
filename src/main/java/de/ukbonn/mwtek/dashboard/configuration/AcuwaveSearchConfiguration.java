@@ -40,14 +40,14 @@ import org.springframework.context.annotation.Configuration;
 public class AcuwaveSearchConfiguration extends SearchConfiguration {
 
   /**
-   * Orbis internal keys for laboratory codes
+   * Orbis internal keys for laboratory codes.
    */
-  private List<Integer> orbisLabCodes = new ArrayList<>();
+  private List<Integer> orbisLabPcrCodes = new ArrayList<>();
 
   /**
-   * Officially known ICD codes (e.g. "U07.1")
+   * Orbis internal keys for laboratory codes that describe covid variants.
    */
-  private List<String> icdCodes = new ArrayList<>();
+  private List<Integer> orbisLabVariantCodes = new ArrayList<>();
 
   /**
    * batch size of the parallelized partial acuwave searches

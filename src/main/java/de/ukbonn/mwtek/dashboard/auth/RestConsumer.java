@@ -35,7 +35,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 /**
- * Base class for all rest consumer in this project
+ * Base class for all rest consumer in this project.
  */
 @Slf4j
 public class RestConsumer {

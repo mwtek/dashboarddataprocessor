@@ -30,6 +30,7 @@ import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Procedure;
+import org.springframework.web.client.RestClientException;
 
 /**
  * This interface provides all the retrieval methods needed to supply the corona dashboard with the
@@ -45,14 +46,16 @@ public interface DataRetrievalService {
    *
    * @return A list of all FHIR observation resources that include a covid finding.
    */
-  List<Observation> getObservations();
+  List<Observation> getObservations()
+      throws RestClientException, OutOfMemoryError;
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition} resources.
    *
    * @return A list of all FHIR condition resources that include a covid diagnosis.
    */
-  List<Condition> getConditions();
+  List<Condition> getConditions()
+      throws RestClientException, OutOfMemoryError;
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient} resources.

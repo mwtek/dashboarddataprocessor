@@ -36,7 +36,7 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * Service for providing the {@link FhirSearchConfiguration} (e.g. which Loinc codes are to be used)
- * from application.yaml
+ * from <code>application.yaml</code>.
  *
  * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */

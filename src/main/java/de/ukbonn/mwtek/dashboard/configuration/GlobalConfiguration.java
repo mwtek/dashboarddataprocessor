@@ -19,13 +19,15 @@
 package de.ukbonn.mwtek.dashboard.configuration;
 
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * This class is used to read out the global configuration of the dashboard processor
+ * This class is used to read out the global configuration of the dashboard processor.
  *
  * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
@@ -34,6 +36,11 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 public class GlobalConfiguration {
+
+  /**
+   * Comma-separated list with input codes for FHIR Search and processing logic.
+   */
+  private Map<String, String> inputCodes = new HashMap<>();
 
   /**
    * Flag to add debug information (e.g. case ids / resource ids) to the output.

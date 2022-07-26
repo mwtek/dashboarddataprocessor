@@ -8,7 +8,18 @@ global:
   server-type: FHIR
   ## Maximum 'count' size per fhir search request (e.g. if querying encounter resources by patient IDs). This value should never be reached (default: 1000000).
   # max-count-size: 1000000
-
+  ## Comma-separated list of codes used for Corona patient identification (icd = Condition resources; loinc = Observation resources).
+  inputcodes:
+    ## ICD codes SARS-CoV-2
+    condition: U07.1,U07.2
+    ## LOINC-Codes SARS-CoV-2 PCR tests [96895-8 for variant results]
+    observation:
+      pcr: 94640-0,94306-8,96763-8
+      variants: 96895-8,96741-4
+    ## Ventilation snomed ct codes [Procedure.category.coding.code]
+    procedure:
+      ecmo: 182744004
+      ventilation: 40617009,57485005
 fhir:
   server:
     ## The authentication method, one of NONE, SSL or BASIC (default)
@@ -26,14 +37,6 @@ fhir:
 
   ## Adjustment of FHIR search requests on the FHIR server
   search:
-    ## Comma-separated list of codes used for Corona patient identification (icd = Condition resources; loinc = Observation resources).
-    inputcodes:
-      #ICD codes SARS-CoV-2
-      condition: U07.1!,U07.2!
-      #LOINC-Codes SARS-CoV-2 PCR tests [96895-8 for variant results]
-      observation: 94640-0,94306-8,96763-8,96895-8
-      #Ventilation snomed ct codes [Procedure.category.coding.code]
-      procedure: 40617009,182744004,57485005
     ## Batch size of the parallelized partial FHIR searches
     batchsize: 500
     ## Maximum 'count' size per fhir search request (e.g. if querying encounter resources by patient IDs). This value should never be reached (default: 1000000).
@@ -101,9 +104,8 @@ spring:
   # rest-password: y
   ## Adjustment of the search requests via acuwave module chain
   ## Orbis internal lab codes for positive SARS-Cov-2 PCR fundings
-  # orbis-lab-codes: 19937,20057,20097,20117,20217,20238,20297,20298,20337,20517,20997,21857
-  ## Comma separated list of the used icd codes (without exclamation marks)
-  # icd-codes: U07.1,U07.2
+  # orbis-lab-pcr-codes: 19937,20057,20097,20117,20217,20238,20297,20298,20337,20517,20997,21857
+  # orbis-lab-variant-codes: 21997,22017,22117
   ## Filter the patient (and thus also the encounter) retrieval to SARS-CoV-2-patients only
   # filter-patient-retrieval: true
   ## Filter the procedure retrieval to inpatient SARS-CoV-2-cases only (with at least one icu transfer) to reduce the requests on an external server (experimental state)

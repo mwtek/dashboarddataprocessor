@@ -18,8 +18,6 @@
 
 package de.ukbonn.mwtek.dashboard.configuration;
 
-import java.util.HashMap;
-import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -36,11 +34,6 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 public class FhirSearchConfiguration extends SearchConfiguration {
-
-  /**
-   * Comma-separated list with input codes for FHIR Search
-   */
-  private Map<String, String> inputCodes = new HashMap<>();
 
   /**
    * batch size of the parallelized partial FHIR searches

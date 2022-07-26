@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * Service for providing the {@link ProviderConfiguration} (e.g. name of the participating
- * university hospital) from application.yaml
+ * university hospital) from <code>application.yaml</code>.
  *
  * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
@@ -33,6 +33,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProviderService {
 
+  /**
+   * The instance of the configuration of the settings that describe the data provider and that are
+   * part of the output json.
+   */
   public ProviderConfiguration provConf;
 
   @Autowired

@@ -18,16 +18,14 @@
 
 package de.ukbonn.mwtek.dashboard.configuration;
 
-import org.springframework.context.annotation.Configuration;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * base class for all rest configurations that may be used in this project
- * 
- * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
+ * Base class for all rest configurations that may be used in this project.
  *
+ * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
 @Getter
 @Setter

@@ -18,12 +18,15 @@
 
 package de.ukbonn.mwtek.dashboard.services;
 
+import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.SearchConfiguration;
 import de.ukbonn.mwtek.dashboard.interfaces.DataRetrievalService;
 import de.ukbonn.mwtek.dashboard.interfaces.SearchService;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * All methods for retrieving the data required for the Corona dashboard from any supported server.
@@ -40,76 +43,60 @@ public abstract class AbstractDataRetrievalService implements DataRetrievalServi
    * Since the data retrieval service is independent of a dedicated server type, a corresponding
    * service that handles server queries must be passed.
    */
+  @Getter
+  @Setter
   private SearchService searchService;
   /**
    * The data type of the (SARS-CoV-2 PCR in this case) lab codes can be variable depending on the
    * server and varies between textual and numerical values as expected input.
    */
-  private List<?> labCodes;
+  @Getter
+  @Setter
+  private List<String> labPcrCodes;
+
   /**
-   * A list of Covid relevant ICD diagnosis codes (usually U07.1 and U07.2).
+   * A textual list of LOINC codes used to determine covid variants.
    */
+  @Getter
+  @Setter
+  private List<String> labVariantCodes;
+
+  /**
+   * A list of covid relevant ICD diagnosis codes (usually U07.1 and U07.2).
+   */
+  @Getter
+  @Setter
   private List<String> icdCodes;
 
   /**
-   * A list of Covid relevant OPS procedure codes that identifies artificial ventilation procedures
+   * A list of covid relevant snomed procedure codes that identifies artificial ventilation
+   * procedures
    */
-  private List<String> opsCodes;
+  @Getter
+  @Setter
+  private List<String> procedureVentilationCodes;
 
+  /**
+   * A list of covid relevant snomed procedure codes that identifies ecmo procedures
+   */
+  @Getter
+  @Setter
+  private List<String> procedureEcmoCodes;
+
+  @Getter
+  @Setter
   private int maxCountSize;
 
+  @Getter
+  @Setter
   private SearchConfiguration searchConfiguration;
 
-  void setSearchService(SearchService searchService) {
-    this.searchService = searchService;
-  }
-
-  public SearchService getSearchService() {
-    return searchService;
-  }
-
-  void setLabCodes(List<?> labCodes) {
-    this.labCodes = labCodes;
-  }
-
-  public List<?> getLabCodes() {
-    return labCodes;
-  }
-
-  void setIcdCodes(List<String> icdCodes) {
-    this.icdCodes = icdCodes;
-  }
-
-  public List<String> getIcdCodes() {
-    return icdCodes;
-  }
-
-  void setOpsCodes(List<String> opsCodes) {
-    this.opsCodes = opsCodes;
-  }
-
-  public List<String> getOpsCodes() {
-    return opsCodes;
-  }
+  @Getter
+  @Setter
+  private GlobalConfiguration globalConfiguration;
 
   public Boolean getFilterEncounterByDate() {
     return searchConfiguration.getFilterEncounterByDate();
-  }
-
-  public void setMaxCountSize(int maxCountSize) {
-    this.maxCountSize = maxCountSize;
-  }
-
-  public int getMaxCountSize() {
-    return maxCountSize;
-  }
-
-  public void setSearchConfiguration(SearchConfiguration searchConfiguration) {
-    this.searchConfiguration = searchConfiguration;
-  }
-
-  public SearchConfiguration getSearchConfiguration(SearchConfiguration searchConfiguration) {
-    return searchConfiguration;
   }
 
 }

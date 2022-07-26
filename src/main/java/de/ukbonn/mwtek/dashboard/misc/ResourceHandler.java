@@ -66,6 +66,19 @@ public class ResourceHandler {
     });
   }
 
+  /**
+   * Class for reading patient and case numbers from {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation}
+   * resources and filling global lists with them.
+   *
+   * @param obs                The {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation}
+   *                           resource to be read.
+   * @param outputPatientIds   List of ids of the {@link Patient} resource to be extended by entries
+   *                           from the Observation resource.
+   * @param outputEncounterIds List of ids of the {@link Encounter} resource to be extended by
+   *                           entries from the Observation resource.
+   * @param serverType         The connected {@link ServerTypeEnum server type} that delivers the
+   *                           fhir *                       resources.
+   */
   public static void storeObservationPatientKeys(Observation obs, Set<String> outputPatientIds,
       Set<String> outputEncounterIds, ServerTypeEnum serverType) {
     try {
@@ -87,6 +100,19 @@ public class ResourceHandler {
     }
   }
 
+  /**
+   * Class for reading patient and case numbers from {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition}
+   * resources and filling global lists with them.
+   *
+   * @param cond               The {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition}
+   *                           resource to be read.
+   * @param outputPatientIds   List of ids of the {@link Patient} resource to be extended by entries
+   *                           from the Observation resource.
+   * @param outputEncounterIds List of ids of the {@link Encounter} resource to be extended by
+   *                           entries from the Observation resource.
+   * @param serverType         The connected {@link ServerTypeEnum server type} that delivers the
+   *                           fhir *                       resources.
+   */
   public static void storeConditionPatientKeys(Condition cond, Set<String> outputPatientIds,
       Set<String> outputEncounterIds, ServerTypeEnum serverType) {
     try {
@@ -112,22 +138,22 @@ public class ResourceHandler {
    * Reads the Fhir bundle, adds all entries of the Condition type to a list and adds the {@link
    * Patient patient} ids and {@link Encounter encounter} ids to a given set.
    *
-   * @param initialBundle  A FHIR response bundle that contains {@link Observation} resources
-   * @param listConditions List with FHIR-{@link Condition conditions} in which the entries from the
-   *                       bundle are to be stored
-   * @param patientIds     List of ids of the {@link Patient} resource to be extended by entries
-   *                       from the Observation resource.
-   * @param encounterIds   List of ids of the {@link Encounter} resource to be extended by entries
-   *                       from the Observation resource.
-   * @param serverType     The connected {@link ServerTypeEnum server type} that delivers the fhir
-   *                       resources.
+   * @param initialBundle      A FHIR response bundle that contains {@link Observation} resources
+   * @param listConditions     List with FHIR-{@link Condition conditions} in which the entries from
+   *                           the bundle are to be stored
+   * @param outputPatientIds   List of ids of the {@link Patient} resource to be extended by entries
+   *                           from the Observation resource.
+   * @param outputEncounterIds List of ids of the {@link Encounter} resource to be extended by
+   *                           entries from the Observation resource.
+   * @param serverType         The connected {@link ServerTypeEnum server type} that delivers the
+   *                           fhir resources.
    */
   public static void handleConditionEntries(Bundle initialBundle, List<Condition> listConditions,
-      Set<String> patientIds, Set<String> encounterIds, ServerTypeEnum serverType) {
+      Set<String> outputPatientIds, Set<String> outputEncounterIds, ServerTypeEnum serverType) {
     initialBundle.getEntry().forEach(entry -> {
       if (entry.getResource().getClass() == Condition.class) {
         Condition cond = (Condition) entry.getResource();
-        storeConditionPatientKeys(cond, patientIds, encounterIds, serverType);
+        storeConditionPatientKeys(cond, outputPatientIds, outputEncounterIds, serverType);
         listConditions.add(cond);
       }
     });

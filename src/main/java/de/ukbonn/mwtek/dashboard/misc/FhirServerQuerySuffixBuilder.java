@@ -28,22 +28,25 @@ import org.apache.commons.lang3.StringUtils;
 public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
 
   private static final String COUNT_EQUALS = "&_count=";
+  private static final String DELIMITER = ",";
 
   public String getObservations(AbstractDataRetrievalService dataRetrievalService, Integer month) {
-    return "Observation?code=" + String.join(",",
-        (List<String>) dataRetrievalService.getLabCodes()) + "&_pretty=false" + COUNT_EQUALS
+    return "Observation?code=" + String.join(DELIMITER,
+        dataRetrievalService.getLabPcrCodes()) + DELIMITER
+        + String.join(DELIMITER,
+        dataRetrievalService.getLabVariantCodes()) + "&_pretty=false" + COUNT_EQUALS
         + dataRetrievalService.getBatchSize();
   }
 
   public String getConditions(AbstractDataRetrievalService dataRetrievalService, Integer month) {
-    return "Condition?code=" + String.join(",",
+    return "Condition?code=" + String.join(DELIMITER,
         dataRetrievalService.getIcdCodes()) + "&_pretty=false" + COUNT_EQUALS
         + dataRetrievalService.getBatchSize();
   }
 
   public String getPatients(AbstractDataRetrievalService dataRetrievalService,
       List<String> patientIdList) {
-    return "Patient?_id=" + String.join(",",
+    return "Patient?_id=" + String.join(DELIMITER,
         patientIdList) + COUNT_EQUALS + dataRetrievalService.getBatchSize();
   }
 
@@ -51,7 +54,7 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
   public String getEncounters(AbstractDataRetrievalService dataRetrievalService,
       List<String> patientIdList) {
     StringBuilder suffixBuilder = new StringBuilder();
-    suffixBuilder.append("Encounter?subject=").append(String.join(",", patientIdList));
+    suffixBuilder.append("Encounter?subject=").append(String.join(DELIMITER, patientIdList));
 
     /* For this project, theoretically only cases with an intake date after a cut-off date
     (27/01/2020) are needed. To reduce the resource results and make the queries more
@@ -69,8 +72,12 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
   @Override
   public String getProcedures(AbstractDataRetrievalService dataRetrievalService,
       List<String> patientIdList) {
-    return "Procedure?category:coding=" + String.join(",",
-        dataRetrievalService.getOpsCodes()) + "&subject=" + StringUtils.join(patientIdList,
+    return "Procedure?category:coding=" + String.join(DELIMITER,
+        dataRetrievalService.getProcedureVentilationCodes()) + DELIMITER
+        + String.join(DELIMITER,
+        dataRetrievalService.getProcedureEcmoCodes()) + "&subject="
+        + StringUtils.join(
+        patientIdList,
         ',') + COUNT_EQUALS + dataRetrievalService.getMaxCountSize();
   }
 

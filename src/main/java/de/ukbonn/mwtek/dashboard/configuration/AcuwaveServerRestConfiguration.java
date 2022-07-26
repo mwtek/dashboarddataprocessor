@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * This class is used to read out the individual configuration of the Acuwave servers of the data
- * providers
+ * providers.
  *
  * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
