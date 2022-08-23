@@ -1,3 +1,36 @@
+# Release Notes - Version V0.3.0-alpha2
+
+23/Aug/22
+
+## New Features
+
+No features were part of this version.
+
+## Improvements
+
+No improvements were part of this version.
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* Switching procedure retrieval from Procedure.category.coding to Procedure.coding.
+* Correction of the data item name for the chart of positive tests.
+* Fixing NFE in the generation of the timeline.maxtreatmentlevel.
+* Implementation of a configurable procedure code specification (OPS code support).
+
+</div>
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* Error in counting cumulative.age.maxtreatmentlevel.* for very special case constellations.
+* NPE if Observation.value is null.
+* Typo in the variant gamma code.
+
+</div>
+
 # Release Notes - Version V0.3.0-alpha1
 
 26/Jul/22

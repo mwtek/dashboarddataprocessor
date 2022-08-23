@@ -12,7 +12,7 @@
   </parent>
   <groupId>de.ukbonn.mwtek</groupId>
   <artifactId>dashboarddataprocessor</artifactId>
-  <version>0.3.0-alpha1</version>
+  <version>0.3.0-alpha2</version>
   <name>dashboard-data-processor</name>
   <description>MII-FHIR-to-Corona-Dashboard-Json-Processor</description>
   <properties>
@@ -71,13 +71,13 @@
     <dependency>
       <groupId>de.ukbonn.mwtek</groupId>
       <artifactId>utilities</artifactId>
-      <version>0.3.0-alpha1</version>
+      <version>0.3.0-alpha2</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>de.ukbonn.mwtek</groupId>
       <artifactId>dashboardlogic</artifactId>
-      <version>0.3.0-alpha1</version>
+      <version>0.3.0-alpha2</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>

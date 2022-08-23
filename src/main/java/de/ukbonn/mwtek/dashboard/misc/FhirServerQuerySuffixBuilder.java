@@ -72,7 +72,7 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
   @Override
   public String getProcedures(AbstractDataRetrievalService dataRetrievalService,
       List<String> patientIdList) {
-    return "Procedure?category:coding=" + String.join(DELIMITER,
+    return "Procedure?code=" + String.join(DELIMITER,
         dataRetrievalService.getProcedureVentilationCodes()) + DELIMITER
         + String.join(DELIMITER,
         dataRetrievalService.getProcedureEcmoCodes()) + "&subject="
