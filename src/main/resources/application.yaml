@@ -123,8 +123,8 @@ spring:
 #    de.ukbonn.mwtek.dashboard: ERROR
 #    de.ukbonn.mwtek.dashboardlogic: DEBUG
 #    de.ukbonn.mwtek.utilities: DEBUG
-#    file.name: coronadashboard.log
-#    file.max-size: 100MB
+#  file.name: coronadashboard.log
+#  file.max-size: 100MB
 
 ## In order to handle covid variants that do not yet have a loinc code at the time of completion of the current program version, it is possible to check the "display" field of the loinc coding for free text entries.
 ## Source of voc/voi variants: https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Virologische_Basisdaten_Varianten_Nomenklatur.html
