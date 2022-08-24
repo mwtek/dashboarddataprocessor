@@ -31,7 +31,7 @@ fhir:
     rest-password: y
     ## SSL
     key-store: src/main/resources/certs/clinical_domain_keystore.jks
-    key-store-password: Meine vorfahren und Nachfahren
+    key-store-password: Meine Vorfahren und Nachfahren
     trust-store: src/main/resources/certs/truststore.jks
     trust-store-password: Scheme Dream Martinique 739
 
@@ -92,44 +92,44 @@ spring:
       name: user
       password: pwd
 
-  #reports:
-  ## Should a file be generated with the case/encounter ids of active cases separated by treatment level?
-  # caseid-file-generation: true
-  # caseid-file-directory: C:\currentTreatmentlevelExport
-  # caseid-file-basename: Fallnummern_stationäre_C19_Patienten
+#reports:
+## Should a file be generated with the case/encounter ids of active cases separated by treatment level?
+# caseid-file-generation: true
+# caseid-file-directory: C:\currentTreatmentlevelExport
+# caseid-file-basename: Fallnummern_stationäre_C19_Patienten
 
-  #acuwave-server:
-  # rest-url: http://127.0.0.1/data/
-  ## BASIC auth settings
-  # rest-user: x
-  # rest-password: y
-  ## Adjustment of the search requests via acuwave module chain
-  ## Orbis internal lab codes for positive SARS-Cov-2 PCR fundings
-  # orbis-lab-pcr-codes: 19937,20057,20097,20117,20217,20238,20297,20298,20337,20517,20997,21857
-  # orbis-lab-variant-codes: 21997,22017,22117
-  ## Filter the patient (and thus also the encounter) retrieval to SARS-CoV-2-patients only
-  # filter-patient-retrieval: true
-  ## Filter the procedure retrieval to inpatient SARS-CoV-2-cases only (with at least one icu transfer) to reduce the requests on an external server (experimental state)
-  # filter-procedure-retrieval: true
-  ## Should procedures also be queried for specific non-ICU wards? If yes, specify the orbis internal OEBENEID here.
-  # filter-procedure-retrieval-additional-wards: 10170
-  ## Batch size of the parallelized partial ACUWAVE searches
-  # batchsize: 200
+#acuwave-server:
+# rest-url: http://127.0.0.1/data/
+## BASIC auth settings
+# rest-user: x
+# rest-password: y
+## Adjustment of the search requests via acuwave module chain
+## Orbis internal lab codes for positive SARS-Cov-2 PCR fundings
+# orbis-lab-pcr-codes: 19937,20057,20097,20117,20217,20238,20297,20298,20337,20517,20997,21857
+# orbis-lab-variant-codes: 21997,22017,22117
+## Filter the patient (and thus also the encounter) retrieval to SARS-CoV-2-patients only
+# filter-patient-retrieval: true
+## Filter the procedure retrieval to inpatient SARS-CoV-2-cases only (with at least one icu transfer) to reduce the requests on an external server (experimental state)
+# filter-procedure-retrieval: true
+## Should procedures also be queried for specific non-ICU wards? If yes, specify the orbis internal OEBENEID here.
+# filter-procedure-retrieval-additional-wards: 10170
+## Batch size of the parallelized partial ACUWAVE searches
+# batchsize: 200
 
-  ## Logging
-  #logging:
-  #  level:
-  #    root: debug
-  #    de.ukbonn.mwtek.dashboard: ERROR
-  #    de.ukbonn.mwtek.dashboardlogic: DEBUG
-  #    de.ukbonn.mwtek.utilities: DEBUG
-  #    file.name: computeserver.log
-  #    file.max-size: 100MB
+## Logging
+#logging:
+#  level:
+#    root: debug
+#    de.ukbonn.mwtek.dashboard: ERROR
+#    de.ukbonn.mwtek.dashboardlogic: DEBUG
+#    de.ukbonn.mwtek.utilities: DEBUG
+#    file.name: coronadashboard.log
+#    file.max-size: 100MB
 
-  ## In order to handle covid variants that do not yet have a loinc code at the time of completion of the current program version, it is possible to check the "display" field of the loinc coding for free text entries.
-  ## Source of voc/voi variants: https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Virologische_Basisdaten_Varianten_Nomenklatur.html
-  #variants:
-  ## variants of concern that aren't supported by the dashboard yet
-  # other-voc:
-  ## variants of interest
-  # non-voc: Lambda,My,Epsilon,Zeta,Eta,Theta,Iota,Kappa
+## In order to handle covid variants that do not yet have a loinc code at the time of completion of the current program version, it is possible to check the "display" field of the loinc coding for free text entries.
+## Source of voc/voi variants: https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Virologische_Basisdaten_Varianten_Nomenklatur.html
+#variants:
+## variants of concern that aren't supported by the dashboard yet
+# other-voc:
+## variants of interest
+# non-voc: Lambda,My,Epsilon,Zeta,Eta,Theta,Iota,Kappa
