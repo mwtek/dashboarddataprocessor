@@ -18,16 +18,21 @@
 
 package de.ukbonn.mwtek.dashboard.misc;
 
+import static de.ukbonn.mwtek.utilities.fhir.misc.Converter.extractReferenceId;
+
 import de.ukbonn.mwtek.dashboard.CoronaDashboardApplication;
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,8 +63,7 @@ public class ResourceHandler {
       Collection<Observation> listObservations, Set<String> patientIds,
       Set<String> encounterIds, ServerTypeEnum serverType) {
     bundleResponse.getEntry().forEach(entry -> {
-      if (entry.getResource().getClass() == Observation.class) {
-        Observation obs = (Observation) entry.getResource();
+      if (entry.getResource() instanceof Observation obs) {
         storeObservationPatientKeys(obs, patientIds, encounterIds, serverType);
         listObservations.add(obs);
       }
@@ -77,7 +81,7 @@ public class ResourceHandler {
    * @param outputEncounterIds List of ids of the {@link Encounter} resource to be extended by
    *                           entries from the Observation resource.
    * @param serverType         The connected {@link ServerTypeEnum server type} that delivers the
-   *                           fhir *                       resources.
+   *                           fhir resources.
    */
   public static void storeObservationPatientKeys(Observation obs, Set<String> outputPatientIds,
       Set<String> outputEncounterIds, ServerTypeEnum serverType) {
@@ -86,8 +90,8 @@ public class ResourceHandler {
       // Until this referencing process (which may never occur), the acuwave server stores its business identifier in the tag 'identifier'
       switch (serverType) {
         case FHIR -> {
-          outputPatientIds.add(obs.getSubject().getReference().split("/")[1]);
-          outputEncounterIds.add(obs.getEncounter().getReference().split("/")[1]);
+          outputPatientIds.add(extractReferenceId(obs.getSubject()));
+          outputEncounterIds.add(extractReferenceId(obs.getEncounter()));
         }
         case ACUWAVE -> {
           outputPatientIds.add(obs.getSubject().getIdentifier().getValue());
@@ -120,8 +124,8 @@ public class ResourceHandler {
       // Until this referencing process (which may never occur), the acuwave server stores its business identifier in the tag 'identifier'
       switch (serverType) {
         case FHIR -> {
-          outputPatientIds.add(cond.getSubject().getReference().split("/")[1]);
-          outputEncounterIds.add(cond.getEncounter().getReference().split("/")[1]);
+          outputPatientIds.add(extractReferenceId(cond.getSubject()));
+          outputEncounterIds.add(extractReferenceId(cond.getEncounter()));
         }
         case ACUWAVE -> {
           outputPatientIds.add(cond.getSubject().getIdentifier().getValue());
@@ -138,9 +142,9 @@ public class ResourceHandler {
    * Reads the Fhir bundle, adds all entries of the Condition type to a list and adds the {@link
    * Patient patient} ids and {@link Encounter encounter} ids to a given set.
    *
-   * @param initialBundle      A FHIR response bundle that contains {@link Observation} resources
+   * @param currentBundle      A FHIR response bundle that contains {@link Observation} resources.
    * @param listConditions     List with FHIR-{@link Condition conditions} in which the entries from
-   *                           the bundle are to be stored
+   *                           the bundle are to be stored.
    * @param outputPatientIds   List of ids of the {@link Patient} resource to be extended by entries
    *                           from the Observation resource.
    * @param outputEncounterIds List of ids of the {@link Encounter} resource to be extended by
@@ -148,15 +152,89 @@ public class ResourceHandler {
    * @param serverType         The connected {@link ServerTypeEnum server type} that delivers the
    *                           fhir resources.
    */
-  public static void handleConditionEntries(Bundle initialBundle, List<Condition> listConditions,
+  public static void handleConditionEntries(Bundle currentBundle, List<Condition> listConditions,
       Set<String> outputPatientIds, Set<String> outputEncounterIds, ServerTypeEnum serverType) {
-    initialBundle.getEntry().forEach(entry -> {
-      if (entry.getResource().getClass() == Condition.class) {
-        Condition cond = (Condition) entry.getResource();
+    currentBundle.getEntry().forEach(entry -> {
+      if (entry.getResource() instanceof Condition cond) {
         storeConditionPatientKeys(cond, outputPatientIds, outputEncounterIds, serverType);
         listConditions.add(cond);
       }
     });
   }
 
+  /**
+   * Storing of the {@link Condition} and {@link Encounter} resources in the submitted lists.
+   *
+   * @param currentBundle  A FHIR response bundle that contains {@link Observation} and {@link
+   *                       Encounter} resources.
+   * @param listConditions List with FHIR-{@link Condition conditions} in which the entries from the
+   *                       bundle are to be stored.
+   * @param listEncounters List with FHIR-{@link Encounter conditions} in which the entries from the
+   *                       bundle are to be stored and that are referencing on the {@link Condition
+   *                       conditions}.
+   * @param serverType     The connected {@link ServerTypeEnum server type} that delivers the fhir
+   *                       resources. At the moment just {@link ServerTypeEnum#FHIR} are supported.
+   */
+  public static void storeConditionAndEncounterResources(Bundle currentBundle,
+      List<Condition> listConditions, List<Encounter> listEncounters, ServerTypeEnum serverType) {
+    currentBundle.getEntry().forEach(entry -> {
+      if (entry.getResource() instanceof Condition cond) {
+        listConditions.add(cond);
+      } else if (entry.getResource() instanceof Encounter enc) {
+        listEncounters.add(enc);
+      }
+    });
+  }
+
+  /**
+   * Set the Encounter id in the condition resources and add the patient and encounter ids to the
+   * passed lists.
+   *
+   * @param listConditions     List with FHIR-{@link Condition conditions} in which the entries from
+   *                           the bundle are to be stored.
+   * @param listEncounters     List with FHIR-{@link Encounter conditions} in which the entries from
+   *                           the bundle are to be stored and that are referencing on the {@link
+   *                           Condition conditions}.
+   * @param outputPatientIds   List of ids of the {@link Patient} resource to be extended by entries
+   *                           from the Observation resource.
+   * @param outputEncounterIds List of ids of the {@link Encounter} resource to be extended by
+   *                           entries from the Observation resource.
+   * @param serverType         The connected {@link ServerTypeEnum server type} that delivers the
+   *                           fhir resources. At the moment just {@link ServerTypeEnum#FHIR} are
+   *                           supported.
+   */
+  public static void handleConditionEntriesWithEncounterRefSetting(
+      List<Condition> listConditions, List<Encounter> listEncounters, Set<String> outputPatientIds,
+      Set<String> outputEncounterIds, ServerTypeEnum serverType) {
+
+    // To simplify the queries and for faster access, we store the primary key of the condition resource in a map and reference the latter.
+    Map<String, Condition> conditionMap = new HashMap<>();
+    listConditions.forEach(cond -> {
+      if (cond.getIdElement().hasIdPart()) {
+        conditionMap.put(cond.getIdElement().getIdPart(), cond);
+      }
+    });
+
+    // Iterate over all encounter resources and set the encounter reference in all condition resources that handle covid diagnoses.
+    listEncounters.forEach(enc -> {
+      if (enc.hasDiagnosis()) {
+        enc.getDiagnosis().forEach(diagComp -> {
+          String condRefId = extractReferenceId(diagComp.getCondition());
+          // Detection of the covid diagnosis, which are part of the condition map.
+          if (diagComp.hasCondition() && diagComp.getCondition().hasReference()
+              && conditionMap.containsKey(
+              condRefId)) {
+            Condition cond = conditionMap.get(condRefId);
+            // Setting of the encounter reference in the condition resource.
+            if (enc.getIdElement().hasIdPart()) {
+              Reference encounterReference = new Reference(
+                  "Encounter/" + enc.getIdElement().getIdPart());
+              cond.setEncounter(encounterReference);
+              storeConditionPatientKeys(cond, outputPatientIds, outputEncounterIds, serverType);
+            }
+          }
+        });
+      }
+    });
+  }
 }

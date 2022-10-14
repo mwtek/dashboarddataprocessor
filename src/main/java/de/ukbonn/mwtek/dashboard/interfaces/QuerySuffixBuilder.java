@@ -31,10 +31,13 @@ public interface QuerySuffixBuilder {
    *
    * @param dataRetrievalService The corresponding data search service.
    * @param month                The calendar month for which data is requested. (for
-   *                             parallelization)
+   *                             parallelization).
+   * @param summary              Should only the bundle with the total number of found resources be
+   *                             output instead of the data retrieval query?
    * @return A list of all FHIR observation resources that include a covid finding.
    */
-  public String getObservations(AbstractDataRetrievalService dataRetrievalService, Integer month);
+  String getObservations(AbstractDataRetrievalService dataRetrievalService, Integer month,
+      boolean summary);
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition} resources.
@@ -42,9 +45,12 @@ public interface QuerySuffixBuilder {
    * @param dataRetrievalService The corresponding data search service.
    * @param month                The calendar month for which data is requested. (for
    *                             parallelization)
+   * @param summary              Should only the bundle with the total number of found resources be
+   *                             output instead of the data retrieval query?
    * @return A list of all FHIR condition resources that include a covid diagnosis.
    */
-  public String getConditions(AbstractDataRetrievalService dataRetrievalService, Integer month);
+  String getConditions(AbstractDataRetrievalService dataRetrievalService, Integer month,
+      boolean summary);
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient} resources.
@@ -53,7 +59,7 @@ public interface QuerySuffixBuilder {
    * @param patientIdList        A list with patient ids used as input criteria.
    * @return A list of all requested FHIR patient resources.
    */
-  public String getPatients(AbstractDataRetrievalService dataRetrievalService,
+  String getPatients(AbstractDataRetrievalService dataRetrievalService,
       List<String> patientIdList);
 
   /**
@@ -63,7 +69,7 @@ public interface QuerySuffixBuilder {
    * @param patientIdList        A list with patient ids used as input criteria.
    * @return A list of all requested FHIR encounter resources.
    */
-  public String getEncounters(AbstractDataRetrievalService dataRetrievalService,
+  String getEncounters(AbstractDataRetrievalService dataRetrievalService,
       List<String> patientIdList);
 
   /**
@@ -74,7 +80,7 @@ public interface QuerySuffixBuilder {
    * @return A list of all requested FHIR procedure resources that contain artificial ventilation
    * data.
    */
-  public String getProcedures(AbstractDataRetrievalService dataRetrievalService,
+  String getProcedures(AbstractDataRetrievalService dataRetrievalService,
       List<String> encounterIdList);
 
   /**
@@ -84,7 +90,7 @@ public interface QuerySuffixBuilder {
    * @param locationIdList       A list with location ids used as input criteria.
    * @return A list of all requested FHIR location resources.
    */
-  public String getLocations(AbstractDataRetrievalService dataRetrievalService,
+  String getLocations(AbstractDataRetrievalService dataRetrievalService,
       List<?> locationIdList);
 }
 

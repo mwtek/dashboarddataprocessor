@@ -118,7 +118,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
     setMonths.parallelStream().forEach(month -> {
       try {
         List<Bundle.BundleEntryComponent> listTemp = this.getSearchService()
-            .getBundleData(new AcuwaveQuerySuffixBuilder().getObservations(this, month));
+            .getBundleData(new AcuwaveQuerySuffixBuilder().getObservations(this, month, false));
         listTemp.forEach(bundleEntry -> {
           if (bundleEntry.getResource().getResourceType() == ResourceType.Observation) {
             Observation obs = (Observation) bundleEntry.getResource();
@@ -145,7 +145,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
     setMonths.parallelStream().forEach(month -> {
       try {
         List<Bundle.BundleEntryComponent> listTemp = this.getSearchService()
-            .getBundleData(new AcuwaveQuerySuffixBuilder().getConditions(this, month));
+            .getBundleData(new AcuwaveQuerySuffixBuilder().getConditions(this, month, false));
         listTemp.forEach(bundleEntry -> {
           if (bundleEntry.getResource().getResourceType() == ResourceType.Condition) {
             Condition cond = (Condition) bundleEntry.getResource();

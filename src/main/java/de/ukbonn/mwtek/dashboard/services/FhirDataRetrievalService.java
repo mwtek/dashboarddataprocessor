@@ -64,6 +64,7 @@ import org.slf4j.LoggerFactory;
 @Slf4j
 public class FhirDataRetrievalService extends AbstractDataRetrievalService {
 
+  public static final String NEXT = "next";
   private final FhirSearchConfiguration fhirSearchConfiguration;
   private final FhirServerQuerySuffixBuilder fhirServerQuerySuffixBuilder =
       new FhirServerQuerySuffixBuilder();
@@ -110,26 +111,35 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
   @Override
   public List<Observation> getObservations() {
 
-    Bundle initialObsBundle = this.getSearchService()
-        .getInitialBundle(fhirServerQuerySuffixBuilder.getObservations(this, null));
+    Bundle initialBundle = this.getSearchService()
+        .getInitialBundle(fhirServerQuerySuffixBuilder.getObservations(this, null, false));
     List<Observation> listObservations = new ArrayList<>();
+    int resourcesTotal = initialBundle.getTotal();
+
+    // Servers like the Blaze do not support the bundle.total, so we retrieve it with an additional fhir search query
+    if (!initialBundle.hasTotal()) {
+      resourcesTotal = this.getSearchService()
+          .getInitialBundle(fhirServerQuerySuffixBuilder.getObservations(this, null, true))
+          .getTotal();
+    }
+
     int counterObs = 0;
     // FHIR servers normally deliver the data in bundles. Navigation is done via the link
     // attribute. "Self" contains the current query and "Next" the link to retrieve the following
     // bundle.
-    while (initialObsBundle.hasLink() && initialObsBundle.getLink("next") != null) {
+    while (initialBundle.hasLink() && initialBundle.getLink(NEXT) != null) {
       // Parsing the retrieved resources and reading out the patients and Encounter Ids for later
       // data queries.
-      ResourceHandler.handleObservationEntries(initialObsBundle, listObservations, patientIds,
+      ResourceHandler.handleObservationEntries(initialBundle, listObservations, patientIds,
           encounterIds, this.getServerType());
-      initialObsBundle =
-          this.getSearchService().getBundlePart(initialObsBundle.getLink("next").getUrl());
+      initialBundle =
+          this.getSearchService().getBundlePart(initialBundle.getLink(NEXT).getUrl());
 
-      logStatusDataRetrievalSequential(initialObsBundle.getTotal(), counterObs++,
+      logStatusDataRetrievalSequential(resourcesTotal, counterObs++,
           Enumerations.FHIRAllTypes.OBSERVATION.getDisplay());
     }
     // No next link given? -> just add the results to the lists and go on
-    ResourceHandler.handleObservationEntries(initialObsBundle, listObservations, patientIds,
+    ResourceHandler.handleObservationEntries(initialBundle, listObservations, patientIds,
         encounterIds, this.getServerType());
 
     return listObservations;
@@ -138,25 +148,57 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
   @Override
   public List<Condition> getConditions() {
 
-    Bundle initialConditionBundle = this.getSearchService()
-        .getInitialBundle(fhirServerQuerySuffixBuilder.getConditions(this, null));
+    boolean isUseEncounterConditionReference = fhirSearchConfiguration.isUseEncounterConditionReference();
+    // Since the condition.encounter reference is not mandatory, it's possible to link encounter and condition via encounter.diagnosis.
+    Bundle initialBundle =
+        !isUseEncounterConditionReference ? this.getSearchService()
+            .getInitialBundle(fhirServerQuerySuffixBuilder.getConditions(this, null, false))
+            : this.getSearchService()
+                .getInitialBundle(
+                    fhirServerQuerySuffixBuilder.getConditionsIncludingEncounter(this));
     List<Condition> listConditions = new ArrayList<>();
+    // This list is just being used if a parameter is set in the configuration.
+    List<Encounter> listEncounters = new ArrayList<>();
     int counterCond = 0;
-    while (initialConditionBundle.hasLink() && initialConditionBundle.getLink("next") != null) {
-      // Parsing the retrieved resources and reading out the patients and Encounter Ids for later
-      // data queries.
-      ResourceHandler.handleConditionEntries(initialConditionBundle, listConditions, patientIds,
-          encounterIds, this.getServerType());
-      initialConditionBundle = this.getSearchService()
-          .getBundlePart(initialConditionBundle.getLink("next").getUrl());
+    int resourcesTotal = initialBundle.getTotal();
 
-      logStatusDataRetrievalSequential(initialConditionBundle.getTotal(), counterCond++,
+    // Servers like the Blaze do not support the bundle.total, so we retrieve it with an additional fhir search query
+    if (!initialBundle.hasTotal()) {
+      resourcesTotal = this.getSearchService()
+          .getInitialBundle(fhirServerQuerySuffixBuilder.getObservations(this, null, true))
+          .getTotal();
+    }
+
+    while (initialBundle.hasLink() && initialBundle.getLink(NEXT) != null) {
+      // The handling differs, whether the output is condition resources only or the encounter data needs to be retrieved aswell.
+      // -> Then we need to gather all resources first and make encounter id processing afterwards.
+      if (!isUseEncounterConditionReference) {
+        // Parsing the retrieved resources and reading out the patients and Encounter Ids for later
+        // data queries.
+        ResourceHandler.handleConditionEntries(initialBundle, listConditions, patientIds,
+            encounterIds, this.getServerType());
+      } else {
+        // Gather the condition and encounter resources in corresponding lists.
+        ResourceHandler.storeConditionAndEncounterResources(initialBundle, listConditions,
+            listEncounters, this.getServerType());
+      }
+      initialBundle = this.getSearchService()
+          .getBundlePart(initialBundle.getLink(NEXT).getUrl());
+
+      logStatusDataRetrievalSequential(resourcesTotal, counterCond++,
           Enumerations.FHIRAllTypes.CONDITION.getDisplay());
     }
     // no next link existent? -> just add the results to the lists and go further on
-    ResourceHandler.handleConditionEntries(initialConditionBundle, listConditions, patientIds,
-        encounterIds, this.getServerType());
-
+    if (!isUseEncounterConditionReference) {
+      ResourceHandler.handleConditionEntries(initialBundle, listConditions, patientIds,
+          encounterIds, this.getServerType());
+    } else {
+      ResourceHandler.storeConditionAndEncounterResources(initialBundle, listConditions,
+          listEncounters, this.getServerType());
+      ResourceHandler.handleConditionEntriesWithEncounterRefSetting(listConditions,
+          listEncounters, patientIds,
+          encounterIds, this.getServerType());
+    }
     return listConditions;
   }
 
@@ -350,7 +392,7 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
       String resourceType) {
     if ((counter * this.getBatchSize()) % 10000 == 0) {
       logger.info(
-          "Retrieving " + resourceType + " data for: " + counter * this.getBatchSize() + "/"
+          "Retrieving " + resourceType + " data: " + counter * this.getBatchSize() + "/"
               + inputParameterSize + " patients");
     }
   }

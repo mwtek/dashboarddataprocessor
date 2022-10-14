@@ -32,13 +32,14 @@ import org.hl7.fhir.r4.model.Bundle.BundleLinkComponent;
 public interface SearchService {
 
   /**
-   * Retrieve a FHIR search query and parse the result in FHIR {@link Bundle#getEntry() bundle entry
-   * components} This method is used when pagination is not necessary.
+   * Retrieve a FHIR search query and parse the result in FHIR
+   * {@link Bundle#getEntry() bundle entry components} This method is used when pagination is not
+   * necessary.
    *
    * @param querySuffix The suffix with the FHIR search logic to be appended to the FHIR server
    *                    endpoint url (e.g. Patient?id=1).
-   * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle#getEntry()
-   * bundle entry components}
+   * @return The response from the FHIR search query, parsed into a FHIR
+   * {@link Bundle#getEntry() bundle entry components}
    */
   List<Bundle.BundleEntryComponent> getBundleData(String querySuffix);
 
@@ -56,10 +57,10 @@ public interface SearchService {
   /**
    * After execution, the initial FHIR search query returns the attributes "self" and "next" within
    * the attribute "link" if the number of resources to be retrieved is too large. These values can
-   * be used to control pagination and are used to retrieve additional {@link
-   * BundleLinkComponent#getUrl() FhirBundleParts} Since the URL is already supplied in the "next"
-   * attribute (in contrast to method {@link #getInitialBundle(String)}) simplified handling is
-   * possible here, since the FHIR search query no longer has to be assembled.
+   * be used to control pagination and are used to retrieve additional
+   * {@link BundleLinkComponent#getUrl() FhirBundleParts} Since the URL is already supplied in the
+   * "next" attribute (in contrast to method {@link #getInitialBundle(String)}) simplified handling
+   * is possible here, since the FHIR search query no longer has to be assembled.
    *
    * @param linkToNextPart The FHIR search query to retrieve the next FHIR {@link Bundle} block via
    *                       {@link Bundle#getLink()}

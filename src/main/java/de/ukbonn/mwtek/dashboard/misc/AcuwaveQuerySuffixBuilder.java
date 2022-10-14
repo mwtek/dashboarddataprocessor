@@ -31,7 +31,7 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
   public static final String DELIMITER = ",";
 
   public String getObservations(AbstractDataRetrievalService acuwaveDataRetrievalService,
-      Integer month) {
+      Integer month, boolean summary) {
     return "kdslabor?codes="
         + ((AcuwaveDataRetrievalService) acuwaveDataRetrievalService).getOrbisLabPcrCodes()
         .stream()
@@ -44,7 +44,7 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
   }
 
   public String getConditions(AbstractDataRetrievalService acuwaveDataRetrievalService,
-      Integer month) {
+      Integer month, boolean summary) {
     return "kdsdiagnose?codes=" + String.join(DELIMITER,
         acuwaveDataRetrievalService.getIcdCodes()) + "&months=" + month;
   }

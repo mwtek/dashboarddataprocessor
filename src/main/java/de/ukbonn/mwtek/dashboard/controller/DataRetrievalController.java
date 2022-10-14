@@ -36,10 +36,9 @@ import de.ukbonn.mwtek.dashboard.services.AcuwaveSearchService;
 import de.ukbonn.mwtek.dashboard.services.FhirDataRetrievalService;
 import de.ukbonn.mwtek.dashboard.services.FhirSearchService;
 import de.ukbonn.mwtek.dashboard.services.ProviderService;
-import de.ukbonn.mwtek.dashboardlogic.logic.CoronaLogic;
+import de.ukbonn.mwtek.dashboardlogic.CoronaDataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality;
 import de.ukbonn.mwtek.dashboardlogic.models.CoronaDataItem;
-import de.ukbonn.mwtek.dashboardlogic.models.CoronaResults;
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
 import de.ukbonn.mwtek.utilities.fhir.misc.Converter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
@@ -131,7 +130,7 @@ public class DataRetrievalController {
 
     // initialize new request
     ObjectMapper mapper = new ObjectMapper();
-    ObjectNode result = mapper.createObjectNode();
+    ObjectNode result = new ObjectMapper().createObjectNode();
 
     resultStream = null;
 
@@ -176,7 +175,7 @@ public class DataRetrievalController {
       // Retrieval of the Encounter resources
       startLoggingTime(ResourceType.Encounter);
       List<UkbEncounter> listUkbEncounters =
-          (List<UkbEncounter>) Converter.convert(dataRetrievalService.getEncounters());
+          (List<UkbEncounter>) Converter.convert(dataRetrievalService.getEncounters(), true);
       stopLoggingTime(listUkbEncounters);
 
       // Retrieval of the Location resources
@@ -194,26 +193,22 @@ public class DataRetrievalController {
 
       logger.info("Processing logic started");
       startTimeProcess = System.currentTimeMillis();
-      // Start of the processing logic
-      // Marking encounter resources as covid positive via setting of extensions
-      List<UkbEncounter> listUkbEncountersFlagged =
-          CoronaLogic.flagCases(listUkbEncounters, listUkbConditions, listUkbObservations,
-              inputCodeSettings);
 
+      // Start of the processing logic
       // Formatting of resources in json specification
-      CoronaResults coronaResults =
-          new CoronaResults(listUkbConditions, listUkbObservations, listUkbPatients,
-              listUkbEncountersFlagged, listUkbProcedures, listUkbLocations);
+      CoronaDataItemGenerator coronaDataItemGenerator =
+          new CoronaDataItemGenerator(listUkbConditions, listUkbObservations, listUkbPatients,
+              listUkbEncounters, listUkbProcedures, listUkbLocations);
 
       // Creation of the data items of the dataset specification
       ArrayList<CoronaDataItem> dataItems =
-          coronaResults.getDataItems(exclDataItems.getExcludes(), debugMode,
+          coronaDataItemGenerator.getDataItems(exclDataItems.getExcludes(), debugMode,
               variantConfiguration, inputCodeSettings);
 
       // Generate an export with current case/encounter ids by treatment level on demand
       if (reportConfiguration.getCaseIdFileGeneration()) {
         CoronaResultFunctionality.generateCurrentTreatmentLevelList(
-            coronaResults.getMapCurrentTreatmentlevelCasenrs(),
+            coronaDataItemGenerator.getMapCurrentTreatmentlevelCasenrs(),
             reportConfiguration.getCaseIdFileDirectory(),
             reportConfiguration.getCaseIdFileBaseName());
       }
@@ -258,7 +253,8 @@ public class DataRetrievalController {
           HttpStatus.valueOf(ex.getRawStatusCode()));
     } catch (ResourceAccessException ex) {
       logger.error("Workflow aborted: " + ex.getMessage());
-      return new ResponseEntity<>("Connection to the Acuwave server failed:\n\n " + ex.getMessage(),
+      return new ResponseEntity<>(
+          "Connection to the FHIR/Acuwave server failed:\n\n " + ex.getMessage(),
           HttpStatus.SERVICE_UNAVAILABLE);
     } catch (Exception ex) {
       logger.error("Workflow aborted: " + ex.getMessage());

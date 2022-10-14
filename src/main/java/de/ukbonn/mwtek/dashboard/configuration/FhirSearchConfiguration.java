@@ -20,6 +20,8 @@ package de.ukbonn.mwtek.dashboard.configuration;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hl7.fhir.r4.model.Condition;
+import org.hl7.fhir.r4.model.Encounter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -45,4 +47,11 @@ public class FhirSearchConfiguration extends SearchConfiguration {
    * IDs). This value should never be reached (default: 1000000).
    */
   private int maxCountSize = 1000000;
+
+  /**
+   * Does a reference exist from {@link org.hl7.fhir.r4.model.Condition} resource to {@link
+   * org.hl7.fhir.r4.model.Encounter} via {@link Condition#getEncounter()} or only the reverse way
+   * via {@link Encounter#getDiagnosis()}? This results in differences in the FHIR search queries.
+   */
+  private boolean useEncounterConditionReference = false;
 }

@@ -17,6 +17,7 @@
  */
 package de.ukbonn.mwtek.dashboard.misc;
 
+import de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration;
 import de.ukbonn.mwtek.dashboard.interfaces.QuerySuffixBuilder;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import java.util.List;
@@ -30,17 +31,30 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
   private static final String COUNT_EQUALS = "&_count=";
   private static final String DELIMITER = ",";
 
-  public String getObservations(AbstractDataRetrievalService dataRetrievalService, Integer month) {
+  public String getObservations(AbstractDataRetrievalService dataRetrievalService, Integer month,
+      boolean summary) {
     return "Observation?code=" + String.join(DELIMITER,
         dataRetrievalService.getLabPcrCodes()) + DELIMITER
         + String.join(DELIMITER,
         dataRetrievalService.getLabVariantCodes()) + "&_pretty=false" + COUNT_EQUALS
-        + dataRetrievalService.getBatchSize();
+        + dataRetrievalService.getBatchSize() + (summary ? "&_summary=count" : "");
   }
 
-  public String getConditions(AbstractDataRetrievalService dataRetrievalService, Integer month) {
+  public String getConditions(AbstractDataRetrievalService dataRetrievalService, Integer month,
+      boolean summary) {
     return "Condition?code=" + String.join(DELIMITER,
         dataRetrievalService.getIcdCodes()) + "&_pretty=false" + COUNT_EQUALS
+        + dataRetrievalService.getBatchSize() + (summary ? "&_summary=count" : "");
+  }
+
+  /**
+   * Used if parameter <code>useEncounterConditionReference</code> in the
+   * {@link FhirSearchConfiguration} is set on <code>true</code>.
+   */
+  public String getConditionsIncludingEncounter(AbstractDataRetrievalService dataRetrievalService) {
+    return "Condition?code=" + String.join(DELIMITER,
+        dataRetrievalService.getIcdCodes()) + "&_revinclude=Encounter:diagnosis&_pretty=false"
+        + COUNT_EQUALS
         + dataRetrievalService.getBatchSize();
   }
 
