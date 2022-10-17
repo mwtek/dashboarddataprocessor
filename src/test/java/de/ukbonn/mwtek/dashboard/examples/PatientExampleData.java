@@ -69,7 +69,8 @@ public class PatientExampleData {
 
     // Setting of a qualitative value of the observation
     exampleResource.setValue(
-        new CodeableConcept().addCoding(new Coding("http://snomed.info", "10828004", "Positive")));
+        new CodeableConcept().addCoding(
+            new Coding(CoronaFixedValues.SNOMED_SYSTEM, "10828004", "Positive")));
 
     exampleResources.add(exampleResource);
 
