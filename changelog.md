@@ -1,3 +1,32 @@
+# Release Notes - Version V0.3.0-alpha4
+
+20/Oct/22
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* Adding a set of example/test data.
+
+</div>
+
+## Improvements
+
+No improvements were part of this version.
+
+## Tasks
+
+No tasks were part of this version.
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* Inconsistencies in the counting of the timeline.maxtreatmentlevel.
+* Retrieving Observation.valueCodeableConcept can throw NPE if no code with a valid system is found.
+
+</div>
+
 # Release Notes - Version V0.3.0-alpha3
 
 14/Oct/22

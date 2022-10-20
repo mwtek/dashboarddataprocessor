@@ -1,0 +1,2361 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "Patient/T-123456789",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "T-123456789",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/patient",
+            "value": "T-123456789"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Covid-Testpatient with artificial ventilation",
+            "given": [
+              "Deceased"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1920-01-01",
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "line": [
+              "Teststraße 33"
+            ],
+            "city": "Teststadt",
+            "postalCode": "12345",
+            "country": "DE"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/T-123456789"
+      }
+    },
+    {
+      "fullUrl": "Location/T-333333",
+      "resource": {
+        "resourceType": "Location",
+        "id": "T-333333",
+        "meta": {
+          "source": "http://hl7.org/fhir/StructureDefinition/Location"
+        },
+        "identifier": [
+          {
+            "system": "http://ukbonn.de/identifiers/location",
+            "value": "T-333333"
+          }
+        ],
+        "name": "Intensivstation 2. Zimmer 2",
+        "alias": [
+          "ITS 002"
+        ],
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+                "code": "ICU",
+                "display": "Intensive Care Unit"
+              }
+            ]
+          }
+        ],
+        "physicalType": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+              "code": "ro",
+              "display": "Room"
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Location/T-333333"
+      }
+    },
+    {
+      "fullUrl": "Location/T-444444",
+      "resource": {
+        "resourceType": "Location",
+        "id": "T-444444",
+        "meta": {
+          "source": "http://hl7.org/fhir/StructureDefinition/Location"
+        },
+        "identifier": [
+          {
+            "system": "http://ukbonn.de/identifiers/location",
+            "value": "T-444444"
+          }
+        ],
+        "name": "Zimmer 2. Bett links",
+        "alias": [
+          "ITS002T"
+        ],
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+                "code": "ICU",
+                "display": "Intensive Care Unit"
+              }
+            ]
+          }
+        ],
+        "physicalType": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+              "code": "bd",
+              "display": "Bed"
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Location/T-444444"
+      }
+    },
+    {
+      "fullUrl": "Location/T-222222",
+      "resource": {
+        "resourceType": "Location",
+        "id": "T-222222",
+        "meta": {
+          "source": "http://hl7.org/fhir/StructureDefinition/Location"
+        },
+        "identifier": [
+          {
+            "system": "http://ukbonn.de/identifiers/location",
+            "value": "T-222222"
+          }
+        ],
+        "name": "Intensivstation 2",
+        "alias": [
+          "ITS002X"
+        ],
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+                "code": "ICU",
+                "display": "Intensive Care Unit"
+              }
+            ]
+          }
+        ],
+        "physicalType": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+              "code": "wa",
+              "display": "Ward"
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Location/T-222222"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-123456789-000000-EK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-123456789-000000-EK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://fhir.de/StructureDefinition/Aufnahmegrund",
+            "extension": [
+              {
+                "url": "ErsteUndZweiteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundErsteUndZweiteStelle",
+                  "code": "01",
+                  "display": "KH-Behandlung, vollstat."
+                }
+              },
+              {
+                "url": "DritteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundDritteStelle",
+                  "code": "0",
+                  "display": "Anderes"
+                }
+              },
+              {
+                "url": "VierteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundVierteStelle",
+                  "code": "1",
+                  "display": "Normalfall"
+                }
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter",
+            "value": "T-123456789"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_transferid",
+            "value": "000000"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_contactlevel",
+            "value": "EK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "einrichtungskontakt",
+                "display": "Einrichtungskontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-123456789"
+        },
+        "period": {
+          "start": "2022-08-01T10:00:00+02:00",
+          "end": "2022-08-10T17:00:00+02:00"
+        },
+        "hospitalization": {
+          "admitSource": {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/dgkev/Aufnahmeanlass",
+                "code": "A",
+                "display": "Verlegung (mit Behandlungsdauer im verlegenden Krankenhaus bis zu 24 Stunden)"
+              }
+            ]
+          },
+          "dischargeDisposition": {
+            "extension": [
+              {
+                "url": "http://fhir.de/StructureDefinition/Entlassungsgrund",
+                "extension": [
+                  {
+                    "url": "ErsteUndZweiteStelle",
+                    "valueCoding": {
+                      "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundErsteUndZweiteStelle",
+                      "code": "07",
+                      "display": "Tod"
+                    }
+                  },
+                  {
+                    "url": "DritteStelle",
+                    "valueCoding": {
+                      "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundDritteStelle",
+                      "code": "9",
+                      "display": "keine Angabe"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/T-222222"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "wa",
+                  "display": "Ward"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T10:00:00+02:00",
+              "end": "2022-08-10T17:00:00+02:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/T-333333"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "ro",
+                  "display": "Room"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T10:00:00+02:00",
+              "end": "2022-08-10T17:00:00+02:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/T-444444"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "bd",
+                  "display": "Bed"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T10:00:00+02:00",
+              "end": "2022-08-10T17:00:00+02:00"
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-123456789-000000-EK"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-123456789-22222222-AK-0-0",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-123456789-22222222-AK-0-0",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter",
+            "value": "T-123456789"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_transferid",
+            "value": "22222222"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_contactlevel",
+            "value": "AK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "abteilungskontakt",
+                "display": "Abteilungskontakt"
+              }
+            ]
+          }
+        ],
+        "serviceType": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel",
+              "code": "0300",
+              "display": "Kardiologie"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-123456789"
+        },
+        "period": {
+          "start": "2022-08-01T10:00:00+02:00",
+          "end": "2022-08-10T17:00:00+02:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/T-222222"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "wa",
+                  "display": "Ward"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T10:00:00+02:00",
+              "end": "2022-08-10T17:00:00+02:00"
+            }
+          }
+        ],
+        "partOf": {
+          "reference": "Encounter/T-123456789-000000-EK"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-123456789-22222222-AK-0-0"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-123456789-22222222-VK-0-0",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-123456789-22222222-VK-0-0",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter",
+            "value": "T-123456789"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_transferid",
+            "value": "22222222"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_contactlevel",
+            "value": "VK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "versorgungsstellenkontakt",
+                "display": "Versorgungsstellenkontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-123456789"
+        },
+        "period": {
+          "start": "2022-08-01T10:00:00+02:00",
+          "end": "2022-08-10T17:00:00+02:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/T-222222"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "wa",
+                  "display": "Ward"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T10:00:00+02:00",
+              "end": "2022-08-10T17:00:00+02:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/T-333333"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "ro",
+                  "display": "Room"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T10:00:00+02:00",
+              "end": "2022-08-10T17:00:00+02:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/T-444444"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "bd",
+                  "display": "Bed"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T10:00:00+02:00",
+              "end": "2022-08-10T17:00:00+02:00"
+            }
+          }
+        ],
+        "partOf": {
+          "reference": "Encounter/T-123456789-22222222-AK-0-0"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-123456789-22222222-VK-0-0"
+      }
+    },
+    {
+      "fullUrl": "Condition/T-123456789-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-123456789-1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://ukbonn.de/identifiers/condition",
+            "value": "T-123456789-1"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2022",
+              "code": "Z22.8",
+              "display": "Keimträger sonstiger Infektionskrankheiten"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-123456789"
+        },
+        "encounter": {
+          "reference": "Encounter/T-123456789-000000-EK"
+        },
+        "onsetDateTime": "2022-07-27T09:00:00+02:00",
+        "recordedDate": "2022-07-27T09:00:00+02:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-123456789-1"
+      }
+    },
+    {
+      "fullUrl": "Condition/T-123456789-2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-123456789-2",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/condition-related",
+            "valueReference": {
+              "reference": "Condition/T-123456789-1"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://ukbonn.de/identifiers/condition",
+            "value": "T-123456789-2"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "extension": [
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen",
+                  "valueCoding": {
+                    "system": "http://fhir.de/CodeSystem/icd-10-gm-mehrfachcodierungs-kennzeichen",
+                    "code": "!"
+                  }
+                }
+              ],
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2022",
+              "code": "U07.1",
+              "display": "COVID-19, Virus nachgewiesen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-123456789"
+        },
+        "encounter": {
+          "reference": "Encounter/T-123456789-000000-EK"
+        },
+        "onsetDateTime": "2022-07-27T09:00:00+02:00",
+        "recordedDate": "2022-07-27T09:00:00+02:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-123456789-2"
+      }
+    },
+    {
+      "fullUrl": "Procedure/T-123456789",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "T-123456789",
+        "meta": {
+          "profile": [
+            "https://medizininformatik-initiative.de/fhir/ext/modul-icu/StructureDefinition/Beatmung"
+          ]
+        },
+        "status": "completed",
+        "category": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "40617009",
+              "display": "Artificial respiration (procedure)"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "243147009",
+              "display": "Controlled ventilation (procedure)"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-123456789"
+        },
+        "encounter": {
+          "reference": "Encounter/T-123456789-000000-EK"
+        },
+        "performedPeriod": {
+          "start": "2022-08-01T10:00:00+02:00",
+          "end": "2022-08-10T17:00:00+02:00"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Procedure/T-123456789"
+      }
+    },
+    {
+      "fullUrl": "Observation/T-123456789",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "T-123456789",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab"
+          ]
+        },
+        "identifier": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "OBI"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/observation",
+            "value": "T-123456789",
+            "assigner": {
+              "identifier": {
+                "system": "https://www.medizininformatik-initiative.de/fhir/core/CodeSystem/core-location-identifier",
+                "value": "DIZ-ID"
+              }
+            }
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "26436-6",
+                "display": "LABORATORY STUDIES"
+              },
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "94306-8"
+            }
+          ],
+          "text": "SARS-Coronavirus-2-RNA [RT-PCR]"
+        },
+        "subject": {
+          "reference": "Patient/T-123456789"
+        },
+        "encounter": {
+          "reference": "Encounter/T-123456789-000000-EK"
+        },
+        "effectiveDateTime": "2022-08-01T12:00:00+02:00",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "10828004",
+              "display": "Positive"
+            }
+          ],
+          "text": "positiv"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/T-123456789"
+      }
+    },
+    {
+      "fullUrl": "Patient/T-123456790",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "T-123456790",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/patient",
+            "value": "T-123456790"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Covid-Testpatient with an ECMO procedure",
+            "given": [
+              "Active"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1950-01-01",
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "line": [
+              "Test street 10"
+            ],
+            "city": "Musterhausen",
+            "postalCode": "77777",
+            "country": "DE"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/T-123456790"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-123456790-000000-EK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-123456790-000000-EK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://fhir.de/StructureDefinition/Aufnahmegrund",
+            "extension": [
+              {
+                "url": "ErsteUndZweiteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundErsteUndZweiteStelle",
+                  "code": "01",
+                  "display": "KH-Behandlung, vollstat."
+                }
+              },
+              {
+                "url": "DritteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundDritteStelle",
+                  "code": "0",
+                  "display": "Anderes"
+                }
+              },
+              {
+                "url": "VierteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundVierteStelle",
+                  "code": "1",
+                  "display": "Normalfall"
+                }
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter",
+            "value": "T-123456790"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_transferid",
+            "value": "000000"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_contactlevel",
+            "value": "EK"
+          }
+        ],
+        "status": "in-progress",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "einrichtungskontakt",
+                "display": "Einrichtungskontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-123456790",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://ukbonn.de/identifiers/patient",
+            "value": "T-123456790"
+          }
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/T-222222"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "wa",
+                  "display": "Ward"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T00:00:00+02:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/T-333333"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "ro",
+                  "display": "Room"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T00:00:00+02:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/T-444444"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "bd",
+                  "display": "Bed"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T00:00:00+02:00"
+            }
+          }
+        ],
+        "period": {
+          "start": "2022-08-01T00:00:00+02:00"
+        },
+        "hospitalization": {
+          "admitSource": {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/dgkev/Aufnahmeanlass",
+                "code": "E",
+                "display": "Einweisung durch einen Arzt"
+              }
+            ]
+          }
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-123456790-000000-EK"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-123456790-123456790-AK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-123456790-123456790-AK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter",
+            "value": "T-123456790"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_transferid",
+            "value": "123456790"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_contactlevel",
+            "value": "AK"
+          }
+        ],
+        "status": "in-progress",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "abteilungskontakt",
+                "display": "Abteilungskontakt"
+              }
+            ]
+          }
+        ],
+        "serviceType": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel",
+              "code": "0100",
+              "display": "Innere Medizin"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-123456790",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://ukbonn.de/identifiers/patient",
+            "value": "T-123456790"
+          }
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/T-222222"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "wa",
+                  "display": "Ward"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T00:00:00+02:00"
+            }
+          }
+        ],
+        "period": {
+          "start": "2022-08-01T00:00:00+02:00"
+        },
+        "partOf": {
+          "reference": "Encounter/T-123456790-000000-EK"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-123456790-123456790-AK"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-123456790-123456790-VK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-123456790-123456790-VK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter",
+            "value": "T-123456790"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_transferid",
+            "value": "123456790"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_contactlevel",
+            "value": "VK"
+          }
+        ],
+        "status": "in-progress",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "versorgungsstellenkontakt",
+                "display": "Versorgungsstellenkontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-123456790",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://ukbonn.de/identifiers/patient",
+            "value": "T-123456790"
+          }
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/T-222222"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "wa",
+                  "display": "Ward"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T00:00:00+02:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/T-333333"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "ro",
+                  "display": "Room"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T00:00:00+02:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/T-444444"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "bd",
+                  "display": "Bed"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T00:00:00+02:00"
+            }
+          }
+        ],
+        "period": {
+          "start": "2022-08-01T00:00:00+02:00"
+        },
+        "partOf": {
+          "reference": "Encounter/T-123456790-123456790-AK"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-123456790-123456790-VK"
+      }
+    },
+    {
+      "fullUrl": "Condition/T-123456790-351628",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-123456790-351628",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://ukbonn.de/identifiers/condition",
+            "value": "T-123456790-351628"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2022",
+              "code": "Z22.8",
+              "display": "Keimträger sonstiger Infektionskrankheiten"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-123456790"
+        },
+        "encounter": {
+          "reference": "Encounter/T-123456790-000000-EK"
+        },
+        "onsetDateTime": "2022-10-01T00:00:00+02:00",
+        "recordedDate": "2022-10-01T00:00:00+02:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-123456790-351628"
+      }
+    },
+    {
+      "fullUrl": "Condition/T-123456790-352117",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-123456790-352117",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/condition-related",
+            "valueReference": {
+              "reference": "Condition/T-123456790-351628"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://ukbonn.de/identifiers/condition",
+            "value": "T-123456790-352117"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "extension": [
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen",
+                  "valueCoding": {
+                    "system": "http://fhir.de/CodeSystem/icd-10-gm-mehrfachcodierungs-kennzeichen",
+                    "code": "!"
+                  }
+                }
+              ],
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2022",
+              "code": "U07.1",
+              "display": "COVID-19, Virus nachgewiesen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-123456790"
+        },
+        "encounter": {
+          "reference": "Encounter/T-123456790-000000-EK"
+        },
+        "onsetDateTime": "2022-10-01T00:00:00+02:00",
+        "recordedDate": "2022-10-01T00:00:00+02:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-123456790-352117"
+      }
+    },
+    {
+      "fullUrl": "Observation/T-123456790-1",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "T-123456790-1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab"
+          ]
+        },
+        "identifier": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "OBI"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/observation",
+            "value": "T-123456790-1",
+            "assigner": {
+              "identifier": {
+                "system": "https://www.medizininformatik-initiative.de/fhir/core/CodeSystem/core-location-identifier",
+                "value": "DIZ-ID"
+              }
+            }
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "26436-6",
+                "display": "LABORATORY STUDIES"
+              },
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "94306-8"
+            }
+          ],
+          "text": "SARS-Coronavirus-2-RNA [RT-PCR]"
+        },
+        "subject": {
+          "reference": "Patient/T-123456790"
+        },
+        "encounter": {
+          "reference": "Encounter/T-123456790-000000-EK"
+        },
+        "effectiveDateTime": "2022-09-01T00:00:00+02:00",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "260385009",
+              "display": "Negative"
+            }
+          ],
+          "text": "negativ"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/T-123456790-1"
+      }
+    },
+    {
+      "fullUrl": "Observation/T-123456790-2",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "T-123456790-2",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab"
+          ]
+        },
+        "identifier": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "OBI"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/observation",
+            "value": "T-123456790-2",
+            "assigner": {
+              "identifier": {
+                "system": "https://www.medizininformatik-initiative.de/fhir/core/CodeSystem/core-location-identifier",
+                "value": "DIZ-ID"
+              }
+            }
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "26436-6",
+                "display": "LABORATORY STUDIES"
+              },
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "94306-8"
+            }
+          ],
+          "text": "SARS-Coronavirus-2-RNA [RT-PCR]"
+        },
+        "subject": {
+          "reference": "Patient/T-123456790"
+        },
+        "encounter": {
+          "reference": "Encounter/T-123456790-000000-EK"
+        },
+        "effectiveDateTime": "2022-09-02T00:00:00+02:00",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "10828004",
+              "display": "Positive"
+            }
+          ],
+          "text": "positiv"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/T-123456790-2"
+      }
+    },
+    {
+      "fullUrl": "Observation/T-123456790-3",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "T-123456790-3",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab"
+          ]
+        },
+        "identifier": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "OBI"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/observation",
+            "value": "T-123456790-3",
+            "assigner": {
+              "identifier": {
+                "system": "https://www.medizininformatik-initiative.de/fhir/core/NamingSystem/org-identifier",
+                "value": "DIZ_ID"
+              }
+            }
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "26436-6",
+                "display": "LABORATORY STUDIES"
+              },
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "96895-8"
+            }
+          ],
+          "text": "SARS-CoV-2 Variants Screening [RT-PCR]"
+        },
+        "subject": {
+          "reference": "Patient/T-123456790"
+        },
+        "encounter": {
+          "reference": "Encounter/T-123456790-000000-EK"
+        },
+        "effectiveDateTime": "2022-10-01T01:00:00+02:00",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "LA31569-9",
+              "display": "SARS-CoV-2 Alpha variant (WHO)"
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/T-123456790-3"
+      }
+    },
+    {
+      "fullUrl": "Procedure/T-123456790-1",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "T-123456790-1",
+        "meta": {
+          "profile": [
+            "https://medizininformatik-initiative.de/fhir/ext/modul-icu/StructureDefinition/Extrakorporales-Verfahren"
+          ]
+        },
+        "status": "in-progress",
+        "category": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "57485005",
+              "display": "Oxygen therapy (procedure)"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "786453001",
+              "display": "Venovenous extracorporeal membrane oxygenation (procedure)"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-123456790"
+        },
+        "encounter": {
+          "reference": "Encounter/T-123456790-000000-EK"
+        },
+        "performedPeriod": {
+          "start": "2022-10-01T01:00:00+02:00"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Procedure/T-123456790-1"
+      }
+    },
+    {
+      "fullUrl": "Procedure/T-123456790-2",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "T-123456790-2",
+        "meta": {
+          "profile": [
+            "https://medizininformatik-initiative.de/fhir/ext/modul-icu/StructureDefinition/Beatmung"
+          ]
+        },
+        "status": "completed",
+        "category": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "40617009",
+              "display": "Artificial respiration (procedure)"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "243147009",
+              "display": "Controlled ventilation (procedure)"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-123456790"
+        },
+        "encounter": {
+          "reference": "Encounter/T-123456790-000000-EK"
+        },
+        "performedPeriod": {
+          "start": "2022-09-01T00:00:00+02:00",
+          "end": "2022-09-30T00:00:00+02:00"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Procedure/T-123456790-2"
+      }
+    },
+    {
+      "fullUrl": "Patient/T-123456791",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "T-123456791",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/patient",
+            "value": "T-123456791"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Covid-Testpatient",
+            "given": [
+              "Outpatient"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1960-01-01",
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "line": [
+              "Teststreet 13"
+            ],
+            "city": "Test City",
+            "postalCode": "33333",
+            "country": "DE"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/T-123456791"
+      }
+    },
+    {
+      "fullUrl": "Location/T-123456791",
+      "resource": {
+        "resourceType": "Location",
+        "id": "T-123456791",
+        "meta": {
+          "source": "http://hl7.org/fhir/StructureDefinition/Location"
+        },
+        "identifier": [
+          {
+            "system": "http://ukbonn.de/identifiers/location",
+            "value": "T-123456791"
+          }
+        ],
+        "name": "Ambulanz Innere Medizin",
+        "alias": [
+          "0123"
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Location/T-123456791"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-123456791-000000-EK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-123456791-000000-EK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter",
+            "value": "T-123456791"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_transferid",
+            "value": "000000"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_contactlevel",
+            "value": "EK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB",
+          "display": "ambulatory"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "einrichtungskontakt",
+                "display": "Einrichtungskontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-123456791",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://ukbonn.de/identifiers/patient",
+            "value": "T-123456791"
+          }
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/T-123456791"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "wa",
+                  "display": "Ward"
+                }
+              ]
+            },
+            "period": {
+              "start": "2021-03-01T00:00:00+01:00",
+              "end": "2021-03-01T00:00:00+01:00"
+            }
+          }
+        ],
+        "period": {
+          "start": "2021-03-01T00:00:00+01:00",
+          "end": "2021-03-01T00:00:00+01:00"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-123456791-000000-EK"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-123456791-123456791-AK-0-0",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-123456791-123456791-AK-0-0",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter",
+            "value": "T-123456791"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_transferid",
+            "value": "123456791"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_contactlevel",
+            "value": "AK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB",
+          "display": "ambulatory"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "abteilungskontakt",
+                "display": "Abteilungskontakt"
+              }
+            ]
+          }
+        ],
+        "serviceType": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel",
+              "code": "0100",
+              "display": "Innere Medizin"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-123456791",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://ukbonn.de/identifiers/patient",
+            "value": "T-123456791"
+          }
+        },
+        "period": {
+          "start": "2021-03-01T00:00:00+01:00",
+          "end": "2021-03-01T00:00:00+01:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/T-123456791"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "wa",
+                  "display": "Ward"
+                }
+              ]
+            },
+            "period": {
+              "start": "2021-03-01T00:00:00+01:00",
+              "end": "2021-03-01T00:00:00+01:00"
+            }
+          }
+        ],
+        "partOf": {
+          "reference": "Encounter/T-123456791-000000-EK"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-123456791-123456791-AK-0-0"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-123456791-123456791-VK-0-0",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-123456791-123456791-VK-0-0",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter",
+            "value": "T-123456791"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_transferid",
+            "value": "123456791"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://ukbonn.de/identifiers/encounter_contactlevel",
+            "value": "VK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB",
+          "display": "ambulatory"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "versorgungsstellenkontakt",
+                "display": "Versorgungsstellenkontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-123456791",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://ukbonn.de/identifiers/patient",
+            "value": "T-123456791"
+          }
+        },
+        "period": {
+          "start": "2021-03-01T00:00:00+01:00",
+          "end": "2021-03-01T00:00:00+01:00"
+        },
+        "partOf": {
+          "reference": "Encounter/T-123456791-123456791-AK-0-0"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-123456791-123456791-VK-0-0"
+      }
+    },
+    {
+      "fullUrl": "Condition/T-123456791-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-123456791-1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://ukbonn.de/identifiers/condition",
+            "value": "T-123456791-1"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "extension": [
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit",
+                  "valueCoding": {
+                    "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT",
+                    "code": "G",
+                    "display": "gesicherte Diagnose"
+                  }
+                }
+              ],
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2021",
+              "code": "B34.2",
+              "display": "Infektion durch Coronaviren nicht näher bezeichneter Lokalisation"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-123456791"
+        },
+        "encounter": {
+          "reference": "Encounter/T-123456791-000000-EK"
+        },
+        "onsetDateTime": "2021-03-01T00:00:00+01:00",
+        "recordedDate": "2021-03-01T00:00:00+01:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-123456791-1"
+      }
+    },
+    {
+      "fullUrl": "Condition/T-123456791-2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-123456791-2",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/condition-related",
+            "valueReference": {
+              "reference": "Condition/T-123456791-1"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "http://ukbonn.de/identifiers/condition",
+            "value": "T-123456791-2"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "confirmed"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "extension": [
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-mehrfachcodierungs-kennzeichen",
+                  "valueCoding": {
+                    "system": "http://fhir.de/CodeSystem/icd-10-gm-mehrfachcodierungs-kennzeichen",
+                    "code": "!"
+                  }
+                },
+                {
+                  "url": "http://fhir.de/StructureDefinition/icd-10-gm-diagnosesicherheit",
+                  "valueCoding": {
+                    "system": "https://fhir.kbv.de/CodeSystem/KBV_CS_SFHIR_ICD_DIAGNOSESICHERHEIT",
+                    "code": "G",
+                    "display": "gesicherte Diagnose"
+                  }
+                }
+              ],
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2021",
+              "code": "U07.1",
+              "display": "COVID-19, Virus nachgewiesen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-123456791"
+        },
+        "encounter": {
+          "reference": "Encounter/T-123456791-000000-EK"
+        },
+        "onsetDateTime": "2021-03-01T00:00:00+01:00",
+        "recordedDate": "2021-03-01T00:00:00+01:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-123456791-2"
+      }
+    }
+  ]
+}

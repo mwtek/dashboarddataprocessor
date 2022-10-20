@@ -51,6 +51,10 @@ and a short description.
 <td><a href="./doc/index.html" target="_blank">Javadoc Files</a></td>
 <td>The Javadoc files for this project</td>
 </tr>
+<tr>
+<td><a href="./samples" target="_blank">Sample data</a></td>
+<td>Example bundles to illustrate the expected resource structure and for test imports.</td>
+</tr>
 </table>
 
 ## License
