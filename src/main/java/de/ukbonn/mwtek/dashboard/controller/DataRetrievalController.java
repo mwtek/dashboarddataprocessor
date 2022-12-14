@@ -166,75 +166,85 @@ public class DataRetrievalController {
           (List<UkbCondition>) Converter.convert(dataRetrievalService.getConditions());
       stopLoggingTime(listUkbConditions);
 
-      // Retrieval of the Patient resources
-      startLoggingTime(ResourceType.Patient);
-      List<UkbPatient> listUkbPatients = (List<UkbPatient>) Converter.convert(
-          dataRetrievalService.getPatients(listUkbObservations, listUkbConditions));
-      stopLoggingTime(listUkbPatients);
+      // If no conditions or observations were found, the following further data retrievals / calculation steps are irrelevant
+      if (listUkbObservations.size() > 0 && listUkbConditions.size() > 0) {
 
-      // Retrieval of the Encounter resources
-      startLoggingTime(ResourceType.Encounter);
-      List<UkbEncounter> listUkbEncounters =
-          (List<UkbEncounter>) Converter.convert(dataRetrievalService.getEncounters(), true);
-      stopLoggingTime(listUkbEncounters);
+        // Retrieval of the Patient resources
+        startLoggingTime(ResourceType.Patient);
+        List<UkbPatient> listUkbPatients = (List<UkbPatient>) Converter.convert(
+            dataRetrievalService.getPatients(listUkbObservations, listUkbConditions));
+        stopLoggingTime(listUkbPatients);
 
-      // Retrieval of the Location resources
-      startLoggingTime(ResourceType.Location);
-      List<UkbLocation> listUkbLocations =
-          (List<UkbLocation>) Converter.convert(dataRetrievalService.getLocations());
-      stopLoggingTime(listUkbLocations);
+        // Retrieval of the Encounter resources
+        startLoggingTime(ResourceType.Encounter);
+        List<UkbEncounter> listUkbEncounters =
+            (List<UkbEncounter>) Converter.convert(dataRetrievalService.getEncounters(), true);
+        stopLoggingTime(listUkbEncounters);
 
-      // Retrieval of the Procedure resources
-      startLoggingTime(ResourceType.Procedure);
-      List<UkbProcedure> listUkbProcedures = (List<UkbProcedure>) Converter.convert(
-          dataRetrievalService.getProcedures(listUkbEncounters, listUkbLocations,
-              listUkbObservations, listUkbConditions));
-      stopLoggingTime(listUkbProcedures);
+        // Retrieval of the Location resources
+        startLoggingTime(ResourceType.Location);
+        List<UkbLocation> listUkbLocations =
+            (List<UkbLocation>) Converter.convert(dataRetrievalService.getLocations());
+        stopLoggingTime(listUkbLocations);
 
-      logger.info("Processing logic started");
-      startTimeProcess = System.currentTimeMillis();
+        // Retrieval of the Procedure resources
+        startLoggingTime(ResourceType.Procedure);
+        List<UkbProcedure> listUkbProcedures = (List<UkbProcedure>) Converter.convert(
+            dataRetrievalService.getProcedures(listUkbEncounters, listUkbLocations,
+                listUkbObservations, listUkbConditions));
+        stopLoggingTime(listUkbProcedures);
 
-      // Start of the processing logic
-      // Formatting of resources in json specification
-      CoronaDataItemGenerator coronaDataItemGenerator =
-          new CoronaDataItemGenerator(listUkbConditions, listUkbObservations, listUkbPatients,
-              listUkbEncounters, listUkbProcedures, listUkbLocations);
+        logger.info("Processing logic started");
+        startTimeProcess = System.currentTimeMillis();
 
-      // Creation of the data items of the dataset specification
-      ArrayList<CoronaDataItem> dataItems =
-          coronaDataItemGenerator.getDataItems(exclDataItems.getExcludes(), debugMode,
-              variantConfiguration, inputCodeSettings);
+        // Start of the processing logic
+        // Formatting of resources in json specification
+        CoronaDataItemGenerator coronaDataItemGenerator =
+            new CoronaDataItemGenerator(listUkbConditions, listUkbObservations, listUkbPatients,
+                listUkbEncounters, listUkbProcedures, listUkbLocations);
 
-      // Generate an export with current case/encounter ids by treatment level on demand
-      if (reportConfiguration.getCaseIdFileGeneration()) {
-        CoronaResultFunctionality.generateCurrentTreatmentLevelList(
-            coronaDataItemGenerator.getMapCurrentTreatmentlevelCasenrs(),
-            reportConfiguration.getCaseIdFileDirectory(),
-            reportConfiguration.getCaseIdFileBaseName());
+        // Creation of the data items of the dataset specification
+        ArrayList<CoronaDataItem> dataItems =
+            coronaDataItemGenerator.getDataItems(exclDataItems.getExcludes(), debugMode,
+                variantConfiguration, inputCodeSettings);
+
+        // Generate an export with current case/encounter ids by treatment level on demand
+        if (reportConfiguration.getCaseIdFileGeneration()) {
+          CoronaResultFunctionality.generateCurrentTreatmentLevelList(
+              coronaDataItemGenerator.getMapCurrentTreatmentlevelCasenrs(),
+              reportConfiguration.getCaseIdFileDirectory(),
+              reportConfiguration.getCaseIdFileBaseName());
+        }
+
+        logger.info(
+            "Processing logic took " + (System.currentTimeMillis() - startTimeProcess)
+                + " milliseconds");
+
+        ArrayNode array = mapper.valueToTree(dataItems);
+
+        result.putArray("dataitems").addAll(array);
+        result.put("provider", this.providerService.provConf.getName());
+        result.put("corona_dashboard_dataset_version", "0.3.0");
+        result.put("author", this.providerService.provConf.getAuthor());
+        result.put("exporttimestamp", DateTools.getCurrentUnixTime());
+
+        if (debugMode) {
+          // put the sizes of each fhir resource list in the output
+          result.put("conditionSize", listUkbConditions.size());
+          result.put("observationSize", listUkbObservations.size());
+          result.put("patientSize", listUkbPatients.size());
+          result.put("encounterSize", listUkbEncounters.size());
+          result.put("locationSize", listUkbLocations.size());
+          result.put("procedureSize", listUkbProcedures.size());
+        }
+      } else {
+        // No conditions or observations found
+        String abortMessage = "Unable to find any covid related observations (loinc codes:"
+            + inputCodeSettings.getObservationPcrLoincCodes() + ") or conditions (icd codes: "
+            + inputCodeSettings.getConditionIcdCodes() + ").";
+        logger.error("Workflow aborted: " + abortMessage);
+        return new ResponseEntity<>(abortMessage, HttpStatus.INTERNAL_SERVER_ERROR);
       }
-
-      logger.info(
-          "Processing logic took " + (System.currentTimeMillis() - startTimeProcess)
-              + " milliseconds");
-
-      ArrayNode array = mapper.valueToTree(dataItems);
-
-      result.putArray("dataitems").addAll(array);
-      result.put("provider", this.providerService.provConf.getName());
-      result.put("corona_dashboard_dataset_version", "0.3.0");
-      result.put("author", this.providerService.provConf.getAuthor());
-      result.put("exporttimestamp", DateTools.getCurrentUnixTime());
-
-      if (debugMode) {
-        // put the sizes of each fhir resource list in the output
-        result.put("conditionSize", listUkbConditions.size());
-        result.put("observationSize", listUkbObservations.size());
-        result.put("patientSize", listUkbPatients.size());
-        result.put("encounterSize", listUkbEncounters.size());
-        result.put("locationSize", listUkbLocations.size());
-        result.put("procedureSize", listUkbProcedures.size());
-      }
-
       byte[] resultBuffer = result.toString().getBytes(StandardCharsets.UTF_8);
       this.resultSize = resultBuffer.length;
       this.resultStream = new ByteArrayInputStream(resultBuffer);

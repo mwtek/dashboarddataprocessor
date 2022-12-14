@@ -1,3 +1,37 @@
+# Release Notes - Version v0.3.0-alpha5
+
+14/Dec/22
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* Using `Observation.interpretation` if `Observation.value` is empty for the detection of positive
+  lab
+  results.
+
+</div>
+
+## Improvements
+
+<div style='margin-left:30px;'>
+
+* Immediate termination of the workflow if no observation or condition resources are found.
+
+</div>
+
+## Tasks
+
+No tasks were part of this version.
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* Minimal deviations in `timeline.tests` compared to `cumulative.results` values.
+
+</div>
+
 # Release Notes - Version V0.3.0-alpha4
 
 20/Oct/22
@@ -22,8 +56,9 @@ No tasks were part of this version.
 
 <div style='margin-left:30px;'>
 
-* Inconsistencies in the counting of the timeline.maxtreatmentlevel.
-* Retrieving Observation.valueCodeableConcept can throw NPE if no code with a valid system is found.
+* Inconsistencies in the counting of the `timeline.maxtreatmentlevel`.
+* Retrieving `Observation.valueCodeableConcept` can throw NPE if no code with a valid system is
+  found.
 
 </div>
 
