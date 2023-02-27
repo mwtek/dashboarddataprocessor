@@ -8,13 +8,16 @@ interoperable,
 fully [MII national core dataset](https://simplifier.net/organization/koordinationsstellemii/~projects)
 based [FHIR](https://hl7.org/FHIR/) representation of operational patient data from hospital
 information systems as specified within
-the [Medical Informatics Initiative (MII)](https://www.medizininformatik-initiative.de/en/start)).
-The FHIR data can be provided via any standard compliant FHIR server that supports the required (
-simple) features of FHIR search. This should enable new sites to contribute to the dashboard with
+the [Medical Informatics Initiative (MII)](https://www.medizininformatik-initiative.de/en/start).
+The _DashboardDataProcessor_ is currently developed further and maintained in the NUM RDP project.
+The FHIR data can be provided via any standard compliant FHIR server that supports the required (simple) 
+features of FHIR search. This should enable new sites to contribute to the dashboard with
 minimal additive effort if interoperable FHIR representations of operational data are already
-available.The development was supported by the German Federal Ministry of Science (Bundesministerium
-für Bildung und Forschung, BMBF) in the context of the NUM CODEX (FKZ 01KX2021 ) and MII ADMIRE and
-SMITH (FKZ 01ZZ1602C, 01ZZ1803Q) projects.
+available. The development was supported by the German Federal Ministry of Science (Bundesministerium für Bildung und Forschung, BMBF)
+in the context of
+the [NUM RDP](https://www.netzwerk-universitaetsmedizin.de/projekte/aktuelle-projekte) (FKZ
+01KX2121), NUM CODEX (FKZ 01KX2121) and MII ADMIRE and SMITH (FKZ 01ZZ1602C, FKZ 01ZZ1803Q)
+projects.
 
 For information regarding active participation in the dashboard endeavour, please contact us at
 diz@ukbonn.de. For bug reports, improvement suggestions, and related technical conversations, please
