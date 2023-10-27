@@ -18,9 +18,12 @@
 package de.ukbonn.mwtek.dashboard.misc;
 
 import de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration;
+import de.ukbonn.mwtek.dashboard.interfaces.DataSourceType;
 import de.ukbonn.mwtek.dashboard.interfaces.QuerySuffixBuilder;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
+import de.ukbonn.mwtek.dashboard.services.AcuwaveDataRetrievalService;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -100,6 +103,45 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
       List<?> locationIdList) {
     return "Location?_id=" + StringUtils.join(locationIdList,
         ',') + COUNT_EQUALS + dataRetrievalService.getMaxCountSize();
+  }
+
+  @Override
+  public String getIcuEncounters(AbstractDataRetrievalService dataRetrievalService,
+      Integer calendarYear) {
+    return null;
+  }
+
+  @Override
+  public String getIcuEpisodes(AbstractDataRetrievalService dataRetrievalService,
+      List<String> encounterIdList) {
+    return null;
+  }
+
+  @Override
+  public String getUkbRenalReplacementObservations(
+      AbstractDataRetrievalService abstractRestConfiguration, List<String> encounterIdList,
+      Set<Integer> orbisCodes) {
+    return null;
+  }
+
+  @Override
+  public String getUkbRenalReplacementBodyWeight(
+      AcuwaveDataRetrievalService acuwaveDataRetrievalService, List<String> encounterIdSublist,
+      DataSourceType dataSourceType) {
+    return null;
+  }
+
+  @Override
+  public String getUkbRenalReplacementStart(AcuwaveDataRetrievalService acuwaveDataRetrievalService,
+      List<String> encounterIdSublist, DataSourceType dataSourceType) {
+    return null;
+  }
+
+  @Override
+  public String getUkbRenalReplacementUrineOutput(
+      AcuwaveDataRetrievalService acuwaveDataRetrievalService, List<String> encounterIdSublist,
+      DataSourceType dataSourceType) {
+    return null;
   }
 
 }

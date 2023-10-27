@@ -1,3 +1,31 @@
+# Release Notes - Version V0.5
+
+25/Oct/23
+
+## New Features
+
+* Update of the dataset description to V0.5.0 and adding support for some new elements.
+* Generation of the UKB prediction model items via AcuwaveLES data source endpoint is now
+  possible.
+* Added docker support.
+
+## Improvements
+
+* Improving error messages in the logging file.
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* Making the processor fully compatible with the current status of the new case module.
+* Ensuring compatibility with &quot;Versorgungsfall-/Abteilungsfall-/Einrichtungsfall&quot;-Logik.
+
+</div>
+
+## Bugs
+
+No bug fixes were part of this version.
+
 # Release Notes - Version v0.3.0-alpha5
 
 14/Dec/22

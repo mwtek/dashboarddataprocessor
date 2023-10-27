@@ -21,7 +21,10 @@ package de.ukbonn.mwtek.dashboard.services;
 import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.SearchConfiguration;
 import de.ukbonn.mwtek.dashboard.interfaces.DataRetrievalService;
+import de.ukbonn.mwtek.dashboard.interfaces.DataSourceType;
 import de.ukbonn.mwtek.dashboard.interfaces.SearchService;
+import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,6 +40,7 @@ public abstract class AbstractDataRetrievalService implements DataRetrievalServi
 
   protected Set<String> patientIds = ConcurrentHashMap.newKeySet();
   protected Set<String> encounterIds = ConcurrentHashMap.newKeySet();
+  @Getter
   protected Set<String> locationIds = ConcurrentHashMap.newKeySet();
 
   /**
@@ -99,4 +103,19 @@ public abstract class AbstractDataRetrievalService implements DataRetrievalServi
     return searchConfiguration.getFilterEncounterByDate();
   }
 
+  /**
+   * TODO
+   */
+  @Getter
+  @Setter
+  private List<String> predictionModelUkbObservationCodes;
+
+  public abstract List<CoreBaseDataItem> getUkbRenalReplacementBodyWeight(
+      Collection<String> encounterIds, DataSourceType dataSourceType);
+
+  public abstract List<CoreBaseDataItem> getUkbRenalReplacementStart(
+      Collection<String> icuLocalCaseIds, DataSourceType dataSourceType);
+
+  public abstract List<CoreBaseDataItem> getUkbRenalReplacementUrineOutput(
+      Collection<String> icuLocalCaseIds, DataSourceType dataSourceType);
 }

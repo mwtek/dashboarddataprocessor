@@ -1,23 +1,26 @@
-# MII-FHIR-to-Corona-Dashboard-Json-Processor
+# MII-FHIR-to-NUM-Dashboard-Processor
 
-The _DashboardDataProcessor_ provides a middleware solution aimed to allow provisioning aggregated,
-anonymous datasets for feeding the [NUM CODEX Dashboard](http://coronadashboard.ukbonn.de) developed
-in the context of
-the [NUM CODEX project](https://www.netzwerk-universitaetsmedizin.de/projekte/codex) from an
+The _DashboardDataProcessor_ (DDP) provides a middleware solution which allows to transmit
+aggregated, anonymous datasets to the [NUM CODEX Dashboard](http://coronadashboard.ukbonn.de) for
+visualisation. The DDP was developed as part
+of [NUM CODEX project](https://www.netzwerk-universitaetsmedizin.de/projekte/codex). It is an
 interoperable,
 fully [MII national core dataset](https://simplifier.net/organization/koordinationsstellemii/~projects)
-based [FHIR](https://hl7.org/FHIR/) representation of operational patient data from hospital
-information systems as specified within
+based [FHIR](https://hl7.org/FHIR/) representation of operational patient data from the hospital
+information systems as specified by
 the [Medical Informatics Initiative (MII)](https://www.medizininformatik-initiative.de/en/start).
 The _DashboardDataProcessor_ is currently developed further and maintained in the NUM RDP project.
-The FHIR data can be provided via any standard compliant FHIR server that supports the required (simple) 
-features of FHIR search. This should enable new sites to contribute to the dashboard with
+The FHIR data can be provided via any standard compliant FHIR server that supports the required (
+simple) features of FHIR search. This should enable new sites to contribute to the dashboard with
 minimal additive effort if interoperable FHIR representations of operational data are already
-available. The development was supported by the German Federal Ministry of Science (Bundesministerium für Bildung und Forschung, BMBF)
-in the context of
-the [NUM RDP](https://www.netzwerk-universitaetsmedizin.de/projekte/aktuelle-projekte) (FKZ
+available.
+The development was supported by the German Federal Ministry of Science (
+Bundesministerium für Bildung und Forschung, BMBF) in the context of
+the [NUM RDP](https://www.netzwerk-universitaetsmedizin.de/projekte/num-rdp) (FKZ
 01KX2121), NUM CODEX (FKZ 01KX2121) and MII ADMIRE and SMITH (FKZ 01ZZ1602C, FKZ 01ZZ1803Q)
-projects.
+projects and is further supported
+by [NUM RDP](https://www.netzwerk-universitaetsmedizin.de/projekte/num-rdp) (FKZ
+01KX2121).
 
 For information regarding active participation in the dashboard endeavour, please contact us at
 diz@ukbonn.de. For bug reports, improvement suggestions, and related technical conversations, please
@@ -39,8 +42,8 @@ and a short description.
 <th>Description</th>
 </tr>
 <tr>
-<td><a href="./files/Datensatzbeschreibung_COVID_dashboard_v0_3_0_final.pdf" target="_blank">JSON dataset description</a></td>
-<td>The dataset description of the resulting JSON format, including the description of the aggregated data items.</td>
+<td><a href="./files/Datensatzbeschreibung_COVID_dashboard_v0_5_0_20230110_released.pdf" target="_blank">JSON dataset description</a></td>
+<td>The dataset description of the resulting JSON format, including the description of the aggregated data items.</td> 
 </tr> 
 <tr>
 <td><a href="./files/Dokumentation_Dashboard_Backend_v0_3_0a.pdf" target="_blank">Documentation of the FHIR implementation</a></td>
@@ -59,6 +62,9 @@ and a short description.
 <td>Example bundles to illustrate the expected resource structure and for test imports.</td>
 </tr>
 </table>
+
+Not all items are currently supported by the DDP, a list of unsupported items can be
+found [here](#not-supported-items).
 
 ## License
 
@@ -90,8 +96,8 @@ The following software must be available to execute the program:
 - Dependencies ([utilities](https://www.github.com/mwtek/utilities)
   and [dashboardlogic](https://www.github.com/mwtek/dashboardlogic) repositories)
 
-It is recommended to have both programs installed in a way that the correct versions of *java* and *
-mvn* are found in the system path.
+It is recommended to have both programs installed in a way that the correct versions of *java* and
+*mvn* are found in the system path.
 
 In addition, at least 4 GB of free RAM, preferably 8 GB, should be available. The size depends on
 the number of resources that have to be retrieved from the FHIR server. In a test with ~ 500,000
@@ -147,14 +153,14 @@ release and for which compatibility has been adequately tested. In case of probl
 incompatibilities please email the developer or open an issue. It is tried to respond to the
 constant innovations by new Dashboard Processor versions.
 
-| KDS Module                                                                                        | Profile(s)                                                                                                 | Version       | Comments |
-|---------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|---------------|----------|
-| [KDS Person](https://simplifier.net/medizininformatikinitiative-modulperson)                      | [Patient](https://simplifier.net/medizininformatikinitiative-modulperson/sdmiipersonpatient)               | 2.0.0-ballot2 |          |
-| [KDS Fall](https://simplifier.net/medizininformatikinitiative-modulfall)                          | [Encounter](https://simplifier.net/medizininformatikinitiative-modulfall/kontaktgesundheitseinrichtung)    | 1.0.1         |          |
-| [KDS Labor](https://simplifier.net/medizininformatikinitiative-modullabor)                        | [Observation](https://simplifier.net/medizininformatikinitiative-modullabor/observationlab)                | 1.0.6         |          |
-| [KDS Diagnose](https://simplifier.net/medizininformatikinitiative-moduldiagnosen)                 | [Condition](https://simplifier.net/medizininformatikinitiative-moduldiagnosen/diagnose)                    | 2.0.0-alpha3  |          |
-| [KDS ICU](https://simplifier.net/MedizininformatikInitiative-Modul-Intensivmedizin/~introduction) | [MII_Beatmung](https://simplifier.net/medizininformatikinitiative-modul-intensivmedizin/miibeatmung)       | 1.0           |          |
-| [KDS Strukturdaten](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten)        | [Location](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten/sd_mii_struktur_location) | 1.0           |          |
+| KDS Module                                                                                        | Profile(s)                                                                                                 | Minimum Version | Comments |
+|---------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|-----------------|----------|
+| [KDS Person](https://simplifier.net/medizininformatikinitiative-modulperson)                      | [Patient](https://simplifier.net/medizininformatikinitiative-modulperson/sdmiipersonpatient)               | 2.0.0-ballot2   |          |
+| [KDS Fall](https://simplifier.net/medizininformatikinitiative-modulfall)                          | [Encounter](https://simplifier.net/medizininformatikinitiative-modulfall/kontaktgesundheitseinrichtung)    | 1.0.1           |          |
+| [KDS Labor](https://simplifier.net/medizininformatikinitiative-modullabor)                        | [Observation](https://simplifier.net/medizininformatikinitiative-modullabor/observationlab)                | 1.0.6           |          |
+| [KDS Diagnose](https://simplifier.net/medizininformatikinitiative-moduldiagnosen)                 | [Condition](https://simplifier.net/medizininformatikinitiative-moduldiagnosen/diagnose)                    | 2.0.0-alpha3    |          |
+| [KDS ICU](https://simplifier.net/MedizininformatikInitiative-Modul-Intensivmedizin/~introduction) | [MII_Beatmung](https://simplifier.net/medizininformatikinitiative-modul-intensivmedizin/miibeatmung)       | 1.0             |          |
+| [KDS Strukturdaten](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten)        | [Location](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten/sd_mii_struktur_location) | 1.0             |          |
 
 ## Runtime Configuration
 
@@ -181,7 +187,7 @@ The runtime configuration provides comments for all setup options.
 
 The program is set up as a Maven project and can either be build manually or by executing the
 "build.sh" script. To use this application, the two libraries "utilities" and "dashboardlogic"
-have to be cloned.
+have to be cloned. It is also possible to run the program via a Docker container.
 
 **Install and run via script**
 
@@ -218,6 +224,12 @@ After installation the project can be run via:
 mvn spring-boot:run
 ```
 
+or via using the run-script:
+
+```
+./run.sh
+```
+
 **Install and run manually**
 
 For the Project to run without any issues it is mandatory to install the other two libraries in a
@@ -225,7 +237,7 @@ certain order:
 
 utilities &#8594; dashboardlogic &#8594; dashboarddataprocessor
 
-First utilities, then dashboardLogic
+First utilities, then dashboardlogic
 
 ```
 mvn clean install
@@ -237,7 +249,7 @@ dashboarddataprocessor
 ```
 mvn clean install
 mvn spring-boot:run
-```
+``` 
 
 **Executing a jar file**
 
@@ -245,7 +257,7 @@ mvn spring-boot:run
 base folder and configured with the local settings. When the .JAR file is executed,
 the `application.yaml` is taken from the base directory by default at runtime.
 
-A precompiled file named `dashboarddataprocessor-0.3.0.0.jar` can be found in the project target
+A precompiled file named `dashboarddataprocessor-0.5.0.0.jar` can be found in the project target
 directory. Be aware that before you can access the .jar file, you have to successfully build the
 project following one of the before mentioned approaches of 'Install and run via script' or 'Install
 and run manually'.
@@ -253,12 +265,35 @@ and run manually'.
 Execute this file (or the precompiled file accordingly):
 
 ```
-java -jar target/dashboarddataprocessor-0.3.0.0.jar
+java -jar target/dashboarddataprocessor-0.5.0.0.jar
 ```
 
 Note that the settings must be adjusted in the .yaml file inside the packed .jar archive. This can
 be done by changing the file inside the archive or moving a new settings file to this location
 inside the archive, it is not necessary to recompile the code for changes to take effect.
+
+**Executing a docker container**
+
+We provided files for using DDP with docker. There is a `build-docker.sh`-script you can execute to
+build DDP on local Server.
+The script will use the file `Dockerfile` in same directory to create the docker container. It is
+needed to have the `dashboarddataprocessor-0.5.0.jar` and the `application.yaml` you want to use on
+the right place. By default, the created jar by `build.sh`-script in the target-folder is used and a
+copy of the `application.yaml` in the dashboarddataprocessor-folder. You can adapt the used files by
+editing following lines in `Dockerfile`.
+
+```
+COPY dashboarddataprocessor/target/dashboarddataprocessor-0.5.0.jar /dashboarddataprocessor/dashboard-data-processor.jar
+COPY dashboarddataprocessor/application.yaml /dashboarddataprocessor
+```
+
+After the script has been finished you can use the created container locally. Besides this the
+file `DDP-V0.5.0.tar` is created, which contains the whole software. You can put it to any server
+you want to use for DDP. To deploy it you can use ansible-script `deploy-docker.yaml` which also
+handles whole serversetup.
+
+There is a `docker-compose.yml` provided as well, with which the deployed version can be started or
+stopped via docker-compose.
 
 ## Authentication FHIR Server
 
@@ -327,19 +362,12 @@ It often happens that new entries or changes here have a big impact on the curre
 Please also note that when upgrading, the code of all 3 projects (`dashboardataprocessor`
 , `dashboardlogic` and `utilities`) must be downloaded and installed.
 
-# Not yet supported data items
+# <a name="not-supported-items"></a>Not yet supported data items
 
-The following data items (and sub items) are not currently generated by the Processor:
-
-- cumulative.immunestatus.*
-- timeline.immunestatus.*
+The current state of which items can be supported and generated by the DDP can be
+found [here](./data-items-support.md).
 
 # Outlook
-
-In addition to support for all data items included in the dataset specification, it is planned to
-provide a FHIR test dataset in a timely manner. On the one hand, a dataset with sample resources
-containing all required attributes is to be created. And on the other hand it is planned to deliver
-a complete import script for out-of-the-box filling of a FHIR server with a complete test data set.
 
 The number of parameterizable settings can of course be extended as desired (for example, if the
 local FHIR resources have special characteristics). If there should be wishes in this regard, please
@@ -381,7 +409,7 @@ If you discover that the Java VM has too little RAM available (OutOfMemoryError:
 you can try increasing the maximum heap size. For example, in this way:
 
 ```
-java -jar -xMx 8G  target/dashboarddataprocessor-0.3.0.0.jar
+java -jar -xMx 8G  target/dashboarddataprocessor-0.5.0.0.jar
 ```
 
 **Connection to the FHIR server failed: 431 Request Header Fields Too Large**

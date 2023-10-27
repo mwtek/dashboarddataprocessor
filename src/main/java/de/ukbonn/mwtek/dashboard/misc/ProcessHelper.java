@@ -24,6 +24,7 @@ import de.ukbonn.mwtek.dashboard.CoronaDashboardApplication;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient;
+import java.util.Collection;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.ResourceType;
@@ -43,7 +44,8 @@ public class ProcessHelper {
    * "Subject" attribute)?
    *
    * @param patientIds   A set of {@link UkbPatient#getPatientId() patient ids}.
-   * @param resourceType The fhir resource type of the context, e.g. {@link ResourceType#Procedure}.
+   * @param resourceType The fhir resource type of the context, e.g.
+   *                     {@link ResourceType#Procedure}.
    * @return <code>True</code>, if patient ids could be determined.
    */
   public static boolean patientIdsCouldBeFound(Set<?> patientIds, ResourceType resourceType) {
@@ -62,10 +64,12 @@ public class ProcessHelper {
    * attribute)?
    *
    * @param encounterIds A set of {@link UkbEncounter#getCaseId() case ids}.
-   * @param resourceType The fhir resource type of the context, e.g. {@link ResourceType#Observation}.
+   * @param resourceType The fhir resource type of the context, e.g.
+   *                     {@link ResourceType#Observation}.
    * @return <code>True</code>, if encounter ids could be determined.
    */
-  public static boolean encounterIdsCouldBeFound(Set<?> encounterIds, ResourceType resourceType) {
+  public static boolean encounterIdsCouldBeFound(Collection<?> encounterIds,
+      ResourceType resourceType) {
     boolean encounterIdsCouldBeFound = encounterIds != null && encounterIds.size() > 0;
     // If the set is empty after the observation and condition queries have run, most of the data items can no longer be filled.
     if (!encounterIdsCouldBeFound) {
@@ -80,8 +84,8 @@ public class ProcessHelper {
    * Could a reference to the location be found in at least one FHIR encounter resource?
    *
    * @param locationIds  A set of {@link UkbLocation#getId() location ids}.
-   * @param resourceType The fhir resource type of the context, which will mainly be {@link
-   *                     ResourceType#Location} here.
+   * @param resourceType The fhir resource type of the context, which will mainly be
+   *                     {@link ResourceType#Location} here.
    * @return <code>True</code>, if location ids could be determined.
    */
   public static boolean locationIdsCouldBeFound(Set<?> locationIds, ResourceType resourceType) {

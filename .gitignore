@@ -215,3 +215,6 @@ dashboarddataprocessor/
 currentTreatmentlevelExport/
 *.log
 *.gz
+*.0
+*.csv
+*.7z
