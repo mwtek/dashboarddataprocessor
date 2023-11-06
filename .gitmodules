@@ -1,0 +1,6 @@
+[submodule "utilities"]
+	path = utilities
+	url = https://www.github.com/mwtek/utilities.git
+[submodule "dashboardlogic"]
+	path = dashboardlogic
+	url = https://www.github.com/mwtek/dashboardlogic.git
