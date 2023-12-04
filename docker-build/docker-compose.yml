@@ -1,0 +1,25 @@
+version: '3.4'
+
+# you have to run "docker-compose up -d" outside of dashboarddataprocessor-repository-folder
+# TODO: edit path for Dockerfile - services.dashboard-data-processor.build.dockerfile
+# TODO: edit path for Dockerfile - services.dashboard-data-processor.volumes.source
+
+services:
+  dashboard-data-processor:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: dashboard-data-processor
+    restart: always
+    ports:
+      - '9091:9091'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "20"
+    volumes:
+      - type: bind
+        source: ./dashboarddataprocessor/application.yaml
+        target: /dashboarddataprocessor/application.yaml
+        read_only: true

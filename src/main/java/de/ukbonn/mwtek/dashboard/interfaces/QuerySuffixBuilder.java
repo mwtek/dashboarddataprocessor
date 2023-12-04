@@ -18,7 +18,9 @@
 package de.ukbonn.mwtek.dashboard.interfaces;
 
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
+import de.ukbonn.mwtek.dashboard.services.AcuwaveDataRetrievalService;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Building the templates of the individual REST requests to the Acuwaveles server.
@@ -92,5 +94,25 @@ public interface QuerySuffixBuilder {
    */
   String getLocations(AbstractDataRetrievalService dataRetrievalService,
       List<?> locationIdList);
+
+
+  String getIcuEncounters(AbstractDataRetrievalService dataRetrievalService, Integer calendarYear);
+
+  public String getIcuEpisodes(AbstractDataRetrievalService abstractRestConfiguration,
+      List<String> encounterIdList);
+
+  String getUkbRenalReplacementObservations(
+      AbstractDataRetrievalService abstractRestConfiguration,
+      List<String> encounterIdList, Set<Integer> orbisCodes);
+
+  String getUkbRenalReplacementBodyWeight(AcuwaveDataRetrievalService acuwaveDataRetrievalService,
+      List<String> encounterIdSublist, DataSourceType dataSourceType);
+
+  String getUkbRenalReplacementStart(AcuwaveDataRetrievalService acuwaveDataRetrievalService,
+      List<String> encounterIdSublist, DataSourceType dataSourceType);
+
+  String getUkbRenalReplacementUrineOutput(AcuwaveDataRetrievalService acuwaveDataRetrievalService,
+      List<String> encounterIdSublist, DataSourceType dataSourceType);
+
 }
 

@@ -3,6 +3,7 @@ provider:
   author: Universitätsklinikum Bonn, Stabsstelle Medizinisch-Wissenschaftliche Technologieentwicklung und -koordination, Datenintegrationszentrum, Venusberg-Campus 1, 53127 Bonn
 
 global:
+  ## Adding data items that contain the case numbers and show the composition of the aggregated numbers
   debug: false
   ## The type of the server that is used for data retrieval whether its FHIR (any fhir server) or ACUWAVE
   server-type: FHIR
@@ -20,6 +21,11 @@ global:
     procedure:
       ecmo: 265764009,341939001,127788007,233572003,302497006,233586004,233581009,182750009,714749008,233573008,233578004,233575001,233588003,233583007,233594006,72541002,233574002,786452006,786451004,786453001,233579007,233580005,708932005,427053002,57274006,233577009,233576000,11932001,698074000,233589006,233590002,708933000,233587008,708930002,233584001,233585000,715743002,233582002,708934006,14130001000004100,182749009,438839005,83794005,77257005,448955002,20720000,233564000,233565004,225067007,19647005
       ventilation: 26763009,243147009,26763009,243141005,11140008,428311008,243160003,182687005,286812008,33050008,45851008,55089006,8948006,45851008,229306004,243180002,243161004,243164007,182687005,243151006,59427005,286812008,47545007,243142003,37113006,243157005,243170001,371908008,243163001,243162006,243167000,243166009,243169002,243168005,243150007,243156001,243148004,243149007,243154003,243155002,243153009,243152004,286813003,408852001,408853006,286813003,448442005,405609003,66852000,4764004,243143008,448134000,229308003,34281000175105,34291000175108,243144002,229312009,425447009,243140006,229313004,425696007,243184006,74596007,243181003,243183000,243182005,52729008,76777009,38282001,773454006,281508008,276737004,276732005,243159008,243158000,243172009,243171002,82433009,447837008,870392006,243146000,429253002,371907003,398077001,182714002,243136002,315041000,426990007,304577004,870533002,71786000
+    prediction-models:
+      ukb-renal-replacement-procedures:
+        observations: 2160-0, 32693-4, 3091-6, 9187-6
+  ## If only predictive models are to be calculated, the generation of the covid data can be excluded
+  skip-base-data-generation: false
 fhir:
   server:
     ## The authentication method, one of NONE, SSL or BASIC (default)
@@ -98,7 +104,7 @@ spring:
 ## Should a file be generated with the case/encounter ids of active cases separated by treatment level?
 # caseid-file-generation: true
 # caseid-file-directory: C:\currentTreatmentlevelExport
-# caseid-file-basename: Fallnummern_stationäre_C19_Patienten
+# caseid-file-basename: CaseIdsByTreatmentlevel
 
 #acuwave-server:
 # rest-url: http://127.0.0.1/data/
@@ -116,7 +122,11 @@ spring:
 ## Should procedures also be queried for specific non-ICU wards? If yes, specify the orbis internal OEBENEID here.
 # filter-procedure-retrieval-additional-wards: 10170
 ## Batch size of the parallelized partial ACUWAVE searches
-# batchsize: 200
+# batchsize: 200 
+# prediction-model-ukb-observation-orbis-codes:
+#   creatinine: 10143,131,132,17342,17360
+#   lactate: 189,6037,17197
+#   urea: 133,10142,17343,17361,17437
 
 ## Logging
 #logging:
@@ -132,6 +142,10 @@ spring:
 ## Source of voc/voi variants: https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Virologische_Basisdaten_Varianten_Nomenklatur.html
 #variants:
 ## variants of concern that aren't supported by the dashboard yet
-# other-voc:
+#  other-voc:
 ## variants of interest
-# non-voc: Lambda,My,Epsilon,Zeta,Eta,Theta,Iota,Kappa
+#  non-voc: Lambda,My,Epsilon,Zeta,Eta,Theta,Iota,Kappa
+
+## Activation of running the prediction models. (time and resource exhausting)
+#prediction-models:
+#  ukb-renal-replacement-procedures: true

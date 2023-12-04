@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  dashboard-data-processor:
+    image: dashboard-data-processor:0.5.0-alpha1
+    container_name: dashboard-data-processor
+    restart: always
+    ports:
+      - '9091:9091'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "20"

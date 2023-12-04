@@ -18,21 +18,37 @@
 
 package de.ukbonn.mwtek.dashboard.misc;
 
+import static de.ukbonn.mwtek.dashboardlogic.tools.EncounterFilter.isCurrentlyOnIcu;
 import static de.ukbonn.mwtek.utilities.fhir.misc.Converter.extractReferenceId;
 
 import de.ukbonn.mwtek.dashboard.CoronaDashboardApplication;
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
+import de.ukbonn.mwtek.dashboard.exceptions.SearchException;
+import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
+import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
+import de.ukbonn.mwtek.dashboardlogic.tools.EncounterFilter;
+import de.ukbonn.mwtek.dashboardlogic.tools.LocationFilter;
+import de.ukbonn.mwtek.utilities.fhir.misc.Converter;
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Condition;
+import org.hl7.fhir.r4.model.Element;
 import org.hl7.fhir.r4.model.Encounter;
+import org.hl7.fhir.r4.model.Encounter.EncounterLocationComponent;
+import org.hl7.fhir.r4.model.Identifier.IdentifierUse;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,8 +62,8 @@ public class ResourceHandler {
   static Logger logger = LoggerFactory.getLogger(CoronaDashboardApplication.class);
 
   /**
-   * Reads the Fhir bundle, adds all entries of the Observation type to a list and adds the {@link
-   * Patient patient} ids and {@link Encounter encounter} ids to a given set.
+   * Reads the Fhir bundle, adds all entries of the Observation type to a list and adds the
+   * {@link Patient patient} ids and {@link Encounter encounter} ids to a given set.
    *
    * @param bundleResponse   A FHIR response bundle that contains {@link Observation} resources
    * @param listObservations List with FHIR-Observations in which the entries from the bundle are to
@@ -71,8 +87,9 @@ public class ResourceHandler {
   }
 
   /**
-   * Class for reading patient and case numbers from {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation}
-   * resources and filling global lists with them.
+   * Class for reading patient and case numbers from
+   * {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation} resources and filling global
+   * lists with them.
    *
    * @param obs                The {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation}
    *                           resource to be read.
@@ -105,8 +122,9 @@ public class ResourceHandler {
   }
 
   /**
-   * Class for reading patient and case numbers from {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition}
-   * resources and filling global lists with them.
+   * Class for reading patient and case numbers from
+   * {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition} resources and filling global
+   * lists with them.
    *
    * @param cond               The {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition}
    *                           resource to be read.
@@ -139,8 +157,8 @@ public class ResourceHandler {
   }
 
   /**
-   * Reads the Fhir bundle, adds all entries of the Condition type to a list and adds the {@link
-   * Patient patient} ids and {@link Encounter encounter} ids to a given set.
+   * Reads the Fhir bundle, adds all entries of the Condition type to a list and adds the
+   * {@link Patient patient} ids and {@link Encounter encounter} ids to a given set.
    *
    * @param currentBundle      A FHIR response bundle that contains {@link Observation} resources.
    * @param listConditions     List with FHIR-{@link Condition conditions} in which the entries from
@@ -165,13 +183,13 @@ public class ResourceHandler {
   /**
    * Storing of the {@link Condition} and {@link Encounter} resources in the submitted lists.
    *
-   * @param currentBundle  A FHIR response bundle that contains {@link Observation} and {@link
-   *                       Encounter} resources.
+   * @param currentBundle  A FHIR response bundle that contains {@link Observation} and
+   *                       {@link Encounter} resources.
    * @param listConditions List with FHIR-{@link Condition conditions} in which the entries from the
    *                       bundle are to be stored.
    * @param listEncounters List with FHIR-{@link Encounter conditions} in which the entries from the
-   *                       bundle are to be stored and that are referencing on the {@link Condition
-   *                       conditions}.
+   *                       bundle are to be stored and that are referencing on the
+   *                       {@link Condition conditions}.
    * @param serverType     The connected {@link ServerTypeEnum server type} that delivers the fhir
    *                       resources. At the moment just {@link ServerTypeEnum#FHIR} are supported.
    */
@@ -193,8 +211,8 @@ public class ResourceHandler {
    * @param listConditions     List with FHIR-{@link Condition conditions} in which the entries from
    *                           the bundle are to be stored.
    * @param listEncounters     List with FHIR-{@link Encounter conditions} in which the entries from
-   *                           the bundle are to be stored and that are referencing on the {@link
-   *                           Condition conditions}.
+   *                           the bundle are to be stored and that are referencing on the
+   *                           {@link Condition conditions}.
    * @param outputPatientIds   List of ids of the {@link Patient} resource to be extended by entries
    *                           from the Observation resource.
    * @param outputEncounterIds List of ids of the {@link Encounter} resource to be extended by
@@ -236,5 +254,49 @@ public class ResourceHandler {
         });
       }
     });
+  }
+
+
+  public static List<CoreBaseDataItem> extractCoreBaseDataOfFacilityEncounters(
+      AbstractDataRetrievalService dataRetrievalService) throws SearchException {
+
+    Set<CoreBaseDataItem> coreBaseDataItems = ConcurrentHashMap.newKeySet();
+    Set<CoreBaseDataItem> icuEpisodes = ConcurrentHashMap.newKeySet();
+    // Just the top level resources are needed
+    List<UkbEncounter> facilityContacts = ((List<UkbEncounter>) Converter.convert(
+        dataRetrievalService.getIcuEncounters())).parallelStream()
+        .filter(EncounterFilter::isFacilityContact).toList();
+
+    // To detect cases that are currently in ICU, we need to find the active transfers and check for ICU status.
+    Set<String> locationIds = facilityContacts.stream()
+        .flatMap(x -> x.getLocation().stream()).collect(Collectors.toSet()).stream()
+        .map(EncounterLocationComponent::getLocation).filter(Element::hasId).map(Element::getIdBase)
+        .collect(
+            Collectors.toSet());
+
+    // Initialize a list with all location ids found
+    dataRetrievalService.getLocationIds().addAll(locationIds);
+
+    // Reduce the location ids to the icu wards.
+    List<String> icuWardIds = ((List<UkbLocation>) Converter.convert(
+        dataRetrievalService.getLocations())).stream().filter(x -> !x.getType().isEmpty())
+        .filter(LocationFilter::isLocationWard).filter(LocationFilter::isLocationIcu).map(
+            Resource::getIdBase)
+        .toList();
+
+    facilityContacts.parallelStream().forEach(x -> {
+      // The main key is the local case id, found in the identifier.
+      // Just add an item if its found.
+      if (x.hasIdentifier()) {
+        // Set value = 1.0 if the encounter is currently on an icu location
+        x.getIdentifier().stream()
+            .filter(y -> y.hasUse() && y.getUse() == IdentifierUse.OFFICIAL).findFirst().ifPresent(
+                identifier -> coreBaseDataItems.add(
+                    new CoreBaseDataItem(identifier.getValue(), null,
+                        isCurrentlyOnIcu(x, icuWardIds) ? 1.0 : 0.0, x.getPeriod()
+                        .getStart(), x.getPeriod().getEnd(), x.getId())));
+      }
+    });
+    return new ArrayList<>(coreBaseDataItems);
   }
 }

@@ -28,7 +28,7 @@ import static de.ukbonn.mwtek.dashboard.examples.PatientExampleData.getProcedure
 import de.ukbonn.mwtek.dashboard.examples.InputCodeSettingsExampleData;
 import de.ukbonn.mwtek.dashboardlogic.CoronaDataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.models.CoronaDataItem;
-import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -41,7 +41,7 @@ public class CoronaResultFunctionalityTests {
     CoronaDataItemGenerator dataItemGenerator = new CoronaDataItemGenerator(getConditions(),
         getObservations(), getPatients(), getEncounters(), getProcedures(), getLocations());
 
-    ArrayList<CoronaDataItem> resultData = dataItemGenerator.getDataItems(null, false, null,
+    List<CoronaDataItem> resultData = dataItemGenerator.getDataItems(null, false, null,
         InputCodeSettingsExampleData.getExampleData());
 
     // resultData.forEach(x -> System.out.println(x.getData()));

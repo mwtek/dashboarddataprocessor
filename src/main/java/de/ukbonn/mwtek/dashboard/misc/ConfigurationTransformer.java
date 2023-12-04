@@ -1,5 +1,4 @@
 /*
- *
  *  Copyright (C) 2021 University Hospital Bonn - All Rights Reserved You may use, distribute and
  *  modify this code under the GPL 3 license. THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT
  *  PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR
@@ -13,9 +12,8 @@
  *  ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA
  *  OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE
  *  PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED
- *  OF THE POSSIBILITY OF SUCH DAMAGES. You should have received a copy of the GPL 3 license with *
+ *  OF THE POSSIBILITY OF SUCH DAMAGES. You should have received a copy of the GPL 3 license with
  *  this file. If not, visit http://www.gnu.de/documents/gpl-3.0.en.html
- *
  */
 
 package de.ukbonn.mwtek.dashboard.misc;
@@ -34,7 +32,7 @@ import java.util.List;
 public class ConfigurationTransformer {
 
   public static List<String> extractInputCode(GlobalConfiguration globalConfiguration,
-      CONFIGURATION_CONTEXT context) {
+      ConfigurationContext context) {
     switch (context) {
       case OBSERVATIONS_PCR -> {
         return commaSeparatedStringIntoList(globalConfiguration.getInputCodes()
@@ -58,6 +56,11 @@ public class ConfigurationTransformer {
         return commaSeparatedStringIntoList(globalConfiguration.getInputCodes()
             .getOrDefault("condition", "U07.1,U07.2"));
       }
+      case PREDICTION_MODEL_UKB_OBS_CODES -> {
+        return commaSeparatedStringIntoList(globalConfiguration.getInputCodes()
+            .getOrDefault("prediction-models.ukb-renal-replacement-procedures.observations",
+                "2160-0, 32693-4, 3091-6, 9187-6"));
+      }
       default -> {
         return null;
       }
@@ -68,8 +71,8 @@ public class ConfigurationTransformer {
    * Some parts of the local configuration require individual handling in the reading and evaluation
    * process.
    */
-  public enum CONFIGURATION_CONTEXT {
-    OBSERVATIONS_PCR, OBSERVATIONS_VARIANTS, PROCEDURES_VENTILATION, PROCEDURES_ECMO, CONDITIONS
+  public enum ConfigurationContext {
+    OBSERVATIONS_PCR, OBSERVATIONS_VARIANTS, PROCEDURES_VENTILATION, PROCEDURES_ECMO, CONDITIONS, PREDICTION_MODEL_UKB_OBS_CODES
   }
 
   public static InputCodeSettings extractInputCodeSettings(
