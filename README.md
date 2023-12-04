@@ -300,7 +300,8 @@ stopped via docker-compose.
 
 We provided files for using **DDP with docker as local build**. There is a `docker-build`-folder
 where you can run `docker-compose up -d` to build and run DDP on local server.
-For usage, you have to copy both files from folder to the same folder level as the three repository-folder.
+For usage, you have to copy both files from folder to the same folder level as the three
+repository-folder.
 Change all lines in both files which are marked as TODO before executing `docker-compose up -d`.
 
 ## Authentication FHIR Server
@@ -441,7 +442,7 @@ Solution: Caching the data before retrieving it can be helpful in the short term
 via `?_summary=count`) on the corresponding resource. Otherwise, this timeout value would have to be
 increased (configuration varies depending on the FHIR server).
 
-**Contributors**
+# Contributors
 
 Thanks to everyone who contributed to this project:
 
