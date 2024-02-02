@@ -23,8 +23,8 @@ by [NUM RDP](https://www.netzwerk-universitaetsmedizin.de/projekte/num-rdp) (FKZ
 01KX2121).
 
 For information regarding active participation in the dashboard endeavour, please contact us at
-diz@ukbonn.de. For bug reports, improvement suggestions, and related technical conversations, please
-use the usual GitHub mechanisms.
+ddp-support@ukbonn.de. For bug reports, improvement suggestions, and related technical
+conversations, please use the usual GitHub mechanisms.
 
 MII core dataset models are maintained
 on [ArtDecor](https://art-decor.org/art-decor/decor-project--mide-). The current MII core dataset
@@ -50,7 +50,7 @@ and a short description.
 <td>A documentation of which data items are filled with which FHIR resources and attributes according to which logic.</td>
 </tr>
 <tr>
-<td><a href="./readme.md">Installation/Configuration guide</a></td>
+<td><a href="./README.md">Installation/Configuration guide</a></td>
 <td>The installation and configuration instructions for this project</td>
 </tr>
 <tr>
@@ -387,6 +387,8 @@ detect ICU stays instead of the location information, as this is likely to be se
 kds compliant by default. For the location, the KDS module is currently under construction and no
 implementation guide exists yet.
 
+Presumably there will also soon be an option to switch FHIR search requests from GET to POST.
+
 # Troubleshooting / Logging
 
 If there are many problems in data retrieval, it may be useful to extend logging. It is possible to
@@ -429,7 +431,8 @@ message (Request Header Fields Too Large).
 
 Solution: Reduction of the number of IDs given at the same time. This is controlled by
 the `batchsize` parameter in `application.yaml`. The default value is 500, with a value of 1000 the
-described behavior could be observed in our tests.
+described behavior could be observed in our tests on a hapi machine but really depends on the
+standard length of the IDs.
 
 **Operation outcome: Request timed out after x ms**
 

@@ -1,3 +1,36 @@
+# Release Notes - Version V0.5.0-alpha2
+
+02/Feb/24
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* Adding an output field that marks ddp generated files.
+
+</div>
+
+## Improvements
+
+<div style='margin-left:30px;'>
+
+* Update of some Spring Boot libraries due to security vulnerabilities.
+* Minor improvement of the documentation of the parameters in the yaml.
+
+</div> 
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* Cleaning up some Git artifacts.
+
+</div>
+
+## Bugs
+
+No bug fixes were part of this version.
+
 # Release Notes - Version V0.5.0-alpha1
 
 30/Nov/23

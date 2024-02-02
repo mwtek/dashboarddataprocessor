@@ -182,8 +182,10 @@ public class DataRetrievalController {
             benchMarkRun, dataRetrievalService, processTimer, globalConfiguration.getServerType());
 
         // Postprocessing
-        dataItems.addAll(RenalReplacementRiskDataGenerator.generateDataItems(
-            renalReplacementModelParameterSetMap));
+        if (renalReplacementModelParameterSetMap != null) {
+          dataItems.addAll(RenalReplacementRiskDataGenerator.generateDataItems(
+              renalReplacementModelParameterSetMap));
+        }
       }
 
       if (!skipBaseDataGeneration) {
@@ -201,7 +203,7 @@ public class DataRetrievalController {
         processTimer.stopLoggingTime(listUkbConditions);
 
         // If no conditions or observations were found, the following further data retrievals / calculation steps are irrelevant
-        if (listUkbObservations.size() > 0 || listUkbConditions.size() > 0) {
+        if (!listUkbObservations.isEmpty() || !listUkbConditions.isEmpty()) {
 
           // Retrieval of the Patient resources
           processTimer.startLoggingTime(ResourceType.Patient);
@@ -275,6 +277,7 @@ public class DataRetrievalController {
       result.put("provider", this.providerService.provConf.getName());
       result.put("corona_dashboard_dataset_version", "0.5.0");
       result.put("author", this.providerService.provConf.getAuthor());
+      result.put("file_generated_by", "ddp");
       result.put("exporttimestamp", DateTools.getCurrentUnixTime());
 
       byte[] resultBuffer = result.toString().getBytes(StandardCharsets.UTF_8);

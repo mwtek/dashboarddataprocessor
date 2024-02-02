@@ -43,7 +43,7 @@ fhir:
 
   ## Adjustment of FHIR search requests on the FHIR server
   search:
-    ## Batch size of the parallelized partial FHIR searches
+    ## Batch size of the partial FHIR searches. If the length of the GET request URL is too long, this value must be reduced.
     batchsize: 500
     ## Maximum 'count' size per fhir search request (e.g. if querying encounter resources by patient IDs). This value should never be reached (default: 1000000).
     # max-count-size: 1000000

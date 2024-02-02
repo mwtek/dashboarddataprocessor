@@ -1,19 +1,19 @@
 /*
- *  Copyright (C) 2021 University Hospital Bonn - All Rights Reserved You may use, distribute and
- *  modify this code under the GPL 3 license. THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT
- *  PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR
- *  OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
- *  IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- *  A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH
- *  YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR
- *  OR CORRECTION. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY
- *  COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE,
- *  BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES
- *  ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA
- *  OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE
- *  PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED
- *  OF THE POSSIBILITY OF SUCH DAMAGES. You should have received a copy of the GPL 3 license with
- *  this file. If not, visit http://www.gnu.de/documents/gpl-3.0.en.html
+ * Copyright (C) 2021 University Hospital Bonn - All Rights Reserved You may use, distribute and
+ * modify this code under the GPL 3 license. THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT
+ * PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR
+ * OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH
+ * YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR
+ * OR CORRECTION. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY
+ * COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE,
+ * BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA
+ * OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE
+ * PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGES. You should have received a copy of the GPL 3 license with *
+ * this file. If not, visit http://www.gnu.de/documents/gpl-3.0.en.html
  */
 package de.ukbonn.mwtek.dashboard.controller;
 
@@ -58,10 +58,8 @@ import org.hl7.fhir.r4.model.ResourceType;
 public class UkbModelController {
 
   public static Map<RenalReplacementRiskParameters, List<CoreBaseDataItem>> generateUkbModelData(
-      boolean benchMarkRun,
-      AbstractDataRetrievalService dataRetrievalService, ProcessTimer processTimer,
-      ServerTypeEnum serverTypeEnum)
-      throws SearchException {
+      boolean benchMarkRun, AbstractDataRetrievalService dataRetrievalService,
+      ProcessTimer processTimer, ServerTypeEnum serverTypeEnum) throws SearchException {
     AcuwaveSearchConfiguration acuwaveSearchConfiguration;
 
     // Initialize output map
@@ -97,6 +95,10 @@ public class UkbModelController {
     Set<String> casesWithEpisodes = renalReplacementModelParameterSetMap.get(EPISODES).stream()
         .map(CoreBaseDataItem::hisCaseId).collect(
             Collectors.toSet());
+    if (casesWithEpisodes.isEmpty()) {
+      log.error("Unable to find any episode data. Skipping the generation of ukb model data.");
+      return null;
+    }
     icuLocalCaseIds.retainAll(casesWithEpisodes);
     log.debug("Number of icu case ids after episode filtering: " + icuLocalCaseIds.size());
 
@@ -119,11 +121,11 @@ public class UkbModelController {
     processTimer.stopLoggingTime(icuLocalCaseIds);
 
     log.debug("The amount of ALL cases is: " + icuLocalCaseIds.size());
-    if (recentCaseIds.size() > 0) {
+    if (!recentCaseIds.isEmpty()) {
       log.debug("The amount of current cases is: " + recentCaseIds.size() + " [example case: "
           + recentCaseIds.get(0) + " ]");
     }
-    if (icuLocalCaseIdsWithoutRecents.size() > 0) {
+    if (!icuLocalCaseIdsWithoutRecents.isEmpty()) {
       log.debug("The amount of ALL cases without current cases is: "
           + icuLocalCaseIdsWithoutRecents.size()
           + " [example case: "
@@ -131,7 +133,6 @@ public class UkbModelController {
     }
 
     // Retrieval of the ICU EPISODE information (including internal case ids) which is needed for the detection of deltas in periods of vital signs
-
     // Retrieval of the observations codes via orbis internal code and filtering on the forced loinc code right after, since there could be ones with another unit.
     processTimer.startLoggingTime(ResourceType.Observation, "lab value: lactate");
     renalReplacementModelParameterSetMap.put(LACTATE,
@@ -150,16 +151,9 @@ public class UkbModelController {
         dataRetrievalService.getUkbRenalReplacementObservations(icuLocalCaseIds,
             acuwaveSearchConfiguration.getPredictionModelUkbObservationOrbisUreaCodes()));
     processTimer.stopLoggingTime(renalReplacementModelParameterSetMap.get(UREA));
-//    renalReplacementModelParameterSetMap.get(LACTATE).stream()
-//        .filter(x -> x.hisCaseId().equals("20775457")).sorted()
-//        .forEach(x -> System.out.println(x.dateFrom() + " + " + x.value()));
     // Removal of all values that have no intersection with an icu episode of care of the given case
     renalReplacementModelParameterSetMap = removeNonIcuLabValues(
         renalReplacementModelParameterSetMap);
-
-//    renalReplacementModelParameterSetMap.get(LACTATE).stream()
-//        .filter(x -> x.hisCaseId().equals("20775457"))
-//        .forEach(x -> System.out.println(x.dateFrom() + " + " + x.value()));
 
     Set<String> caseIdsWithAllLabValues = getCaseIdsWithAllLabValues(
         renalReplacementModelParameterSetMap);
@@ -239,11 +233,9 @@ public class UkbModelController {
           bodyWeightRecent, false);
     }
 
-    // TODO filtering missing body weights on filteredRecentCaseIds aswell
-
     if (!benchMarkRun) {
       log.debug(
-          "Size caseid list before filtering of the cases without body weight: "
+          "Size caseIds before filtering of the cases without body weight: "
               + filteredCaseIds.size());
       Map<RenalReplacementRiskParameters, List<CoreBaseDataItem>> finalRenalReplacementModelParameterSetMap = renalReplacementModelParameterSetMap;
       filteredCaseIds.removeAll(filteredCaseIds.parallelStream()
@@ -251,7 +243,7 @@ public class UkbModelController {
               CoreBaseDataItem::hisCaseId).collect(Collectors.toSet()).contains(x))
           .collect(Collectors.toSet()));
       log.debug(
-          "Size caseid list after filtering of the cases without body weight: "
+          "Size caseIds after filtering of the cases without body weight: "
               + filteredCaseIds.size());
 //        Set<String> caseIdsObservations = icuLocalCaseIds.parallelStream()
 //            .filter(x -> renalReplacementModelParameterSetMap.get(LACTATE).stream().map(
@@ -343,14 +335,11 @@ public class UkbModelController {
     List<CoreBaseDataItem> icuEpisodes = renalReplacementModelParameterSetMap.get(EPISODES);
 
     Map<String, List<Interval>> mapCaseIdEpisodes = new HashMap<>();
-
     for (CoreBaseDataItem item : icuEpisodes) {
       String hisCaseId = item.hisCaseId();
       Date dateFrom = item.dateFrom();
       // If the upper date is null it's an ongoing episode
       Date dateTo = item.dateTo() != null ? item.dateTo() : DateTools.getCurrentDateTime();
-//      System.out.println("dateFrom " + dateFrom + "dateTo " + dateTo);
-
       Interval interval = new Interval(dateFrom, dateTo);
 
       mapCaseIdEpisodes.compute(hisCaseId, (key, existingIntervals) -> {
@@ -364,7 +353,6 @@ public class UkbModelController {
         }
       });
     }
-
     renalReplacementModelParameterSetMap.put(CREATININE,
         createMapWithIntersectionsOnly(mapCaseIdEpisodes,
             renalReplacementModelParameterSetMap.get(CREATININE), CREATININE.name()));
@@ -464,7 +452,7 @@ public class UkbModelController {
       List<CoreBaseDataItem> clappRecentCases, boolean resourcesComparable) {
 
     // Some outputs are just useful if the "recent" logic is not in use like comparing CLAPP-ALL with PDMS data
-    boolean noRecentUsage = clappRecentCases == null || clappRecentCases.size() == 0;
+    boolean noRecentUsage = clappRecentCases == null || clappRecentCases.isEmpty();
 
     // Fill a list to get case id information once
     Map<String, String> resourceIdsByCaseId = new ConcurrentHashMap<>();
@@ -532,11 +520,12 @@ public class UkbModelController {
       }
     }
 
-    Set<String> caseIdsPdmsAndClappRecentByType = new HashSet<>();
-    caseIdsPdmsAndClappRecentByType.addAll(caseIdsPdmsByType);
-    caseIdsPdmsAndClappRecentByType.addAll(
-        clappRecentCases.parallelStream()
-            .map(CoreBaseDataItem::hisCaseId).collect(Collectors.toSet()));
+    Set<String> caseIdsPdmsAndClappRecentByType = new HashSet<>(caseIdsPdmsByType);
+    if (clappRecentCases != null) {
+      caseIdsPdmsAndClappRecentByType.addAll(
+          clappRecentCases.parallelStream()
+              .map(CoreBaseDataItem::hisCaseId).collect(Collectors.toSet()));
+    }
     Set<String> caseIdsNotInBothByTypePlusRecents = new HashSet<>(
         caseIdsPdmsAndClappRecentByType);
     caseIdsClappAllByType.removeAll(caseIdsNotInBothByTypePlusRecents);
@@ -552,10 +541,11 @@ public class UkbModelController {
 
     // RESOURCE LEVEL
     if (resourcesComparable) {
-      Set<String> resourceIdsPdmsAndClappRecentByType = new HashSet<>();
-      resourceIdsPdmsAndClappRecentByType.addAll(resourceIdsPdmsByType);
-      resourceIdsPdmsAndClappRecentByType.addAll(clappRecentCases.parallelStream()
-          .map(CoreBaseDataItem::debugKey).collect(Collectors.toSet()));
+      Set<String> resourceIdsPdmsAndClappRecentByType = new HashSet<>(resourceIdsPdmsByType);
+      if (clappRecentCases != null) {
+        resourceIdsPdmsAndClappRecentByType.addAll(clappRecentCases.parallelStream()
+            .map(CoreBaseDataItem::debugKey).collect(Collectors.toSet()));
+      }
       Set<String> resourceIdsNotInBothByTypePlusRecents = new HashSet<>(
           resourceIdsPdmsAndClappRecentByType);
       Set<String> resourceIdsClappAllByTypeClone = new HashSet<>(resourceIdsClappAllByType);
