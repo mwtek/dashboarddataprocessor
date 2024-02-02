@@ -30,9 +30,9 @@ fi
 name="dashboard-data-processor"
 
 echo -e "Build $name"
-docker build --quiet -f Dockerfile -t dashboard-data-processor:0.5.0-alpha1 .
+docker build --quiet -f Dockerfile -t dashboard-data-processor:0.5.0-alpha2 .
 
 echo -e "Save $name"
-docker save dashboard-data-processor:0.5.0-alpha1 -o DDP-V0.5.0-alpha1.tar
+docker save dashboard-data-processor:0.5.0-alpha2 -o DDP-V0.5.0-alpha2.tar
 
 docker system df -v
