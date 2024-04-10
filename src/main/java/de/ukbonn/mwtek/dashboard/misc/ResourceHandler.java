@@ -21,7 +21,7 @@ package de.ukbonn.mwtek.dashboard.misc;
 import static de.ukbonn.mwtek.dashboardlogic.tools.EncounterFilter.isCurrentlyOnIcu;
 import static de.ukbonn.mwtek.utilities.fhir.misc.Converter.extractReferenceId;
 
-import de.ukbonn.mwtek.dashboard.CoronaDashboardApplication;
+import de.ukbonn.mwtek.dashboard.DashboardApplication;
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
 import de.ukbonn.mwtek.dashboard.exceptions.SearchException;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ResourceHandler {
 
-  static Logger logger = LoggerFactory.getLogger(CoronaDashboardApplication.class);
+  static Logger logger = LoggerFactory.getLogger(DashboardApplication.class);
 
   /**
    * Reads the Fhir bundle, adds all entries of the Observation type to a list and adds the
@@ -104,7 +104,8 @@ public class ResourceHandler {
       Set<String> outputEncounterIds, ServerTypeEnum serverType) {
     try {
       // fhir server usually store the references in the "resourceType/1234" format during import
-      // Until this referencing process (which may never occur), the acuwave server stores its business identifier in the tag 'identifier'
+      // Until this referencing process (which may never occur), the acuwave server stores its
+      // business identifier in the tag 'identifier'
       switch (serverType) {
         case FHIR -> {
           outputPatientIds.add(extractReferenceId(obs.getSubject()));
@@ -139,7 +140,8 @@ public class ResourceHandler {
       Set<String> outputEncounterIds, ServerTypeEnum serverType) {
     try {
       // fhir server usually store the references in the "resourceType/1234" format during import
-      // Until this referencing process (which may never occur), the acuwave server stores its business identifier in the tag 'identifier'
+      // Until this referencing process (which may never occur), the acuwave server stores its
+      // business identifier in the tag 'identifier'
       switch (serverType) {
         case FHIR -> {
           outputPatientIds.add(extractReferenceId(cond.getSubject()));
@@ -225,7 +227,8 @@ public class ResourceHandler {
       List<Condition> listConditions, List<Encounter> listEncounters, Set<String> outputPatientIds,
       Set<String> outputEncounterIds, ServerTypeEnum serverType) {
 
-    // To simplify the queries and for faster access, we store the primary key of the condition resource in a map and reference the latter.
+    // To simplify the queries and for faster access, we store the primary key of the condition
+    // resource in a map and reference the latter.
     Map<String, Condition> conditionMap = new HashMap<>();
     listConditions.forEach(cond -> {
       if (cond.getIdElement().hasIdPart()) {
@@ -233,7 +236,8 @@ public class ResourceHandler {
       }
     });
 
-    // Iterate over all encounter resources and set the encounter reference in all condition resources that handle covid diagnoses.
+    // Iterate over all encounter resources and set the encounter reference in all condition
+    // resources that handle covid diagnoses.
     listEncounters.forEach(enc -> {
       if (enc.hasDiagnosis()) {
         enc.getDiagnosis().forEach(diagComp -> {
@@ -267,7 +271,8 @@ public class ResourceHandler {
         dataRetrievalService.getIcuEncounters())).parallelStream()
         .filter(EncounterFilter::isFacilityContact).toList();
 
-    // To detect cases that are currently in ICU, we need to find the active transfers and check for ICU status.
+    // To detect cases that are currently in ICU, we need to find the active transfers and check
+    // for ICU status.
     Set<String> locationIds = facilityContacts.stream()
         .flatMap(x -> x.getLocation().stream()).collect(Collectors.toSet()).stream()
         .map(EncounterLocationComponent::getLocation).filter(Element::hasId).map(Element::getIdBase)

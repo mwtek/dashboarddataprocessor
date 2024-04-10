@@ -1,24 +1,27 @@
 /*
- *  Copyright (C) 2021 University Hospital Bonn - All Rights Reserved You may use, distribute and
- *  modify this code under the GPL 3 license. THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT
- *  PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR
- *  OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
- *  IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- *  A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH
- *  YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR
- *  OR CORRECTION. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY
- *  COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE,
- *  BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES
- *  ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA
- *  OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE
- *  PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED
- *  OF THE POSSIBILITY OF SUCH DAMAGES. You should have received a copy of the GPL 3 license with
- *  this file. If not, visit http://www.gnu.de/documents/gpl-3.0.en.html
+ * Copyright (C) 2021 University Hospital Bonn - All Rights Reserved You may use, distribute and
+ * modify this code under the GPL 3 license. THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT
+ * PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR
+ * OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH
+ * YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR
+ * OR CORRECTION. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY
+ * COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE,
+ * BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA
+ * OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE
+ * PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGES. You should have received a copy of the GPL 3 license with *
+ * this file. If not, visit http://www.gnu.de/documents/gpl-3.0.en.html
  */
 
 package de.ukbonn.mwtek.dashboard.examples;
 
-import de.ukbonn.mwtek.dashboardlogic.enums.CoronaFixedValues;
+import static de.ukbonn.mwtek.utilities.enums.TerminologySystems.LOINC;
+import static de.ukbonn.mwtek.utilities.enums.TerminologySystems.SNOMED;
+
+import de.ukbonn.mwtek.dashboardlogic.enums.DashboardLogicFixedValues;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
@@ -58,7 +61,7 @@ public class PatientExampleData {
 
     CodeableConcept codeableConceptCovidObs = new CodeableConcept();
     codeableConceptCovidObs.addCoding(
-        new Coding(CoronaFixedValues.LOINC_SYSTEM, "94306-8", ""));
+        new Coding(LOINC, "94306-8", ""));
     UkbObservation exampleResource = new UkbObservation(TOPLEVEL_RESOURCE_ID_P1,
         TOPLEVEL_RESOURCE_ID_P1,
         new Observation.ObservationStatusEnumFactory().fromType(
@@ -70,7 +73,7 @@ public class PatientExampleData {
     // Setting of a qualitative value of the observation
     exampleResource.setValue(
         new CodeableConcept().addCoding(
-            new Coding(CoronaFixedValues.SNOMED_SYSTEM, "10828004", "Positive")));
+            new Coding(SNOMED, "10828004", "Positive")));
 
     exampleResources.add(exampleResource);
 
@@ -86,7 +89,7 @@ public class PatientExampleData {
         new CodeableConcept().addCoding(
             new Coding("http://terminology.hl7.org/CodeSystem/condition-clinical", "active",
                 "active")), new CodeableConcept().addCoding(
-        new Coding(CoronaFixedValues.ICD_SYSTEM.getValue(), "U07.1", "COVID-19")),
+        new Coding(DashboardLogicFixedValues.ICD_SYSTEM.getValue(), "U07.1", "COVID-19")),
         new DateType(new Date()).getValue());
 
     exampleResource.setId(TOPLEVEL_RESOURCE_ID_P1);

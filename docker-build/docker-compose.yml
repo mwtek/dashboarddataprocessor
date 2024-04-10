@@ -1,8 +1,8 @@
 version: '3.4'
 
 # you have to run "docker-compose up -d" outside of dashboarddataprocessor-repository-folder
-# TODO: edit path for Dockerfile - services.dashboard-data-processor.build.dockerfile
-# TODO: edit path for Dockerfile - services.dashboard-data-processor.volumes.source
+# NOTE: edit path for Dockerfile - services.dashboard-data-processor.build.dockerfile
+# NOTE: edit path for Dockerfile - services.dashboard-data-processor.volumes.source
 
 services:
   dashboard-data-processor:

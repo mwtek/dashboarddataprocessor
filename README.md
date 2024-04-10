@@ -33,7 +33,7 @@ on [Simplifier](https://simplifier.net/organization/koordinationsstellemii/~proj
 
 ## Structure Overview
 
-The following table gives an overview over the documents used, as well as their corresponding links
+The following table gives an overview of the documents used, as well as their corresponding links
 and a short description.
 
 <table style="width:100%" border="1" >
@@ -42,7 +42,7 @@ and a short description.
 <th>Description</th>
 </tr>
 <tr>
-<td><a href="./files/Datensatzbeschreibung_COVID_dashboard_v0_5_0_20230110_released.pdf" target="_blank">JSON dataset description</a></td>
+<td><a href="./files/Datensatzbeschreibung_Dashboard_v0_5_2_20240305.pdf" target="_blank">JSON dataset description</a></td>
 <td>The dataset description of the resulting JSON format, including the description of the aggregated data items.</td> 
 </tr> 
 <tr>
@@ -68,7 +68,7 @@ found [here](#not-supported-items).
 
 ## License
 
-This project is released under the terms of the [GPL version 3](LICENSE.md).
+This project is released under the terms of [GPL version 3](LICENSE.md).
 
 ```
 This program is free software: you can redistribute it and/or modify
@@ -87,7 +87,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Requirements
 
-The code is platform independent and was tested on Linux and Windows environments.
+The code is platform-independent and was tested on Linux and Windows environments.
 
 The following software must be available to execute the program:
 
@@ -108,11 +108,12 @@ resources, 4 GB was the lower limit.
 In order for the data set to be generated completely and correctly, the following FHIR resource
 types are required:
 
-- Observation (Covid-19 laboratory codes, encoded in LOINC; results coded as <i>CodeableConcept</i>
+- Observation (Disease-context-related laboratory codes, encoded in LOINC; results coded as <i>
+  CodeableConcept</i>
   with codes from
   this <a href="https://simplifier.net/medizininformatikinitiative-modullabor/valuesetqualitativelaborergebnisse">
   MII value set</a>)
-- Condition (Covid-19 diagnosis code, encoded in ICD-10)
+- Condition (Covid-19/Influenza diagnosis codes, encoded in ICD-10)
 - Patient (Age/zip code/gender required)
 - Encounter (Required, among other things, for admission and discharge times/types, as well as ICU
   stays)
@@ -150,17 +151,17 @@ have always worked with the current working versions in the Simplifier. The risk
 changes will also affect the workflow in the Dashboard Processor is small, but not impossible. The
 following table provides an overview of which KDS profile versions were current at the time of
 release and for which compatibility has been adequately tested. In case of problems and obvious
-incompatibilities please email the developer or open an issue. It is tried to respond to the
+incompatibilities, please email the developer or open an issue. It is tried to respond to the
 constant innovations by new Dashboard Processor versions.
 
-| KDS Module                                                                                        | Profile(s)                                                                                                 | Minimum Version | Comments |
-|---------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|-----------------|----------|
-| [KDS Person](https://simplifier.net/medizininformatikinitiative-modulperson)                      | [Patient](https://simplifier.net/medizininformatikinitiative-modulperson/sdmiipersonpatient)               | 2.0.0-ballot2   |          |
-| [KDS Fall](https://simplifier.net/medizininformatikinitiative-modulfall)                          | [Encounter](https://simplifier.net/medizininformatikinitiative-modulfall/kontaktgesundheitseinrichtung)    | 1.0.1           |          |
-| [KDS Labor](https://simplifier.net/medizininformatikinitiative-modullabor)                        | [Observation](https://simplifier.net/medizininformatikinitiative-modullabor/observationlab)                | 1.0.6           |          |
-| [KDS Diagnose](https://simplifier.net/medizininformatikinitiative-moduldiagnosen)                 | [Condition](https://simplifier.net/medizininformatikinitiative-moduldiagnosen/diagnose)                    | 2.0.0-alpha3    |          |
-| [KDS ICU](https://simplifier.net/MedizininformatikInitiative-Modul-Intensivmedizin/~introduction) | [MII_Beatmung](https://simplifier.net/medizininformatikinitiative-modul-intensivmedizin/miibeatmung)       | 1.0             |          |
-| [KDS Strukturdaten](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten)        | [Location](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten/sd_mii_struktur_location) | 1.0             |          |
+| KDS Module                                                                                        | Profile(s)                                                                                                 | Minimum Version | Comments                                                                                                                                                                                                                                                                                                                                                                                         |
+|---------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [KDS Person](https://simplifier.net/medizininformatikinitiative-modulperson)                      | [Patient](https://simplifier.net/medizininformatikinitiative-modulperson/sdmiipersonpatient)               | 2024.0.0        |                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [KDS Fall](https://simplifier.net/medizininformatikinitiative-modulfall)                          | [Encounter](https://simplifier.net/medizininformatikinitiative-modulfall/kontaktgesundheitseinrichtung)    | 2024.0.0        | `Encounter.location` usage on `Versorgungsstellenkontakt` level is necessary for the usage of data items that are based on transfer history (e.g. `current.treatmentlevel`). These resources must have a linkage to the `Einrichtungskontakt` encounter, either via the `Encounter.identifier.Aufnahmenummer` or indirectly, recursively via `Encounter.partOf` (currently not yet implemented). | 
+| [KDS Labor](https://simplifier.net/medizininformatikinitiative-modullabor)                        | [Observation](https://simplifier.net/medizininformatikinitiative-modullabor/observationlab)                | 1.0.6           |                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [KDS Diagnose](https://simplifier.net/medizininformatikinitiative-moduldiagnosen)                 | [Condition](https://simplifier.net/medizininformatikinitiative-moduldiagnosen/diagnose)                    | 2024.0.0        |                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [KDS ICU](https://simplifier.net/MedizininformatikInitiative-Modul-Intensivmedizin/~introduction) | [MII_Beatmung](https://simplifier.net/medizininformatikinitiative-modul-intensivmedizin/miibeatmung)       | 2024.0.0        |                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [KDS Strukturdaten](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten)        | [Location](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten/sd_mii_struktur_location) | 1.0             |                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 ## Runtime Configuration
 
@@ -170,9 +171,15 @@ chapter 'Program execution'), a copy of this file must also be located in the ba
 
 The main adjustments that need to be made:
 
-- Adjustment of the local location information in the "provider" area, which are part of the output
+- Adjustment of the local location information in the "provider" area, which is part of the output
 - Adaptation of the FHIR server endpoint to the local endpoint including authentication
   configuration
+- Activation/Deactivation of the disease-context of which data items should be generated
+    - To activate the generation of influenza data, for example, you must
+      set `global.generate-influenza-data` to `true`.
+- Exclude all data items (`data-items.excludes`) for which it cannot be ensured that the results are
+  100% correct and complete, for instance because various basic data cannot yet be found in the FHIR
+  server.
 
 Optional adjustments:
 
@@ -185,7 +192,7 @@ The runtime configuration provides comments for all setup options.
 
 ## Program installation and execution
 
-The program is set up as a Maven project and can either be build manually or by executing the
+The program is set up as a Maven project and can either be built manually or by executing the
 "build.sh" script. To use this application, the two libraries "utilities" and "dashboardlogic"
 have to be cloned. It is also possible to run the program via a Docker container.
 
@@ -218,7 +225,7 @@ cd dashboarddataprocessor
 ./build.sh
 ```
 
-After installation the project can be run via:
+After installation, the project can be run via:
 
 ```
 mvn spring-boot:run
@@ -257,7 +264,7 @@ mvn spring-boot:run
 base folder and configured with the local settings. When the .JAR file is executed,
 the `application.yaml` is taken from the base directory by default at runtime.
 
-A precompiled file named `dashboarddataprocessor-0.5.0-alpha1.jar` can be found in the project
+A precompiled file named `dashboarddataprocessor-0.5.2-pre.jar` can be found in the project
 target directory. Be aware that before you can access the .jar file, you have to successfully build
 the project following one of the before mentioned approaches of 'Install and run via script' or '
 Install and run manually'.
@@ -265,7 +272,7 @@ Install and run manually'.
 Execute this file (or the precompiled file accordingly):
 
 ```
-java -jar target/dashboarddataprocessor-0.5.0-alpha1.jar
+java -jar target/dashboarddataprocessor-0.5.2-pre.jar
 ```
 
 Note that the settings must be adjusted in the .yaml file inside the packed .jar archive. This can
@@ -278,18 +285,20 @@ We provided files for **creating DDP-Image** and using it with docker. There is 
 -script in `docker-image`-folder you can execute to
 build DDP-Image on local Server.
 The script will use the file `Dockerfile` in same directory to create the docker container. It is
-needed to have the `dashboarddataprocessor-0.5.0.jar` and the `application.yaml` you want to use on
+needed to have the `dashboarddataprocessor-0.5.2-pre.jar` and the `application.yaml` you want to use
+on
 the right place. By default, the created jar by `build.sh`-script in the target-folder is used and a
 copy of the `application.yaml` in the dashboarddataprocessor-folder. You can adapt the used files by
 editing following lines in `Dockerfile`.
 
 ```
-COPY dashboarddataprocessor/target/dashboarddataprocessor-0.5.0.jar /dashboarddataprocessor/dashboard-data-processor.jar
+COPY dashboarddataprocessor/target/dashboarddataprocessor-0.5.2-pre.jar /dashboarddataprocessor/dashboard-data-processor.jar
 COPY dashboarddataprocessor/application.yaml /dashboarddataprocessor
 ```
 
-After the script has been finished you can use the created container locally. Besides this the
-file `DDP-V0.5.0.tar` is created, which contains the whole software. You can put it to any server
+After the script has been finished, you can use the created container locally. Besides this the
+file `DDP-V0.5.0-pre.tar` is created, which contains the whole software. You can put it to any
+server
 you want to use for DDP. To deploy it you can use ansible-script `deploy-docker.yaml` which also
 handles whole serversetup.
 
@@ -301,7 +310,7 @@ stopped via docker-compose.
 We provided files for using **DDP with docker as local build**. There is a `docker-build`-folder
 where you can run `docker-compose up -d` to build and run DDP on local server.
 For usage, you have to copy both files from folder to the same folder level as the three
-repository-folder.
+repository-folders.
 Change all lines in both files which are marked as TODO before executing `docker-compose up -d`.
 
 ## Authentication FHIR Server
@@ -368,7 +377,7 @@ IMPORTANT: When using a new dashboard data processor version, please always use 
 latest `application.yaml` file as template and put your previous local settings there.
 It often happens that new entries or changes here have a big impact on the current version.
 
-Please also note that when upgrading, the code of all 3 projects (`dashboardataprocessor`
+Please also note that when upgrading, the code of all three projects (`dashboardataprocessor`
 , `dashboardlogic` and `utilities`) must be downloaded and installed.
 
 # <a name="not-supported-items"></a>Not yet supported data items
@@ -378,7 +387,7 @@ found [here](./data-items-support.md).
 
 # Outlook
 
-The number of parameterizable settings can of course be extended as desired (for example, if the
+The number of parameterizable settings can be extended as desired (for example, if the
 local FHIR resources have special characteristics). If there should be wishes in this regard, please
 send mail to one of the developers or alternatively create an issue.
 
@@ -387,7 +396,15 @@ detect ICU stays instead of the location information, as this is likely to be se
 kds compliant by default. For the location, the KDS module is currently under construction and no
 implementation guide exists yet.
 
-Presumably there will also soon be an option to switch FHIR search requests from GET to POST.
+Since the Implementation Guide of the KDS Case Profiles leaves a little room for interpretation,
+`Encounter.partOf` will also be supported in the future for navigation within the Encounter
+resources of a case and not only the visit number under `Encounter.identifier.Aufnahmenummer`
+number.
+
+In addition, the <a href="./files/Documentation_Dashboard_Backend_v0_3_0a.pdf" target="_blank">
+documentation of the FHIR implementation</a> still needs to be updated to version 0.5.2.
+
+Presumably, there will also soon be an option to switch FHIR search requests from GET to POST.
 
 # Troubleshooting / Logging
 
@@ -420,7 +437,7 @@ If you discover that the Java VM has too little RAM available (OutOfMemoryError:
 you can try increasing the maximum heap size. For example, in this way:
 
 ```
-java -jar -xMx 8G  target/dashboarddataprocessor-0.5.0-alpha1.jar
+java -jar -xMx 8G  target/dashboarddataprocessor-0.5.2-pre.jar
 ```
 
 **Connection to the FHIR server failed: 431 Request Header Fields Too Large**

@@ -22,6 +22,7 @@ import de.ukbonn.mwtek.dashboard.interfaces.DataSourceType;
 import de.ukbonn.mwtek.dashboard.interfaces.QuerySuffixBuilder;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboard.services.AcuwaveDataRetrievalService;
+import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
@@ -35,18 +36,36 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
   private static final String DELIMITER = ",";
 
   public String getObservations(AbstractDataRetrievalService dataRetrievalService, Integer month,
-      boolean summary) {
-    return "Observation?code=" + String.join(DELIMITER,
-        dataRetrievalService.getLabPcrCodes()) + DELIMITER
-        + String.join(DELIMITER,
-        dataRetrievalService.getLabVariantCodes()) + "&_pretty=false" + COUNT_EQUALS
+      boolean summary, DataItemContext dataItemContext) {
+    String labPcrCodes = "";
+    String labVariantCodes = "";
+    switch (dataItemContext) {
+      case COVID -> {
+        labPcrCodes = String.join(DELIMITER,
+            dataRetrievalService.getCovidLabPcrCodes());
+        labVariantCodes = String.join(DELIMITER,
+            dataRetrievalService.getCovidLabVariantCodes());
+      }
+      case INFLUENZA -> {
+        labPcrCodes = String.join(DELIMITER,
+            dataRetrievalService.getInfluenzaLabPcrCodes());
+      }
+    }
+    return "Observation?code=" + labPcrCodes + (!labVariantCodes.isBlank() ? (DELIMITER
+        + labVariantCodes) : "") + "&_pretty=false" + COUNT_EQUALS
         + dataRetrievalService.getBatchSize() + (summary ? "&_summary=count" : "");
   }
 
   public String getConditions(AbstractDataRetrievalService dataRetrievalService, Integer month,
-      boolean summary) {
-    return "Condition?code=" + String.join(DELIMITER,
-        dataRetrievalService.getIcdCodes()) + "&_pretty=false" + COUNT_EQUALS
+      boolean summary, DataItemContext dataItemContext) {
+    String icdCodes = "";
+    switch (dataItemContext) {
+      case COVID -> icdCodes = String.join(DELIMITER,
+          dataRetrievalService.getCovidIcdCodes());
+      case INFLUENZA -> icdCodes = String.join(DELIMITER,
+          dataRetrievalService.getInfluenzaIcdCodes());
+    }
+    return "Condition?code=" + icdCodes + "&_pretty=false" + COUNT_EQUALS
         + dataRetrievalService.getBatchSize() + (summary ? "&_summary=count" : "");
   }
 
@@ -54,9 +73,16 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
    * Used if parameter <code>useEncounterConditionReference</code> in the
    * {@link FhirSearchConfiguration} is set on <code>true</code>.
    */
-  public String getConditionsIncludingEncounter(AbstractDataRetrievalService dataRetrievalService) {
-    return "Condition?code=" + String.join(DELIMITER,
-        dataRetrievalService.getIcdCodes()) + "&_revinclude=Encounter:diagnosis&_pretty=false"
+  public String getConditionsIncludingEncounter(AbstractDataRetrievalService dataRetrievalService,
+      DataItemContext dataItemContext) {
+    String icdCodes = "";
+    switch (dataItemContext) {
+      case COVID -> icdCodes = String.join(DELIMITER,
+          dataRetrievalService.getCovidIcdCodes());
+      case INFLUENZA -> icdCodes = String.join(DELIMITER,
+          dataRetrievalService.getInfluenzaIcdCodes());
+    }
+    return "Condition?code=" + icdCodes + "&_revinclude=Encounter:diagnosis&_pretty=false"
         + COUNT_EQUALS
         + dataRetrievalService.getBatchSize();
   }

@@ -38,28 +38,34 @@ public abstract class SearchConfiguration {
   /**
    * Filter the patient (and thus also the encounter) retrieval to SARS-CoV-2-patients only
    */
-  private Boolean filterPatientRetrieval = false;
+  private Boolean covidFilterPatientRetrieval = true;
 
   /**
    * Filter the procedure retrieval to inpatient SARS-CoV-2-cases only (with at least one icu
    * transfer) to reduce the requests on an external server
    */
-  private Boolean filterProcedureRetrieval = false;
+  private Boolean covidFilterProcedureRetrieval = false;
 
   /**
    * Should procedures also be queried for specific non-ICU wards? If yes, specify the orbis
    * internal OEBENEID here.
    */
-  private List<String> filterProcedureRetrievalAdditionalWards = new ArrayList<>();
+  private List<String> covidFilterProcedureRetrievalAdditionalWards = new ArrayList<>();
 
   /**
    * Should the Encounter FHIR search query be filtered by admission date (All cases by SARS-CoV-2
    * start reference date) ? Must be disabled if outpatient cases do not have an end date.
    */
-  private Boolean filterEncounterByDate = true;
+  private Boolean covidFilterEncounterByDate = true;
 
   /**
    * batch size of the parallelized partial searches
    */
   private int batchSize = 500;
+
+  /**
+   * Filter the patient (and thus also the encounter) retrieval to influenza positive patients only
+   * which will reduce the data load
+   */
+  private Boolean influenzaFilterPatientRetrieval = true;
 }

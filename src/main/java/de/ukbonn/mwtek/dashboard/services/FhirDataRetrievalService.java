@@ -1,40 +1,46 @@
 /*
- *  Copyright (C) 2021 University Hospital Bonn - All Rights Reserved You may use, distribute and
- *  modify this code under the GPL 3 license. THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT
- *  PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR
- *  OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
- *  IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- *  A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH
- *  YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR
- *  OR CORRECTION. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY
- *  COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE,
- *  BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES
- *  ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA
- *  OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE
- *  PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED
- *  OF THE POSSIBILITY OF SUCH DAMAGES. You should have received a copy of the GPL 3 license with
- *  this file. If not, visit http://www.gnu.de/documents/gpl-3.0.en.html
+ * Copyright (C) 2021 University Hospital Bonn - All Rights Reserved You may use, distribute and
+ * modify this code under the GPL 3 license. THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT
+ * PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR
+ * OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH
+ * YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR
+ * OR CORRECTION. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY
+ * COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE,
+ * BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA
+ * OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE
+ * PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGES. You should have received a copy of the GPL 3 license with *
+ * this file. If not, visit http://www.gnu.de/documents/gpl-3.0.en.html
  */
 package de.ukbonn.mwtek.dashboard.services;
 
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.COVID_CONDITIONS;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.COVID_OBSERVATIONS_PCR;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.COVID_OBSERVATIONS_VARIANTS;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.COVID_PROCEDURES_ECMO;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.COVID_PROCEDURES_VENTILATION;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.INFLUENZA_CONDITIONS;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.INFLUENZA_OBSERVATIONS_PCR;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.extractInputCode;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.encounterIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.locationIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.patientIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality.extractIdFromReference;
 
-import de.ukbonn.mwtek.dashboard.CoronaDashboardApplication;
+import de.ukbonn.mwtek.dashboard.DashboardApplication;
 import de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
 import de.ukbonn.mwtek.dashboard.exceptions.SearchException;
 import de.ukbonn.mwtek.dashboard.interfaces.DataSourceType;
 import de.ukbonn.mwtek.dashboard.interfaces.SearchService;
-import de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer;
-import de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext;
 import de.ukbonn.mwtek.dashboard.misc.FhirServerQuerySuffixBuilder;
 import de.ukbonn.mwtek.dashboard.misc.ListHelper;
 import de.ukbonn.mwtek.dashboard.misc.ResourceHandler;
-import de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality;
+import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
@@ -72,7 +78,7 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
   private final FhirSearchConfiguration fhirSearchConfiguration;
   private final FhirServerQuerySuffixBuilder fhirServerQuerySuffixBuilder =
       new FhirServerQuerySuffixBuilder();
-  Logger logger = LoggerFactory.getLogger(CoronaDashboardApplication.class);
+  Logger logger = LoggerFactory.getLogger(DashboardApplication.class);
 
   /**
    * List with the entries of the bundles returned per FHIR search query
@@ -97,33 +103,38 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
     this.setSearchService(searchService);
     this.setSearchConfiguration(fhirSearchConfiguration);
     this.setGlobalConfiguration(globalConfiguration);
-    // Read the Sars-Cov2 PCR codes from the configuration and persist them in a list analogous to the Acuwave parameterization (FHIR servers expect a comma separated list of strings while the Acuwave needs an integer list)
-    this.setLabPcrCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
-        ConfigurationContext.OBSERVATIONS_PCR));
-    this.setLabVariantCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
-        ConfigurationContext.OBSERVATIONS_VARIANTS));
-    this.setProcedureVentilationCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
-        ConfigurationContext.PROCEDURES_VENTILATION));
-    this.setProcedureEcmoCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
-        ConfigurationContext.PROCEDURES_ECMO));
+    // Read the Sars-Cov2 PCR codes from the configuration and persist them in a list analogous
+    // to the Acuwave parameterization (FHIR servers expect a comma separated list of strings
+    // while the Acuwave needs an integer list)
+    this.setCovidLabPcrCodes(extractInputCode(globalConfiguration, COVID_OBSERVATIONS_PCR));
+    this.setCovidLabVariantCodes(
+        extractInputCode(globalConfiguration, COVID_OBSERVATIONS_VARIANTS));
+    this.setProcedureVentilationCodes(
+        extractInputCode(globalConfiguration, COVID_PROCEDURES_VENTILATION));
+    this.setProcedureEcmoCodes(extractInputCode(globalConfiguration, COVID_PROCEDURES_ECMO));
     // Reading of the icd codes from the configuration and transforming it into a list
-    this.setIcdCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
-        ConfigurationContext.CONDITIONS));
+    this.setCovidIcdCodes(extractInputCode(globalConfiguration, COVID_CONDITIONS));
     this.setMaxCountSize(fhirSearchConfiguration.getMaxCountSize());
+    // Influenza data setter
+    this.setInfluenzaIcdCodes(extractInputCode(globalConfiguration, INFLUENZA_CONDITIONS));
+    this.setInfluenzaLabPcrCodes(extractInputCode(globalConfiguration, INFLUENZA_OBSERVATIONS_PCR));
   }
 
   @Override
-  public List<Observation> getObservations() {
+  public List<Observation> getObservations(DataItemContext dataItemContext) {
 
     Bundle initialBundle = this.getSearchService()
-        .getInitialBundle(fhirServerQuerySuffixBuilder.getObservations(this, null, false));
+        .getInitialBundle(
+            fhirServerQuerySuffixBuilder.getObservations(this, null, false, dataItemContext));
     List<Observation> listObservations = new ArrayList<>();
     int resourcesTotal = initialBundle.getTotal();
 
-    // Servers like the Blaze do not support the bundle.total, so we retrieve it with an additional fhir search query
+    // Servers like the Blaze do not support the bundle.total, so we retrieve it with an
+    // additional fhir search query
     if (!initialBundle.hasTotal()) {
       resourcesTotal = this.getSearchService()
-          .getInitialBundle(fhirServerQuerySuffixBuilder.getObservations(this, null, true))
+          .getInitialBundle(
+              fhirServerQuerySuffixBuilder.getObservations(this, null, true, dataItemContext))
           .getTotal();
     }
 
@@ -150,31 +161,37 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   @Override
-  public List<Condition> getConditions() {
+  public List<Condition> getConditions(DataItemContext dataItemContext) {
 
-    boolean isUseEncounterConditionReference = fhirSearchConfiguration.isUseEncounterConditionReference();
-    // Since the condition.encounter reference is not mandatory, it's possible to link encounter and condition via encounter.diagnosis.
+    boolean isUseEncounterConditionReference =
+        fhirSearchConfiguration.isUseEncounterConditionReference();
+    // Since the condition.encounter reference is not mandatory, it's possible to link encounter
+    // and condition via encounter.diagnosis.
     Bundle initialBundle =
         !isUseEncounterConditionReference ? this.getSearchService()
-            .getInitialBundle(fhirServerQuerySuffixBuilder.getConditions(this, null, false))
+            .getInitialBundle(
+                fhirServerQuerySuffixBuilder.getConditions(this, null, false, dataItemContext))
             : this.getSearchService()
-                .getInitialBundle(
-                    fhirServerQuerySuffixBuilder.getConditionsIncludingEncounter(this));
+                .getInitialBundle(fhirServerQuerySuffixBuilder.getConditionsIncludingEncounter(this,
+                    dataItemContext));
     List<Condition> listConditions = new ArrayList<>();
     // This list is just being used if a parameter is set in the configuration.
     List<Encounter> listEncounters = new ArrayList<>();
     int counterCond = 0;
     int resourcesTotal = initialBundle.getTotal();
 
-    // Servers like the Blaze do not support the bundle.total, so we retrieve it with an additional fhir search query
+    // Servers like the Blaze do not support the bundle.total, so we retrieve it with an
+    // additional fhir search query
     if (!initialBundle.hasTotal()) {
       resourcesTotal = this.getSearchService()
-          .getInitialBundle(fhirServerQuerySuffixBuilder.getObservations(this, null, true))
+          .getInitialBundle(
+              fhirServerQuerySuffixBuilder.getObservations(this, null, true, dataItemContext))
           .getTotal();
     }
 
     while (initialBundle.hasLink() && initialBundle.getLink(NEXT) != null) {
-      // The handling differs, whether the output is condition resources only or the encounter data needs to be retrieved aswell.
+      // The handling differs, whether the output is condition resources only or the encounter
+      // data needs to be retrieved aswell.
       // -> Then we need to gather all resources first and make encounter id processing afterwards.
       if (!isUseEncounterConditionReference) {
         // Parsing the retrieved resources and reading out the patients and Encounter Ids for later
@@ -207,8 +224,8 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   @Override
-  public List<Patient> getPatients(List<UkbObservation> listUkbObservations,
-      List<UkbCondition> listUkbConditions) {
+  public List<Patient> getPatients(List<UkbObservation> ukbObservations,
+      List<UkbCondition> ukbConditions, DataItemContext dataItemContext) {
 
     // The Initialization of the outgoing set
     Set<Patient> setPatients = ConcurrentHashMap.newKeySet();
@@ -217,21 +234,16 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
       return new ArrayList<>();
     }
 
-    // Since the patient (and thus also the encounter) resources are just relevant for statistics of SARS-CoV-2 patient it reduces the amount of encounter by a lot if its getting prefiltered before
-    if (this.fhirSearchConfiguration.getFilterPatientRetrieval()) {
-      // The global patient ID list is overwritten by exclusively SARS-CoV2-positive patients
-      Set<String> patientIdsPositive =
-          CoronaResultFunctionality.getPidsPosFinding(listUkbObservations, listUkbConditions,
-              ConfigurationTransformer.extractInputCodeSettings(
-                  this));
-      if (patientIdsPositive.size() > 0) {
-        patientIds = patientIdsPositive;
-      } else
-      // Else: The patient id list will not get overwritten
-      {
-        log.warn(
-            "FilterPatientRetrieval is enabled, but cannot find SARS-CoV2-positive patients. As a result, the global unfiltered patient ID list is used. ");
-      }
+    // Since the patient (and thus also the encounter) resources are just relevant for statistics
+    // of SARS-CoV-2 patient it reduces the amount of encounter by a lot if its getting
+    // prefiltered before
+    switch (dataItemContext) {
+      case COVID -> patientIds = handleFilterPatientRetrieval(dataItemContext,
+          this.fhirSearchConfiguration.getCovidFilterPatientRetrieval(), ukbObservations,
+          ukbConditions);
+      case INFLUENZA -> patientIds = handleFilterPatientRetrieval(dataItemContext,
+          this.fhirSearchConfiguration.getInfluenzaFilterPatientRetrieval(), ukbObservations,
+          ukbConditions);
     }
 
     // Put (unique) pids into a list to facilitate the creation of subsets
@@ -251,7 +263,6 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
     });
     return new ArrayList<>(setPatients);
   }
-
 
   @Override
   public List<Encounter> getEncounters() {
@@ -297,7 +308,8 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
   @Override
   public List<Procedure> getProcedures() {
 
-    // If no case ids could be found, no procedures need to be determined, because the evaluation logic is based on data from the encounter resource.
+    // If no case ids could be found, no procedures need to be determined, because the evaluation
+    // logic is based on data from the encounter resource.
     if (!encounterIdsCouldBeFound(encounterIds, ResourceType.Procedure)) {
       return new ArrayList<>();
     }
@@ -332,14 +344,15 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
   @Override
   public List<Procedure> getProcedures(List<UkbEncounter> listUkbEncounters,
       List<UkbLocation> listUkbLocations, List<UkbObservation> listUkbObservations,
-      List<UkbCondition> listUkbConditions) {
+      List<UkbCondition> listUkbConditions, DataItemContext dataItemContext) {
     return getProcedures();
   }
 
   @Override
   public List<Location> getLocations() {
 
-    // If no case ids could be found, no procedures need to be determined, because the evaluation logic is based on data from the encounter resource.
+    // If no case ids could be found, no procedures need to be determined, because the evaluation
+    // logic is based on data from the encounter resource.
     if (!locationIdsCouldBeFound(locationIds, ResourceType.Location)) {
       return new ArrayList<>();
     }

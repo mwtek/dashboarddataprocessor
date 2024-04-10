@@ -16,26 +16,20 @@
  * this file. If not, visit http://www.gnu.de/documents/gpl-3.0.en.html
  */
 
-package de.ukbonn.mwtek.dashboard.configuration;
+package de.ukbonn.mwtek.dashboard;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Class for customizing the usage of the individual prediction models.
+ * The base class of the NUM Dashboard project with the main method.
  *
  * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
-@Configuration
-@ConfigurationProperties(prefix = "prediction-models")
-@Getter
-@Setter
-public class PredictionModelsConfiguration {
+@SpringBootApplication
+public class DashboardApplication {
 
-  private Boolean ukbRenalReplacementProcedures = false;
-
-  private Boolean ukr = false;
-
+  public static void main(String[] args) {
+    SpringApplication.run(DashboardApplication.class, args);
+  }
 }

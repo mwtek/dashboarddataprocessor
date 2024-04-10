@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  dashboard-data-processor:
+    # Local build Image
+    image: dashboard-data-processor:0.5.2-pre
+    # Docker-Hub Image
+    #    image: mwtek/dashboarddataprocessor
+    container_name: dashboard-data-processor
+    restart: always
+    ports:
+      - '127.0.0.1:9091:9091'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "20"
+    volumes:
+      - type: bind
+        source: ./application.yaml
+        target: /opt/dashboardprocessor/dashboarddataprocessor/src/main/resources/application.yaml
+        read_only: true

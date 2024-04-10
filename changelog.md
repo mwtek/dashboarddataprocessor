@@ -1,3 +1,33 @@
+# Release Notes - Version V0.5.2-pre
+
+04/Apr/24
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* Added support for the data set description 0.5.2 including most of the new influenza data items.
+
+</div>
+
+## Improvements
+
+<div style='margin-left:30px;'>
+
+* The `current.*` data items now also reliably deliver accurate outputs if
+  the `Encounter.location` information are not set at the top level in the setup contact.
+* Huge refactoring of almost all existing methods for data retrieval and data item generation.
+
+</div> 
+
+## Tasks
+
+No tasks were part of this version.
+
+## Bugs
+
+No bug fixes were part of this version.
+
 # Release Notes - Version V0.5.0-alpha2
 
 02/Feb/24
@@ -307,5 +337,5 @@ No bug fixes were part of this version.
 * Cumulative.gender and `cumulative.results` are both excluded if latter one is excluded.
 * NPE when `patient.address` is missing.
 
-</div>
+</div> 
 

@@ -19,6 +19,7 @@ package de.ukbonn.mwtek.dashboard.interfaces;
 
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboard.services.AcuwaveDataRetrievalService;
+import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import java.util.List;
 import java.util.Set;
 
@@ -39,7 +40,7 @@ public interface QuerySuffixBuilder {
    * @return A list of all FHIR observation resources that include a covid finding.
    */
   String getObservations(AbstractDataRetrievalService dataRetrievalService, Integer month,
-      boolean summary);
+      boolean summary, DataItemContext dataItemContext);
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition} resources.
@@ -52,7 +53,7 @@ public interface QuerySuffixBuilder {
    * @return A list of all FHIR condition resources that include a covid diagnosis.
    */
   String getConditions(AbstractDataRetrievalService dataRetrievalService, Integer month,
-      boolean summary);
+      boolean summary, DataItemContext dataItemContext);
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient} resources.

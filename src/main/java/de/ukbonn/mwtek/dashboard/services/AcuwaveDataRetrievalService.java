@@ -1,33 +1,43 @@
 /*
- *  Copyright (C) 2021 University Hospital Bonn - All Rights Reserved You may use, distribute and
- *  modify this code under the GPL 3 license. THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT
- *  PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR
- *  OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
- *  IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- *  A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH
- *  YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR
- *  OR CORRECTION. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY
- *  COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE,
- *  BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES
- *  ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA
- *  OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE
- *  PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED
- *  OF THE POSSIBILITY OF SUCH DAMAGES. You should have received a copy of the GPL 3 license with
- *  this file. If not, visit http://www.gnu.de/documents/gpl-3.0.en.html
+ * Copyright (C) 2021 University Hospital Bonn - All Rights Reserved You may use, distribute and
+ * modify this code under the GPL 3 license. THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT
+ * PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR
+ * OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
+ * IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH
+ * YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR
+ * OR CORRECTION. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY
+ * COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE,
+ * BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES
+ * ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA
+ * OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE
+ * PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGES. You should have received a copy of the GPL 3 license with *
+ * this file. If not, visit http://www.gnu.de/documents/gpl-3.0.en.html
  */
 package de.ukbonn.mwtek.dashboard.services;
 
 import static de.ukbonn.mwtek.dashboard.enums.AcuwaveDataSourceType.CLAPP;
 import static de.ukbonn.mwtek.dashboard.enums.AcuwaveDataSourceType.PDMS_REPORTING_DB;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.COVID_CONDITIONS;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.COVID_OBSERVATIONS_PCR;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.COVID_OBSERVATIONS_VARIANTS;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.COVID_PROCEDURES_ECMO;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.COVID_PROCEDURES_VENTILATION;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.INFLUENZA_CONDITIONS;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.INFLUENZA_OBSERVATIONS_PCR;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.PREDICTION_MODEL_UKB_OBS_CODES;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.extractInputCode;
 import static de.ukbonn.mwtek.dashboard.misc.DateHelper.getCalendarYearsPeriod;
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.logWarningForUnexpectedResource;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.encounterIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.locationIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.patientIdsCouldBeFound;
+import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.ICU;
 import static de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.enums.RenalReplacementRiskParameterCodes.VALID_LOINC_CODES_HIS;
 import static de.ukbonn.mwtek.dashboardlogic.tools.ObservationFilter.hasObservationLoincCode;
 
-import de.ukbonn.mwtek.dashboard.CoronaDashboardApplication;
+import de.ukbonn.mwtek.dashboard.DashboardApplication;
 import de.ukbonn.mwtek.dashboard.configuration.AcuwaveSearchConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.enums.AcuwaveDataSourceType;
@@ -37,11 +47,11 @@ import de.ukbonn.mwtek.dashboard.interfaces.DataSourceType;
 import de.ukbonn.mwtek.dashboard.interfaces.SearchService;
 import de.ukbonn.mwtek.dashboard.misc.AcuwaveQuerySuffixBuilder;
 import de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer;
-import de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext;
 import de.ukbonn.mwtek.dashboard.misc.ListHelper;
 import de.ukbonn.mwtek.dashboard.misc.ResourceHandler;
 import de.ukbonn.mwtek.dashboardlogic.enums.CoronaDashboardConstants;
-import de.ukbonn.mwtek.dashboardlogic.enums.CoronaFixedValues;
+import de.ukbonn.mwtek.dashboardlogic.enums.DashboardLogicFixedValues;
+import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
 import de.ukbonn.mwtek.utilities.fhir.misc.Converter;
@@ -98,10 +108,10 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   private final GlobalConfiguration globalConfiguration;
   @Getter
   @Setter
-  private List<Integer> orbisLabPcrCodes;
+  private List<Integer> covidOrbisLabPcrCodes;
   @Getter
   @Setter
-  private List<Integer> orbisLabVariantCodes;
+  private List<Integer> covidOrbisLabVariantCodes;
 
   @Getter
   @Setter
@@ -115,7 +125,11 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   @Setter
   private Map<String, Set<Integer>> predictionModelUkbObservationOrbisCodes;
 
-  Logger logger = LoggerFactory.getLogger(CoronaDashboardApplication.class);
+  @Getter
+  @Setter
+  private List<Integer> influenzaOrbisLabPcrCodes;
+
+  Logger logger = LoggerFactory.getLogger(DashboardApplication.class);
 
   public AcuwaveDataRetrievalService(SearchService searchService,
       AcuwaveSearchConfiguration acuwaveSearchConfiguration,
@@ -132,25 +146,25 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
    */
   private void initializeSearchService(SearchService searchService) {
     this.setSearchService(searchService);
-    this.setOrbisLabPcrCodes(acuwaveSearchConfiguration.getOrbisLabPcrCodes());
-    this.setOrbisLabVariantCodes(acuwaveSearchConfiguration.getOrbisLabVariantCodes());
-    this.setLabPcrCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
-        ConfigurationContext.OBSERVATIONS_PCR));
-    this.setLabVariantCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
-        ConfigurationContext.OBSERVATIONS_VARIANTS));
-    this.setProcedureVentilationCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
-        ConfigurationContext.PROCEDURES_VENTILATION));
-    this.setProcedureEcmoCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
-        ConfigurationContext.PROCEDURES_ECMO));
+    this.setCovidOrbisLabPcrCodes(acuwaveSearchConfiguration.getCovidOrbisLabPcrCodes());
+    this.setCovidOrbisLabVariantCodes(acuwaveSearchConfiguration.getCovidOrbisLabVariantCodes());
+    this.setCovidLabPcrCodes(extractInputCode(globalConfiguration, COVID_OBSERVATIONS_PCR));
+    this.setCovidLabVariantCodes(
+        extractInputCode(globalConfiguration, COVID_OBSERVATIONS_VARIANTS));
+    this.setProcedureVentilationCodes(
+        extractInputCode(globalConfiguration, COVID_PROCEDURES_VENTILATION));
+    this.setProcedureEcmoCodes(extractInputCode(globalConfiguration, COVID_PROCEDURES_ECMO));
     // Reading of the icd codes from the configuration and transforming it into a list
-    this.setIcdCodes(ConfigurationTransformer.extractInputCode(globalConfiguration,
-        ConfigurationContext.CONDITIONS));
-    this.setPredictionModelUkbObservationCodes(
-        ConfigurationTransformer.extractInputCode(globalConfiguration,
-            ConfigurationContext.PREDICTION_MODEL_UKB_OBS_CODES));
+    this.setCovidIcdCodes(extractInputCode(globalConfiguration, COVID_CONDITIONS));
+    // Prediction model setter
+    this.setPredictionModelUkbObservationCodes(extractInputCode(globalConfiguration,
+        PREDICTION_MODEL_UKB_OBS_CODES));
     this.setPredictionModelUkbObservationOrbisCodes(readUkbObservationOrbisCodes(
         acuwaveSearchConfiguration.getPredictionModelUkbObservationOrbisCodes()));
-
+    // Influenza data setter
+    this.setInfluenzaOrbisLabPcrCodes(acuwaveSearchConfiguration.getInfluenzaOrbisLabPcrCodes());
+    this.setInfluenzaIcdCodes(extractInputCode(globalConfiguration, INFLUENZA_CONDITIONS));
+    this.setInfluenzaLabPcrCodes(extractInputCode(globalConfiguration, INFLUENZA_OBSERVATIONS_PCR));
   }
 
   private Map<String, Set<Integer>> readUkbObservationOrbisCodes(
@@ -170,14 +184,15 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   @Override
-  public List<Observation> getObservations() {
+  public List<Observation> getObservations(DataItemContext dataItemContext) {
 
     Set<Observation> setObservations = ConcurrentHashMap.newKeySet();
 
     setMonths.parallelStream().forEach(month -> {
       try {
         List<Bundle.BundleEntryComponent> listTemp = this.getSearchService()
-            .getBundleData(new AcuwaveQuerySuffixBuilder().getObservations(this, month, false));
+            .getBundleData(new AcuwaveQuerySuffixBuilder().getObservations(this, month, false,
+                dataItemContext));
         listTemp.forEach(bundleEntry -> {
           if (bundleEntry.getResource().getResourceType() == ResourceType.Observation) {
             Observation obs = (Observation) bundleEntry.getResource();
@@ -188,7 +203,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
         });
       } catch (HttpServerErrorException e) {
         throw new HttpServerErrorException(e.getStatusCode(),
-            "Retrieval of the observation resources failed because of the following remote server error: "
+            "Retrieval of the observation resources failed because of the following remote server"
+                + " error: "
                 + e.getMessage());
       } catch (Exception e) {
         logger.error("Retrieval of the observation resources failed. " + month, e);
@@ -198,13 +214,14 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   @Override
-  public List<Condition> getConditions() {
+  public List<Condition> getConditions(DataItemContext dataItemContext) {
     Set<Condition> setConditions = ConcurrentHashMap.newKeySet();
 
     setMonths.parallelStream().forEach(month -> {
       try {
         List<Bundle.BundleEntryComponent> listTemp = this.getSearchService()
-            .getBundleData(new AcuwaveQuerySuffixBuilder().getConditions(this, month, false));
+            .getBundleData(
+                new AcuwaveQuerySuffixBuilder().getConditions(this, month, false, dataItemContext));
         listTemp.forEach(bundleEntry -> {
           if (bundleEntry.getResource().getResourceType() == ResourceType.Condition) {
             Condition cond = (Condition) bundleEntry.getResource();
@@ -223,23 +240,25 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   @Override
-  public List<Patient> getPatients(List<UkbObservation> listUkbObservations,
-      List<UkbCondition> listUkbConditions) {
+  public List<Patient> getPatients(List<UkbObservation> ukbObservations,
+      List<UkbCondition> ukbConditions, DataItemContext dataItemContext) {
 
     // A query is only useful if at least one patient id is specified.
     if (!patientIdsCouldBeFound(patientIds, ResourceType.Patient)) {
       return new ArrayList<>();
     }
 
-    Set<Patient> setPatientsOutput = ConcurrentHashMap.newKeySet();
-    // Since the patient (and thus also the encounter) resources are just relevant for statistics of SARS-CoV-2 patient it reduces the amount of encounter by a lot if its getting prefiltered before
-    if (this.acuwaveSearchConfiguration.getFilterPatientRetrieval())
-    // The global patient ID list is overwritten by exclusively SARS-CoV2-positive patients
-    {
-      patientIds =
-          CoronaResultFunctionality.getPidsPosFinding(listUkbObservations, listUkbConditions,
-              ConfigurationTransformer.extractInputCodeSettings(
-                  this));
+    Set<Patient> patientsOutput = ConcurrentHashMap.newKeySet();
+    // Since the patient (and thus also the encounter) resources are just relevant for statistics
+    // of SARS-CoV-2 patient it reduces the amount of encounter by a lot if its getting
+    // prefiltered before
+    switch (dataItemContext) {
+      case COVID -> patientIds = handleFilterPatientRetrieval(dataItemContext,
+          this.acuwaveSearchConfiguration.getCovidFilterPatientRetrieval(), ukbObservations,
+          ukbConditions);
+      case INFLUENZA -> patientIds = handleFilterPatientRetrieval(dataItemContext,
+          this.acuwaveSearchConfiguration.getInfluenzaFilterPatientRetrieval(), ukbObservations,
+          ukbConditions);
     }
 
     // Splitting the entire list into smaller lists to parallelize requests
@@ -252,7 +271,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
             .getBundleData(new AcuwaveQuerySuffixBuilder().getPatients(this, patientIdList));
         listTemp.forEach(bundleEntry -> {
           if (bundleEntry.getResource().getResourceType() == ResourceType.Patient) {
-            setPatientsOutput.add((Patient) bundleEntry.getResource());
+            patientsOutput.add((Patient) bundleEntry.getResource());
           }
         });
 
@@ -261,7 +280,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
             "Retrieval patient resources: Unable to build a json module chain: " + e.getMessage());
       }
     });
-    return new ArrayList<>(setPatientsOutput);
+    return new ArrayList<>(patientsOutput);
   }
 
   @Override
@@ -292,7 +311,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
 
       } catch (NullPointerException e) {
         logger.warn(
-            "Retrieval encounter resources:: Issue in the location retrieval (maybe the id of a location resource is null): "
+            "Retrieval encounter resources:: Issue in the location retrieval (maybe the id of a "
+                + "location resource is null): "
                 + e.getMessage());
       } catch (Exception e) {
         logger.error(
@@ -313,37 +333,41 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   @Override
   public List<Procedure> getProcedures(List<UkbEncounter> listUkbEncounters,
       List<UkbLocation> listUkbLocations, List<UkbObservation> listUkbObservations,
-      List<UkbCondition> listUkbConditions) {
+      List<UkbCondition> listUkbConditions, DataItemContext dataItemContext) {
 
-    // If no case ids could be found, no procedures need to be determined, because the evaluation logic is based on data from the encounter resource.
+    // If no case ids could be found, no procedures need to be determined, because the evaluation
+    // logic is based on data from the encounter resource.
     if (!patientIdsCouldBeFound(encounterIds, ResourceType.Procedure)) {
       return new ArrayList<>();
     }
 
     Set<Procedure> setProcedures = ConcurrentHashMap.newKeySet();
 
-    // The finally used encounter id list which can differ from the original encounter id list due to filtering steps
+    // The finally used encounter id list which can differ from the original encounter id list
+    // due to filtering steps
     Set<String> encounterIdsInput;
-    // Filter the encounter ids, to those of Encounters with at least 1 inpatient or ICU (under review) stay.
+    // Filter the encounter ids, to those of Encounters with at least 1 inpatient or ICU (under
+    // review) stay.
     // Requires: encounter + maybe location resources
-    if (acuwaveSearchConfiguration.getFilterProcedureRetrieval()) {
+    if (acuwaveSearchConfiguration.getCovidFilterProcedureRetrieval()) {
       // determine all the icu locations
       Set<String> listIcuIds = listUkbLocations.parallelStream().filter(Location::hasType)
           .filter(x -> x.getType().get(0).hasCoding())
           .filter(x -> x.getType().get(0).getCoding().get(0).getCode()
-              .equals(CoronaFixedValues.ICU.getValue())).map(UkbLocation::getId)
+              .equals(ICU.getValue())).map(UkbLocation::getId)
           .collect(Collectors.toSet());
 
       // add the orbis internal ids of non-ICU wards to the list if requested
-      if (acuwaveSearchConfiguration.getFilterProcedureRetrievalAdditionalWards().size() > 0) {
-        listIcuIds.addAll(acuwaveSearchConfiguration.getFilterProcedureRetrievalAdditionalWards());
+      if (!acuwaveSearchConfiguration.getCovidFilterProcedureRetrievalAdditionalWards().isEmpty()) {
+        listIcuIds.addAll(
+            acuwaveSearchConfiguration.getCovidFilterProcedureRetrievalAdditionalWards());
       }
 
       // figure out if encounter is inpatient
       List<UkbEncounter> listEncountersInpatient =
           listUkbEncounters.parallelStream().filter(Encounter::hasClass_)
               .filter(x -> x.getClass_().hasCode()).filter(
-                  x -> CoronaFixedValues.ENCOUNTER_CLASS_INPATIENT_CODES.contains(
+                  x -> DashboardLogicFixedValues.ENCOUNTER_CLASS_INPATIENT_CODES.contains(
                       x.getClass_().getCode()))
               .toList();
 
@@ -360,9 +384,9 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
 
       // Get all icu case ids where the patient got at least one positive SARS-CoV-2 lab finding
       Set<String> patientIdsIcuPositiveFindings =
-          CoronaResultFunctionality.getPidsWithPosCovidLabResult(listUkbObservations,
+          CoronaResultFunctionality.getPidsWithPosLabResult(listUkbObservations,
                   ConfigurationTransformer.extractInputCodeSettings(
-                      this))
+                      this), dataItemContext)
               .parallelStream().filter(listPatientsIcu::contains)
               .collect(Collectors.toSet());
 
@@ -370,11 +394,12 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
           "Number of patients with ICU and positive SARS-CoV2 PCR test finding: "
               + patientIdsIcuPositiveFindings.size());
 
-      // get all cases with at least 1 icu transfer AND an U07.1 or U07.2 diagnosis and add them to the set with the positive lab findings
+      // get all cases with at least 1 icu transfer AND an U07.1 or U07.2 diagnosis and add them
+      // to the set with the positive lab findings
       patientIdsIcuPositiveFindings.addAll(
-          CoronaResultFunctionality.getPidsWithCovidDiagnosis(listUkbConditions,
+          CoronaResultFunctionality.getPidsWithGivenIcdCodes(listUkbConditions,
                   ConfigurationTransformer.extractInputCodeSettings(
-                      this))
+                      this), dataItemContext)
               .parallelStream().filter(listPatientsIcu::contains)
               .collect(Collectors.toSet()));
 
@@ -395,7 +420,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
     List<List<String>> encounterIdSubLists =
         ListHelper.splitList(new ArrayList<>(encounterIdsInput), this.getBatchSize());
     // A query is only useful if at least one encounter id is specified.
-    if (encounterIds.size() > 0) {
+    if (!encounterIds.isEmpty()) {
       encounterIdSubLists.parallelStream().forEach(encounterIds -> {
         try {
           List<Bundle.BundleEntryComponent> listTemp = this.getSearchService()
@@ -414,7 +439,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
       });
     } else {
       logger.error(
-          "Unable to retrieve procedures resources since no encounter ids could be determined via input filters (Observation + Condition).");
+          "Unable to retrieve procedures resources since no encounter ids could be determined via"
+              + " input filters (Observation + Condition).");
     }
 
     return new ArrayList<>(setProcedures);
@@ -423,7 +449,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   @Override
   public List<Location> getLocations() {
 
-    // If no case ids could be found, no procedures need to be determined, because the evaluation logic is based on data from the encounter resource.
+    // If no case ids could be found, no procedures need to be determined, because the evaluation
+    // logic is based on data from the encounter resource.
     if (!locationIdsCouldBeFound(locationIds, ResourceType.Location)) {
       return new ArrayList<>();
     }
@@ -468,12 +495,14 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
     try {
       // If case ids are set in the settings file the search will run case by case, not periodically
       List<String> caseIdsSettings = acuwaveSearchConfiguration.getPredictionModelUkbCaseIds();
-      if (caseIdsSettings.size() == 0) {
-        // Parallelize the queries in calendar years to speed it up and to get rid of memory issues due to large bulks
+      if (caseIdsSettings.isEmpty()) {
+        // Parallelize the queries in calendar years to speed it up and to get rid of memory
+        // issues due to large bulks
         List<Integer> calendarYears = getCalendarYearsPeriod(
             CoronaDashboardConstants.qualifyingYear,
             Year.now().getValue());
-        // If an entry in the settings file forces querying over certain years this will overwrite the default.
+        // If an entry in the settings file forces querying over certain years this will
+        // overwrite the default.
         if (acuwaveSearchConfiguration.getPredictionModelYears() != null) {
           calendarYears = acuwaveSearchConfiguration.getPredictionModelYears();
         }
@@ -534,7 +563,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                 episodeOfCares.add(episodeOfCare);
               } else if (bundleEntry.getResource() instanceof Encounter encounter) {
                 if (encounter.hasEpisodeOfCare()) {
-                  // we need to convert the encounter resource to be able to use the "getCaseId" method
+                  // we need to convert the encounter resource to be able to use the "getCaseId"
+                  // method
                   UkbEncounter ukbEncounter = (UkbEncounter) Converter.convert(encounter);
                   encounter.getEpisodeOfCare().forEach(encEpisodeRef -> {
                     episodeOfCareEncounterMap.put(encEpisodeRef.getResource().getIdElement().getValue(),
@@ -614,7 +644,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   @Override
   public List<CoreBaseDataItem> getUkbRenalReplacementBodyWeight(
       Collection<String> encounterIds, DataSourceType dataSourceType) {
-    // To keep it thread-safe we will use a concurrent map to store caseid and the first found data item
+    // To keep it thread-safe we will use a concurrent map to store caseid and the first found
+    // data item
     Map<String, CoreBaseDataItem> caseIdItemMap = new ConcurrentHashMap<>();
 
     // A query is only useful if at least one patient id is specified.
@@ -652,7 +683,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
             .map(Observation.class::cast)  // Casting using method reference
             .toList();
 
-// Create a map grouping observations by encounter identifier and keeping only the oldest for each encounter identifier
+// Create a map grouping observations by encounter identifier and keeping only the oldest for
+// each encounter identifier
         Map<String, Observation> oldestBodyWeightMap = observations.stream()
             .collect(Collectors.toMap(
                 observation -> observation.getEncounter().getIdentifier().getValue(),
@@ -770,7 +802,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
           if (bundleEntry.getResource().getResourceType() == ResourceType.Observation) {
             Observation observation = (Observation) bundleEntry.getResource();
             if (observation.hasValueQuantity()) {
-              // It is possible that two urine output values got the same timestamp. If this is the case we try to sum these values up.
+              // It is possible that two urine output values got the same timestamp. If this is
+              // the case we try to sum these values up.
               String encounterIdentifier = observation.getEncounter().getIdentifier().getValue();
               Date effectiveDateTime = observation.getEffectiveDateTimeType().getValue();
               Double value = observation.getValueQuantity().getValue().doubleValue();

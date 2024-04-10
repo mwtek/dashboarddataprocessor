@@ -30,7 +30,9 @@ de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models
 de.ukbonn.mwtek.dashboardlogic.settings
 de.ukbonn.mwtek.dashboardlogic.tools
 de.ukbonn.mwtek.utilities
+de.ukbonn.mwtek.utilities.enums
 de.ukbonn.mwtek.utilities.fhir.interfaces
+de.ukbonn.mwtek.utilities.fhir.mapping.kdsdiagnosis.valuesets
 de.ukbonn.mwtek.utilities.fhir.misc
 de.ukbonn.mwtek.utilities.fhir.resources
 de.ukbonn.mwtek.utilities.generic.interfaces

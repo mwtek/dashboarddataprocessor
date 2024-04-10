@@ -38,10 +38,10 @@ public class ProviderConfiguration {
   /**
    * The provider name
    */
-  private String Name;
+  private String name;
 
   /**
    * The provider author
    */
-  private String Author;
+  private String author;
 }

@@ -24,8 +24,13 @@ global:
     prediction-models:
       ukb-renal-replacement-procedures:
         observations: 2160-0, 32693-4, 3091-6, 9187-6
-  ## If only predictive models are to be calculated, the generation of the covid data can be excluded
-  skip-base-data-generation: false
+    influenza:
+      conditions: J10.0,J10.1,J10.8,J09
+      observations: 34487-9,60416-5,49521-8,49531-7,61365-3,48509-4,29909-9,40982-1
+  ## Option to active/deactivate certain workflows/outputs
+  generate-covid-data: true
+  generate-influenza-data: false
+  generate-ukb-renal-replacement-model-data: false
 fhir:
   server:
     ## The authentication method, one of NONE, SSL or BASIC (default)
@@ -48,11 +53,13 @@ fhir:
     ## Maximum 'count' size per fhir search request (e.g. if querying encounter resources by patient IDs). This value should never be reached (default: 1000000).
     # max-count-size: 1000000
     ## Filter the patient (and thus also the encounter) retrieval to SARS-CoV-2-patients only
-    filter-patient-retrieval: true
+    # covid-filter-patient-retrieval: false
     ## Should the encounter fhir search query be filtered by admission date (all cases by SARS-CoV-2 start reference date) ? Must be disabled if outpatient cases do not have an end date.
-    # filter-encounter-by-date: false
+    # covid-filter-encounter-by-date: false
     ## Does a Reference exist from Condition to Case or only the reverse way from Encounter to Condition? This results in differences in the FHIR search queries.
-    # use-encounter-condition-reference: true
+    # use-encounter-condition-reference: true 
+    ## Filter the patient (and thus also the encounter) retrieval to influenza positive patients only which will reduce the data load
+    # influenza-filter-patient-retrieval: false
 
 ## Switching off data items in the output on demand. For data items that are excluded, please comment out the corresponding line(s).
 data-items:
@@ -89,6 +96,37 @@ data-items:
     timeline.maxtreatmentlevel: false
     timeline.varianttestresults: false
     timeline.deaths: false
+    ## Influenza related items
+    infl.current.treatmentlevel: false
+    infl.current.maxtreatmentlevel: false
+    infl.current.age.maxtreatmentlevel.normal_ward: false
+    infl.current.age.maxtreatmentlevel.icu: false
+    infl.current.age.maxtreatmentlevel.icu_with_ventilation: false
+    infl.current.age.maxtreatmentlevel.icu_with_ecmo: false
+    infl.cumulative.results: false
+    infl.cumulative.gender: false
+    infl.cumulative.age: false
+    infl.cumulative.maxtreatmentlevel: false
+    infl.cumulative.zipcode: false
+    infl.cumulative.inpatient.gender: false
+    infl.cumulative.outpatient.gender: false
+    infl.cumulative.inpatient.age: false
+    infl.cumulative.outpatient.age: false
+    infl.cumulative.lengthofstay.icu: false
+    infl.cumulative.lengthofstay.icu.alive: false
+    infl.cumulative.lengthofstay.icu.dead: false
+    infl.cumulative.lengthofstay.hospital: false
+    infl.cumulative.lengthofstay.hospital.alive: false
+    infl.cumulative.lengthofstay.hospital.dead: false
+    infl.cumulative.age.maxtreatmentlevel.outpatient: false
+    infl.cumulative.age.maxtreatmentlevel.normal_ward: false
+    infl.cumulative.age.maxtreatmentlevel.icu: false
+    infl.cumulative.age.maxtreatmentlevel.icu_with_ventilation: false
+    infl.cumulative.age.maxtreatmentlevel.icu_with_ecmo: false
+    infl.timeline.tests: false
+    infl.timeline.test.positive: false
+    infl.timeline.maxtreatmentlevel: false
+    infl.timeline.deaths: false
     ## internal items of the ukb
     current.treatmentlevel.crosstab: true
 server:
@@ -103,7 +141,7 @@ spring:
 #reports:
 ## Should a file be generated with the case/encounter ids of active cases separated by treatment level?
 # caseid-file-generation: true
-# caseid-file-directory: C:\currentTreatmentlevelExport
+# caseid-file-directory: X:\currentTreatmentlevelExport
 # caseid-file-basename: CaseIdsByTreatmentlevel
 
 #acuwave-server:
@@ -113,8 +151,8 @@ spring:
 # rest-password: y
 ## Adjustment of the search requests via acuwave module chain
 ## Orbis internal lab codes for positive SARS-Cov-2 PCR fundings
-# orbis-lab-pcr-codes: 19937,20057,20097,20117,20217,20238,20297,20298,20337,20517,20997,21857
-# orbis-lab-variant-codes: 21997,22017,22117
+# covid-orbis-lab-pcr-codes: 19937,20057,20097,20117,20217,20238,20297,20298,20337,20517,20997,21857
+# covid-orbis-lab-variant-codes: 21997,22017,22117
 ## Filter the patient (and thus also the encounter) retrieval to SARS-CoV-2-patients only
 # filter-patient-retrieval: true
 ## Filter the procedure retrieval to inpatient SARS-CoV-2-cases only (with at least one icu transfer) to reduce the requests on an external server (experimental state)
@@ -145,7 +183,3 @@ spring:
 #  other-voc:
 ## variants of interest
 #  non-voc: Lambda,My,Epsilon,Zeta,Eta,Theta,Iota,Kappa
-
-## Activation of running the prediction models. (time and resource exhausting)
-#prediction-models:
-#  ukb-renal-replacement-procedures: true
