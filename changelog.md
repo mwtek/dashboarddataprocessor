@@ -6,6 +6,7 @@
 
 <div style='margin-left:30px;'>
 
+* Addition of fhir sample data from influenza patients
 * Adding unit test scenarios based on static test data json files.
 * Ensuring compatibility.
   with [KDS case profile 2024](https://simplifier.net/packages/de.medizininformatikinitiative.kerndatensatz.fall/2024.0.1).
