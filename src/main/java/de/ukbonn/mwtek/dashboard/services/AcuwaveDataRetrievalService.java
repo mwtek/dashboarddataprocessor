@@ -50,10 +50,10 @@ import de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer;
 import de.ukbonn.mwtek.dashboard.misc.ListHelper;
 import de.ukbonn.mwtek.dashboard.misc.ResourceHandler;
 import de.ukbonn.mwtek.dashboardlogic.enums.CoronaDashboardConstants;
-import de.ukbonn.mwtek.dashboardlogic.enums.DashboardLogicFixedValues;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
+import de.ukbonn.mwtek.utilities.fhir.mapping.kdscase.valuesets.KdsEncounterFixedValues;
 import de.ukbonn.mwtek.utilities.fhir.misc.Converter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
@@ -367,7 +367,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
       List<UkbEncounter> listEncountersInpatient =
           listUkbEncounters.parallelStream().filter(Encounter::hasClass_)
               .filter(x -> x.getClass_().hasCode()).filter(
-                  x -> DashboardLogicFixedValues.ENCOUNTER_CLASS_INPATIENT_CODES.contains(
+                  x -> KdsEncounterFixedValues.ENCOUNTER_CLASS_INPATIENT_CODES.contains(
                       x.getClass_().getCode()))
               .toList();
 
@@ -499,7 +499,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
         // Parallelize the queries in calendar years to speed it up and to get rid of memory
         // issues due to large bulks
         List<Integer> calendarYears = getCalendarYearsPeriod(
-            CoronaDashboardConstants.qualifyingYear,
+            CoronaDashboardConstants.QUALIFYING_YEAR,
             Year.now().getValue());
         // If an entry in the settings file forces querying over certain years this will
         // overwrite the default.

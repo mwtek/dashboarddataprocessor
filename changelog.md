@@ -1,3 +1,39 @@
+# Release Notes - Version V0.5.3
+
+14/May/24
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* Adding unit test scenarios based on static test data json files.
+* Ensuring compatibility.
+  with [KDS case profile 2024](https://simplifier.net/packages/de.medizininformatikinitiative.kerndatensatz.fall/2024.0.1).
+* `Encounter.partOf` will be used to determine encounter hierarchy if the `Encounter.identifier` is
+  not usable.
+* Update of the dataset description to version 0.5.3.
+
+</div>
+
+## Improvements
+
+<div style='margin-left:30px;'>
+
+* The SNOMED `Procedure.code` will be preferred if available instead of the first one found.
+* All `Location.type` entries are now searched for ICU information and not just the first one found
+* A lot of consolidations and efficiency improvements in many data item generations.
+
+</div> 
+
+## Tasks
+
+No tasks were part of this version.
+
+## Bugs
+
+* The outpatient data logic is now also totally interoperable with the newest kds case module
+  profile.
+
 # Release Notes - Version V0.5.2-pre
 
 04/Apr/24

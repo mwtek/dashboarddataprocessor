@@ -55,6 +55,8 @@ public class GlobalConfiguration {
 
   private Map<String, Boolean> predictionModels = new HashMap<>();
 
+  private Boolean usePartOfInsteadOfIdentifier = false;
+
   /**
    * Should the covid-19 data item generation take place?
    */

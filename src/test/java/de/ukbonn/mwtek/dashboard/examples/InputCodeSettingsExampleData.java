@@ -18,36 +18,27 @@
 
 package de.ukbonn.mwtek.dashboard.examples;
 
-import com.google.common.collect.ImmutableList;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_ICD_CODES_COVID;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_ICD_CODES_INFLUENZA;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_PCR_LOINC_COVID;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_PCR_LOINC_COVID_VARIANTS;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_PCR_LOINC_INFLUENZA;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_SNOMED_PROCEDURE_ECMO;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_SNOMED_PROCEDURE_VENTILATION;
+import static de.ukbonn.mwtek.dashboard.misc.ListHelper.commaSeparatedStringIntoList;
+
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
-import java.util.List;
-import lombok.Getter;
 
 public class InputCodeSettingsExampleData {
 
-  @Getter
-  private static final List<String> observationPcrLoincCodes = ImmutableList.of("94306-8",
-      "96763-8",
-      "94640-0");
-
-  @Getter
-  private static final List<String> observationVariantLoincCodes = ImmutableList.of("96741-4",
-      "96895-8");
-
-  @Getter
-  private static final List<String> conditionIcdCodes = ImmutableList.of("U07.1", "U07.2");
-
-  @Getter
-  private static final List<String> procedureVentCodes = ImmutableList.of("26763009", "243147009",
-      "26763009");
-
-  @Getter
-  private static final List<String> procedureEcmoCodes = ImmutableList.of("265764009", "341939001",
-      "127788007");
-
   public static InputCodeSettings getExampleData() {
-    return new InputCodeSettings(observationPcrLoincCodes, observationVariantLoincCodes,
-        conditionIcdCodes, procedureVentCodes, procedureEcmoCodes, null, null);
+    return new InputCodeSettings(commaSeparatedStringIntoList(DEFAULT_PCR_LOINC_COVID),
+        commaSeparatedStringIntoList(DEFAULT_PCR_LOINC_COVID_VARIANTS),
+        commaSeparatedStringIntoList(DEFAULT_ICD_CODES_COVID),
+        commaSeparatedStringIntoList(DEFAULT_SNOMED_PROCEDURE_VENTILATION),
+        commaSeparatedStringIntoList(DEFAULT_SNOMED_PROCEDURE_ECMO),
+        commaSeparatedStringIntoList(DEFAULT_PCR_LOINC_INFLUENZA),
+        commaSeparatedStringIntoList(DEFAULT_ICD_CODES_INFLUENZA));
   }
 
 }

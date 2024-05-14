@@ -59,8 +59,8 @@
 
   - name: Copy version as docker
     copy:
-      src: ~/DDP/DDP-V0.5.2-pre.tar
-      dest: /opt/DDP/DDP-V0.5.2-pre.tar
+      src: ~/DDP/DDP-V0.5.0.tar
+      dest: /opt/DDP/DDP-V0.5.0.tar
 
   - name: Copy docker-compose-file
     copy:
@@ -68,7 +68,7 @@
       dest: /opt/DDP/docker-compose.yml
 
   - name: Load Docker-Version
-    command: docker load -i DDP-V0.5.2-pre.tar
+    command: docker load -i DDP-V0.5.0.tar
     args:
       chdir: /opt/DDP
 

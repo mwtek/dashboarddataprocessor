@@ -85,6 +85,8 @@ public class DataRetrievalController {
    */
   public static final int DAYS_DIFFERENCE = 3;
   public static final String WORKFLOW_ABORTED = "Workflow aborted: ";
+  public static final String CURRENT_DATASET_VERSION = "0.5.3";
+  public static final String FILE_GENERATOR = "ddp";
   Logger logger = LoggerFactory.getLogger(DashboardApplication.class);
 
   private final AcuwaveSearchService acuwaveSearchService;
@@ -126,7 +128,6 @@ public class DataRetrievalController {
    *
    * @return String with the json corona dashboard specification or alternatively an error message
    */
-  @SuppressWarnings("unchecked")
   @GetMapping
   public ResponseEntity<String> createJson() {
 
@@ -145,15 +146,7 @@ public class DataRetrievalController {
     resultStream = null;
 
     // Determine the data retrieval service for the server type used
-    AbstractDataRetrievalService dataRetrievalService;
-    if (globalConfiguration.getServerType() == ServerTypeEnum.ACUWAVE) {
-      dataRetrievalService = new AcuwaveDataRetrievalService(acuwaveSearchService,
-          this.acuwaveSearchConfiguration, this.globalConfiguration);
-    } else {
-      dataRetrievalService =
-          new FhirDataRetrievalService(fhirSearchService, this.fhirSearchConfiguration,
-              this.globalConfiguration);
-    }
+    AbstractDataRetrievalService dataRetrievalService = determineDataRetrievalService();
 
     boolean generateCovidData = dataRetrievalService.getGlobalConfiguration()
         .getGenerateCovidData();
@@ -163,11 +156,8 @@ public class DataRetrievalController {
 
     boolean generateUkbRenalReplacementModelData = dataRetrievalService.getGlobalConfiguration()
         .getGenerateUkbRenalReplacementModelData();
-    //
-    //    // debug mode (extended output)
-    boolean debugMode = this.globalConfiguration.getDebug();
-    //
-    //    // If custom codes are set in the yaml file -> update the default values.
+
+    // If custom codes are set in the yaml file -> update the default values.
     InputCodeSettings inputCodeSettings = ConfigurationTransformer.extractInputCodeSettings(
         dataRetrievalService);
 
@@ -199,9 +189,8 @@ public class DataRetrievalController {
       if (generateInfluenzaData) {
         dataItems.addAll(
             InfluenzaDataController.generateData(INFLUENZA, dataRetrievalService,
-                reportConfiguration,
-                processTimer, globalConfiguration, variantConfiguration, inputCodeSettings,
-                exclDataItems, result));
+                reportConfiguration, processTimer, globalConfiguration, variantConfiguration,
+                inputCodeSettings, exclDataItems, result));
         // End workflow if no resources were found
         if (LoggingHelper.gotWorkflowAborted(INFLUENZA)) {
           return new ResponseEntity<>(LoggingHelper.getAbortMessage(),
@@ -212,9 +201,9 @@ public class DataRetrievalController {
       ArrayNode dataItemsArrayNode = mapper.valueToTree(dataItems);
       result.putArray("dataitems").addAll(dataItemsArrayNode);
       result.put("provider", this.providerService.provConf.getName());
-      result.put("dashboard_dataset_version", "0.5.2");
+      result.put("dashboard_dataset_version", CURRENT_DATASET_VERSION);
       result.put("author", this.providerService.provConf.getAuthor());
-      result.put("file_generated_by", "ddp");
+      result.put("file_generated_by", FILE_GENERATOR);
       result.put("exporttimestamp", DateTools.getCurrentUnixTime());
 
       byte[] resultBuffer = result.toString().getBytes(StandardCharsets.UTF_8);
@@ -248,6 +237,19 @@ public class DataRetrievalController {
       logger.error(WORKFLOW_ABORTED + ex.getMessage());
       return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private AbstractDataRetrievalService determineDataRetrievalService() {
+    AbstractDataRetrievalService dataRetrievalService;
+    if (globalConfiguration.getServerType() == ServerTypeEnum.ACUWAVE) {
+      dataRetrievalService = new AcuwaveDataRetrievalService(acuwaveSearchService,
+          this.acuwaveSearchConfiguration, this.globalConfiguration);
+    } else {
+      dataRetrievalService =
+          new FhirDataRetrievalService(fhirSearchService, this.fhirSearchConfiguration,
+              this.globalConfiguration);
+    }
+    return dataRetrievalService;
   }
 
 }

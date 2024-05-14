@@ -28,7 +28,7 @@ fi
 
 ### Start ###
 name="dashboard-data-processor"
-version="0.5.2-pre"
+version="0.5.3"
 
 echo -e "Build $name"
 docker build --quiet -f Dockerfile -t "$name":"$version" .

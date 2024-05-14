@@ -9,6 +9,8 @@ global:
   server-type: FHIR
   ## Maximum 'count' size per fhir search request (e.g. if querying encounter resources by patient IDs). This value should never be reached (default: 1000000).
   # max-count-size: 1000000
+  ## Should the Encounter.partOf value be used instead (or more precise: ADDITIONALLY) of the visit-number in Encounter.identifier to assign 'Versorgungsstellenkontakt' -> 'Einrichtungskontakt'?
+  use-part-of-instead-of-identifier: false
   ## Comma-separated list of codes used for Corona patient identification (icd = Condition resources; loinc = Observation resources).
   inputcodes:
     ## ICD codes SARS-CoV-2
@@ -42,19 +44,18 @@ fhir:
     rest-password: y
     ## SSL
     key-store: src/main/resources/certs/clinical_domain_keystore.jks
-    key-store-password: Meine Vorfahren und Nachfahren
+    key-store-password: pwd
     trust-store: src/main/resources/certs/truststore.jks
-    trust-store-password: Scheme Dream Martinique 739
-
+    trust-store-password: pwd
   ## Adjustment of FHIR search requests on the FHIR server
   search:
     ## Batch size of the partial FHIR searches. If the length of the GET request URL is too long, this value must be reduced.
     batchsize: 500
     ## Maximum 'count' size per fhir search request (e.g. if querying encounter resources by patient IDs). This value should never be reached (default: 1000000).
     # max-count-size: 1000000
-    ## Filter the patient (and thus also the encounter) retrieval to SARS-CoV-2-patients only
+    ## Filter the patient (and thus also the encounter) retrieval to disease-positive-patients only
     # covid-filter-patient-retrieval: false
-    ## Should the encounter fhir search query be filtered by admission date (all cases by SARS-CoV-2 start reference date) ? Must be disabled if outpatient cases do not have an end date.
+    ## Should the encounter fhir search query be filtered by admission date (all cases by SARS-CoV-2 start reference date)? Must be disabled if outpatient cases do not have an end date.
     # covid-filter-encounter-by-date: false
     ## Does a Reference exist from Condition to Case or only the reverse way from Encounter to Condition? This results in differences in the FHIR search queries.
     # use-encounter-condition-reference: true 

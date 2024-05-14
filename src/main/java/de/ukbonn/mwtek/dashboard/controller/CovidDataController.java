@@ -111,7 +111,7 @@ public class CovidDataController {
       dataItems.addAll(
           dataItemGenerator.getDataItems(exclDataItems.getExcludes(),
               globalConfiguration.getDebug(), variantConfiguration, inputCodeSettings,
-              dataItemContext));
+              dataItemContext, globalConfiguration.getUsePartOfInsteadOfIdentifier()));
 
       // Generate an export with current case/encounter ids by treatment level on demand
       if (reportConfiguration.getCaseIdFileGeneration()) {

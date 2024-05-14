@@ -13,24 +13,26 @@ Feedback regarding import in FHIR servers of other types (e.g. IBM FHIR) is very
 
 Currently, the following sample bundles exist with the following content characteristics:
 
-* <a href="./SampleBundle_1.json" target="_blank">SampleBundle_1.json</a>
+* <a href="./SampleBundle_Covid.json" target="_blank">SampleBundle_Covid.json</a>
     * Bundle of 3 patients.
-        * 2 patients with inpatient icu covid cases (one patient with an in-progress encounter while
-          the other patients got a finished case with discharge disposition 'dead')
-        * 1 patient with an outpatient covid encounter.
+        * 3 patients with inpatient icu covid-19 cases
+            * one with an in-progress encounter
+            * one who got a finished case with discharge disposition 'dead' and who also got an
+              alpha variant test result
+            * one which an ecmo procedure that contains an additional ops code in addition to the
+              snomed code
+        * 1 patient with an outpatient covid-19 encounter
+* <a href="./SampleBundle_Influenza.json" target="_blank">SampleBundle_Influenza.json</a>
+    * Bundle of 3 patients.
+        * 2 patients with inpatient influenza cases
+            * 1 patient with an in-progress encounter on icu, an active ventilation and an influenza
+              icd-diagnosis
+            * 1 patient with a finished case with discharge disposition 'dead' who moved once from
+              normal ward to icu ward, who had an ecmo procedure and a negative and who also a
+              positive influenza lab result
+        * 1 patient with an outpatient influenza encounter and an influenza icd-diagnosis
+        * 1 female patient with a pre-stationary influenza encounter and an influenza icd-diagnosis
 
 More bundles with sample data will surely follow in the future.
 
------ 
-
-Addendum:
-
-There is a particularity regarding the referencing of the location resources within the encounter
-resources:
-The facility contact ('Einrichtungskontakt') resources contain all location entries. Ideally, this
-redundancy is omitted and the location data is exclusively part at granular level in the supply
-level ('Versorgungsstellenkontakt') and department ('Abteilungskontakt') contacts. However, this
-requires a sharp definition in the implementation
-guide, <a href="https://simplifier.net/medizininformatikinitiative-modulfall/~issues/2333">which is
-awaiting implementation/explanation</a>. Until clarification, the DDP will only check the Encounter
-resource referenced by Observation or Condition, which is usually the facility contact. 
+These samples will also be used for unit testing. 

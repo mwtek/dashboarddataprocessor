@@ -42,7 +42,7 @@ and a short description.
 <th>Description</th>
 </tr>
 <tr>
-<td><a href="./files/Datensatzbeschreibung_Dashboard_v0_5_2_20240305.pdf" target="_blank">JSON dataset description</a></td>
+<td><a href="./files/Datensatzbeschreibung_Dashboard_v0_5_3_20240416-release.pdf" target="_blank">JSON dataset description</a></td>
 <td>The dataset description of the resulting JSON format, including the description of the aggregated data items.</td> 
 </tr> 
 <tr>
@@ -100,7 +100,7 @@ It is recommended to have both programs installed in a way that the correct vers
 *mvn* are found in the system path.
 
 In addition, at least 4 GB of free RAM, preferably 8 GB, should be available. The size depends on
-the number of resources that have to be retrieved from the FHIR server. In a test with ~ 500,000
+the number of resources that have to be retrieved from the FHIR server. In a test with ~ 500.000
 resources, 4 GB was the lower limit.
 
 ## Requirements FHIR data
@@ -154,14 +154,14 @@ release and for which compatibility has been adequately tested. In case of probl
 incompatibilities, please email the developer or open an issue. It is tried to respond to the
 constant innovations by new Dashboard Processor versions.
 
-| KDS Module                                                                                        | Profile(s)                                                                                                 | Minimum Version | Comments                                                                                                                                                                                                                                                                                                                                                                                         |
-|---------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [KDS Person](https://simplifier.net/medizininformatikinitiative-modulperson)                      | [Patient](https://simplifier.net/medizininformatikinitiative-modulperson/sdmiipersonpatient)               | 2024.0.0        |                                                                                                                                                                                                                                                                                                                                                                                                  |
-| [KDS Fall](https://simplifier.net/medizininformatikinitiative-modulfall)                          | [Encounter](https://simplifier.net/medizininformatikinitiative-modulfall/kontaktgesundheitseinrichtung)    | 2024.0.0        | `Encounter.location` usage on `Versorgungsstellenkontakt` level is necessary for the usage of data items that are based on transfer history (e.g. `current.treatmentlevel`). These resources must have a linkage to the `Einrichtungskontakt` encounter, either via the `Encounter.identifier.Aufnahmenummer` or indirectly, recursively via `Encounter.partOf` (currently not yet implemented). | 
-| [KDS Labor](https://simplifier.net/medizininformatikinitiative-modullabor)                        | [Observation](https://simplifier.net/medizininformatikinitiative-modullabor/observationlab)                | 1.0.6           |                                                                                                                                                                                                                                                                                                                                                                                                  |
-| [KDS Diagnose](https://simplifier.net/medizininformatikinitiative-moduldiagnosen)                 | [Condition](https://simplifier.net/medizininformatikinitiative-moduldiagnosen/diagnose)                    | 2024.0.0        |                                                                                                                                                                                                                                                                                                                                                                                                  |
-| [KDS ICU](https://simplifier.net/MedizininformatikInitiative-Modul-Intensivmedizin/~introduction) | [MII_Beatmung](https://simplifier.net/medizininformatikinitiative-modul-intensivmedizin/miibeatmung)       | 2024.0.0        |                                                                                                                                                                                                                                                                                                                                                                                                  |
-| [KDS Strukturdaten](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten)        | [Location](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten/sd_mii_struktur_location) | 1.0             |                                                                                                                                                                                                                                                                                                                                                                                                  |
+| KDS Module                                                                                        | Profile(s)                                                                                                 | Minimum Version | Comments                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+|---------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [KDS Person](https://simplifier.net/medizininformatikinitiative-modulperson)                      | [Patient](https://simplifier.net/medizininformatikinitiative-modulperson/sdmiipersonpatient)               | 2024.0.0        |                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| [KDS Fall](https://simplifier.net/medizininformatikinitiative-modulfall)                          | [Encounter](https://simplifier.net/medizininformatikinitiative-modulfall/kontaktgesundheitseinrichtung)    | 2024.0.0        | `Encounter.location` usage on `Versorgungsstellenkontakt` level is necessary for the usage of data items that are based on transfer history (e.g. `current.treatmentlevel`). These resources must have a linkage to the `Einrichtungskontakt` encounter, either via the `Encounter.identifier.Aufnahmenummer` or indirectly, recursively via `Encounter.partOf` (after setting `use-part-of-instead-of-identifier` to `true` in the application.yaml). | 
+| [KDS Labor](https://simplifier.net/medizininformatikinitiative-modullabor)                        | [Observation](https://simplifier.net/medizininformatikinitiative-modullabor/observationlab)                | 1.0.6           |                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| [KDS Diagnose](https://simplifier.net/medizininformatikinitiative-moduldiagnosen)                 | [Condition](https://simplifier.net/medizininformatikinitiative-moduldiagnosen/diagnose)                    | 2024.0.0        |                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| [KDS ICU](https://simplifier.net/MedizininformatikInitiative-Modul-Intensivmedizin/~introduction) | [MII_Beatmung](https://simplifier.net/medizininformatikinitiative-modul-intensivmedizin/miibeatmung)       | 2024.0.0        |                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| [KDS Strukturdaten](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten)        | [Location](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten/sd_mii_struktur_location) | 1.0             |                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 
 ## Runtime Configuration
 
@@ -239,7 +239,7 @@ or via using the run-script:
 
 **Install and run manually**
 
-For the Project to run without any issues it is mandatory to install the other two libraries in a
+For the Project to run without any issues, it is mandatory to install the other two libraries in a
 certain order:
 
 utilities &#8594; dashboardlogic &#8594; dashboarddataprocessor
@@ -264,7 +264,7 @@ mvn spring-boot:run
 base folder and configured with the local settings. When the .JAR file is executed,
 the `application.yaml` is taken from the base directory by default at runtime.
 
-A precompiled file named `dashboarddataprocessor-0.5.2-pre.jar` can be found in the project
+A precompiled file named `dashboarddataprocessor-0.5.3.jar` can be found in the project
 target directory. Be aware that before you can access the .jar file, you have to successfully build
 the project following one of the before mentioned approaches of 'Install and run via script' or '
 Install and run manually'.
@@ -272,7 +272,7 @@ Install and run manually'.
 Execute this file (or the precompiled file accordingly):
 
 ```
-java -jar target/dashboarddataprocessor-0.5.2-pre.jar
+java -jar target/dashboarddataprocessor-0.5.3.jar
 ```
 
 Note that the settings must be adjusted in the .yaml file inside the packed .jar archive. This can
@@ -285,19 +285,19 @@ We provided files for **creating DDP-Image** and using it with docker. There is 
 -script in `docker-image`-folder you can execute to
 build DDP-Image on local Server.
 The script will use the file `Dockerfile` in same directory to create the docker container. It is
-needed to have the `dashboarddataprocessor-0.5.2-pre.jar` and the `application.yaml` you want to use
+needed to have the `dashboarddataprocessor-0.5.3.jar` and the `application.yaml` you want to use
 on
 the right place. By default, the created jar by `build.sh`-script in the target-folder is used and a
 copy of the `application.yaml` in the dashboarddataprocessor-folder. You can adapt the used files by
 editing following lines in `Dockerfile`.
 
 ```
-COPY dashboarddataprocessor/target/dashboarddataprocessor-0.5.2-pre.jar /dashboarddataprocessor/dashboard-data-processor.jar
+COPY dashboarddataprocessor/target/dashboarddataprocessor-0.5.3.jar /dashboarddataprocessor/dashboard-data-processor.jar
 COPY dashboarddataprocessor/application.yaml /dashboarddataprocessor
 ```
 
 After the script has been finished, you can use the created container locally. Besides this the
-file `DDP-V0.5.0-pre.tar` is created, which contains the whole software. You can put it to any
+file `DDP-V0.5.3.tar` is created, which contains the whole software. You can put it to any
 server
 you want to use for DDP. To deploy it you can use ansible-script `deploy-docker.yaml` which also
 handles whole serversetup.
@@ -396,13 +396,8 @@ detect ICU stays instead of the location information, as this is likely to be se
 kds compliant by default. For the location, the KDS module is currently under construction and no
 implementation guide exists yet.
 
-Since the Implementation Guide of the KDS Case Profiles leaves a little room for interpretation,
-`Encounter.partOf` will also be supported in the future for navigation within the Encounter
-resources of a case and not only the visit number under `Encounter.identifier.Aufnahmenummer`
-number.
-
 In addition, the <a href="./files/Documentation_Dashboard_Backend_v0_3_0a.pdf" target="_blank">
-documentation of the FHIR implementation</a> still needs to be updated to version 0.5.2.
+documentation of the FHIR implementation</a> still needs to be updated to version 0.5.3.
 
 Presumably, there will also soon be an option to switch FHIR search requests from GET to POST.
 
@@ -437,7 +432,7 @@ If you discover that the Java VM has too little RAM available (OutOfMemoryError:
 you can try increasing the maximum heap size. For example, in this way:
 
 ```
-java -jar -xMx 8G  target/dashboarddataprocessor-0.5.2-pre.jar
+java -jar -xMx 8G  target/dashboarddataprocessor-0.5.3.jar
 ```
 
 **Connection to the FHIR server failed: 431 Request Header Fields Too Large**
@@ -469,3 +464,4 @@ Thanks to everyone who contributed to this project:
 - [haemka](https://github.com/haemka)
 - [FloSeidel](https://github.com/FloSeidel)
 - [schwzr](https://github.com/schwzr)
+- [UMEihle](https://github.com/UMEihle)

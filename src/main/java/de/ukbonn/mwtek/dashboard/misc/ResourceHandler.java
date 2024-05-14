@@ -18,7 +18,6 @@
 
 package de.ukbonn.mwtek.dashboard.misc;
 
-import static de.ukbonn.mwtek.dashboardlogic.tools.EncounterFilter.isCurrentlyOnIcu;
 import static de.ukbonn.mwtek.utilities.fhir.misc.Converter.extractReferenceId;
 
 import de.ukbonn.mwtek.dashboard.DashboardApplication;
@@ -26,8 +25,6 @@ import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
 import de.ukbonn.mwtek.dashboard.exceptions.SearchException;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
-import de.ukbonn.mwtek.dashboardlogic.tools.EncounterFilter;
-import de.ukbonn.mwtek.dashboardlogic.tools.LocationFilter;
 import de.ukbonn.mwtek.utilities.fhir.misc.Converter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
@@ -103,7 +100,7 @@ public class ResourceHandler {
   public static void storeObservationPatientKeys(Observation obs, Set<String> outputPatientIds,
       Set<String> outputEncounterIds, ServerTypeEnum serverType) {
     try {
-      // fhir server usually store the references in the "resourceType/1234" format during import
+      // fhir server usually stores the references in the "resourceType/1234" format during import
       // Until this referencing process (which may never occur), the acuwave server stores its
       // business identifier in the tag 'identifier'
       switch (serverType) {
@@ -237,12 +234,12 @@ public class ResourceHandler {
     });
 
     // Iterate over all encounter resources and set the encounter reference in all condition
-    // resources that handle covid diagnoses.
+    // resources that handle disease-positive diagnoses.
     listEncounters.forEach(enc -> {
       if (enc.hasDiagnosis()) {
         enc.getDiagnosis().forEach(diagComp -> {
           String condRefId = extractReferenceId(diagComp.getCondition());
-          // Detection of the covid diagnosis, which are part of the condition map.
+          // Detection of the disease-positive diagnosis, which are part of the condition map.
           if (diagComp.hasCondition() && diagComp.getCondition().hasReference()
               && conditionMap.containsKey(
               condRefId)) {
@@ -269,7 +266,7 @@ public class ResourceHandler {
     // Just the top level resources are needed
     List<UkbEncounter> facilityContacts = ((List<UkbEncounter>) Converter.convert(
         dataRetrievalService.getIcuEncounters())).parallelStream()
-        .filter(EncounterFilter::isFacilityContact).toList();
+        .filter(UkbEncounter::isFacilityContact).toList();
 
     // To detect cases that are currently in ICU, we need to find the active transfers and check
     // for ICU status.
@@ -285,20 +282,20 @@ public class ResourceHandler {
     // Reduce the location ids to the icu wards.
     List<String> icuWardIds = ((List<UkbLocation>) Converter.convert(
         dataRetrievalService.getLocations())).stream().filter(x -> !x.getType().isEmpty())
-        .filter(LocationFilter::isLocationWard).filter(LocationFilter::isLocationIcu).map(
+        .filter(UkbLocation::isLocationWard).filter(UkbLocation::isLocationIcu).map(
             Resource::getIdBase)
         .toList();
 
     facilityContacts.parallelStream().forEach(x -> {
       // The main key is the local case id, found in the identifier.
-      // Just add an item if its found.
+      // Just add an item if it's found.
       if (x.hasIdentifier()) {
         // Set value = 1.0 if the encounter is currently on an icu location
         x.getIdentifier().stream()
             .filter(y -> y.hasUse() && y.getUse() == IdentifierUse.OFFICIAL).findFirst().ifPresent(
                 identifier -> coreBaseDataItems.add(
                     new CoreBaseDataItem(identifier.getValue(), null,
-                        isCurrentlyOnIcu(x, icuWardIds) ? 1.0 : 0.0, x.getPeriod()
+                        x.isCurrentlyOnIcu(icuWardIds) ? 1.0 : 0.0, x.getPeriod()
                         .getStart(), x.getPeriod().getEnd(), x.getId())));
       }
     });
