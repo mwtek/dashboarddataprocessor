@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import ca.uhn.fhir.context.FhirContext;
 import de.ukbonn.mwtek.dashboardlogic.DataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
-import de.ukbonn.mwtek.utilities.fhir.misc.Converter;
+import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
@@ -123,17 +123,17 @@ public class ResultFunctionalityTests {
 
         // Check the type of the resource and convert it accordingly
         if (resource instanceof Encounter encounter) {
-          ukbEncounters.add((UkbEncounter) Converter.convert(encounter));
+          ukbEncounters.add((UkbEncounter) ResourceConverter.convert(encounter));
         } else if (resource instanceof Patient patient) {
-          ukbPatients.add((UkbPatient) Converter.convert(patient));
+          ukbPatients.add((UkbPatient) ResourceConverter.convert(patient));
         } else if (resource instanceof Condition condition) {
-          ukbConditions.add((UkbCondition) Converter.convert(condition));
+          ukbConditions.add((UkbCondition) ResourceConverter.convert(condition));
         } else if (resource instanceof Observation observation) {
-          ukbObservations.add((UkbObservation) Converter.convert(observation));
+          ukbObservations.add((UkbObservation) ResourceConverter.convert(observation));
         } else if (resource instanceof Procedure procedure) {
-          ukbProcedures.add((UkbProcedure) Converter.convert(procedure));
+          ukbProcedures.add((UkbProcedure) ResourceConverter.convert(procedure));
         } else if (resource instanceof Location location) {
-          ukbLocations.add((UkbLocation) Converter.convert(location));
+          ukbLocations.add((UkbLocation) ResourceConverter.convert(location));
         }
       }
     } catch (IOException e) {

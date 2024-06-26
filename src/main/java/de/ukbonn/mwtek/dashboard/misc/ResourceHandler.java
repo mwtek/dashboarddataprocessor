@@ -18,14 +18,14 @@
 
 package de.ukbonn.mwtek.dashboard.misc;
 
-import static de.ukbonn.mwtek.utilities.fhir.misc.Converter.extractReferenceId;
+import static de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter.extractReferenceId;
 
 import de.ukbonn.mwtek.dashboard.DashboardApplication;
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
 import de.ukbonn.mwtek.dashboard.exceptions.SearchException;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
-import de.ukbonn.mwtek.utilities.fhir.misc.Converter;
+import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
 import java.util.ArrayList;
@@ -264,7 +264,7 @@ public class ResourceHandler {
     Set<CoreBaseDataItem> coreBaseDataItems = ConcurrentHashMap.newKeySet();
     Set<CoreBaseDataItem> icuEpisodes = ConcurrentHashMap.newKeySet();
     // Just the top level resources are needed
-    List<UkbEncounter> facilityContacts = ((List<UkbEncounter>) Converter.convert(
+    List<UkbEncounter> facilityContacts = ((List<UkbEncounter>) ResourceConverter.convert(
         dataRetrievalService.getIcuEncounters())).parallelStream()
         .filter(UkbEncounter::isFacilityContact).toList();
 
@@ -280,7 +280,7 @@ public class ResourceHandler {
     dataRetrievalService.getLocationIds().addAll(locationIds);
 
     // Reduce the location ids to the icu wards.
-    List<String> icuWardIds = ((List<UkbLocation>) Converter.convert(
+    List<String> icuWardIds = ((List<UkbLocation>) ResourceConverter.convert(
         dataRetrievalService.getLocations())).stream().filter(x -> !x.getType().isEmpty())
         .filter(UkbLocation::isLocationWard).filter(UkbLocation::isLocationIcu).map(
             Resource::getIdBase)

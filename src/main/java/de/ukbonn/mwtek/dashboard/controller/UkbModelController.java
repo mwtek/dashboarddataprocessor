@@ -66,11 +66,13 @@ public class UkbModelController {
     Map<RenalReplacementRiskParameters, List<CoreBaseDataItem>> renalReplacementModelParameterSetMap = new HashMap<>();
 
     if (serverTypeEnum == ServerTypeEnum.ACUWAVE) {
-      acuwaveSearchConfiguration = ((AcuwaveDataRetrievalService) dataRetrievalService).getAcuwaveSearchConfiguration();
+      acuwaveSearchConfiguration =
+          ((AcuwaveDataRetrievalService) dataRetrievalService).getAcuwaveSearchConfiguration();
     } else {
       // Not implemented yet
       throw new UnsupportedOperationException(
-          "Currently, UKB prediction model data generation is not supported on a non-Acuwave workflow.");
+          "Currently, UKB prediction model data generation is not supported on a non-Acuwave "
+              + "workflow.");
     }
 
     // Fetching data
@@ -79,7 +81,8 @@ public class UkbModelController {
     // Retrieve the local case ids of the encounter for further queries.
     renalReplacementModelParameterSetMap.put(ENCOUNTER,
         extractCoreBaseDataOfFacilityEncounters(dataRetrievalService));
-    // The case ids from the previous data retrieval step are the main input parameters for the following queries.
+    // The case ids from the previous data retrieval step are the main input parameters for the
+    // following queries.
     Set<String> icuLocalCaseIds = renalReplacementModelParameterSetMap.get(ENCOUNTER)
         .parallelStream().map(CoreBaseDataItem::hisCaseId).collect(
             Collectors.toSet());
@@ -90,8 +93,9 @@ public class UkbModelController {
         dataRetrievalService.getIcuEpisodes(icuLocalCaseIds));
     processTimer.stopLoggingTime(renalReplacementModelParameterSetMap.get(EPISODES));
 
-    // Cases without episodes are not usable at all (since its impossible to calculate 24h intervals), so we can filter them directly
-    log.debug("Number of icu case ids before episode filtering: " + icuLocalCaseIds.size());
+    // Cases without episodes are not usable at all (since its impossible to calculate 24h
+    // intervals), so we can filter them directly
+    log.debug("Number of icu case ids before episode filtering: {}", icuLocalCaseIds.size());
     Set<String> casesWithEpisodes = renalReplacementModelParameterSetMap.get(EPISODES).stream()
         .map(CoreBaseDataItem::hisCaseId).collect(
             Collectors.toSet());
@@ -109,7 +113,8 @@ public class UkbModelController {
     renalReplacementModelParameterSetMap.put(ENCOUNTER, encounterWithIcuEpisodes);
 
     // For current data we need to retrieve the data via clapp.
-    // Cases without discharge date should be active and for this filtering on cases with a discharge date older than 1 calendar day.
+    // Cases without discharge date should be active and for this filtering on cases with a
+    // discharge date older than 1 calendar day.
     List<String> recentCaseIds = renalReplacementModelParameterSetMap.get(ENCOUNTER)
         .parallelStream().filter(x -> x.dateTo() == null ||
             !(DateTools.isMoreThanXDaysOlder(DateTools.getCurrentDateTime(), x.dateTo(),
@@ -132,8 +137,10 @@ public class UkbModelController {
           + icuLocalCaseIdsWithoutRecents.get(0) + " ]");
     }
 
-    // Retrieval of the ICU EPISODE information (including internal case ids) which is needed for the detection of deltas in periods of vital signs
-    // Retrieval of the observations codes via orbis internal code and filtering on the forced loinc code right after, since there could be ones with another unit.
+    // Retrieval of the ICU EPISODE information (including internal case ids) which is needed for
+    // the detection of deltas in periods of vital signs
+    // Retrieval of the observations codes via orbis internal code and filtering on the forced
+    // loinc code right after, since there could be ones with another unit.
     processTimer.startLoggingTime(ResourceType.Observation, "lab value: lactate");
     renalReplacementModelParameterSetMap.put(LACTATE,
         dataRetrievalService.getUkbRenalReplacementObservations(icuLocalCaseIds,
@@ -151,7 +158,8 @@ public class UkbModelController {
         dataRetrievalService.getUkbRenalReplacementObservations(icuLocalCaseIds,
             acuwaveSearchConfiguration.getPredictionModelUkbObservationOrbisUreaCodes()));
     processTimer.stopLoggingTime(renalReplacementModelParameterSetMap.get(UREA));
-    // Removal of all values that have no intersection with an icu episode of care of the given case
+    // Removal of all values that have no intersection with an icu episode of care of the
+    // given case
     renalReplacementModelParameterSetMap = removeNonIcuLabValues(
         renalReplacementModelParameterSetMap);
 
@@ -192,8 +200,8 @@ public class UkbModelController {
       processTimer.stopLoggingTime(renalReplacementModelParameterSetMap.get(BODY_WEIGHT));
     }
 
-    log.debug("Input CLAPP: " + filteredCaseIds.size());
-    log.debug("Input PDMS: " + filteredCaseIdsWithoutRecents.size());
+    log.debug("Input CLAPP: {}", filteredCaseIds.size());
+    log.debug("Input PDMS: {}", filteredCaseIdsWithoutRecents.size());
 
     processTimer.startLoggingTime(ResourceType.Observation, "bodyWeightPdms");
     List<CoreBaseDataItem> bodyWeightPdms = dataRetrievalService.getUkbRenalReplacementBodyWeight(
@@ -215,7 +223,8 @@ public class UkbModelController {
 //                dataRetrievalService.getUkbRenalReplacementBodyWeight(icuLocalCaseIds));
 
     // Body weight should be a unique parameter by case, but it isn't since any ward can have one.
-    // For the further calculation its enough to get the first one, so this step will prevent duplicates.
+    // For the further calculation its enough to get the first one, so this step will prevent
+    // duplicates.
     List<CoreBaseDataItem> bodyWeightRecent =
         dataRetrievalService.getUkbRenalReplacementBodyWeight(filteredRecentCaseIds, CLAPP);
     renalReplacementModelParameterSetMap.get(BODY_WEIGHT).addAll(
@@ -234,17 +243,15 @@ public class UkbModelController {
     }
 
     if (!benchMarkRun) {
-      log.debug(
-          "Size caseIds before filtering of the cases without body weight: "
-              + filteredCaseIds.size());
+      log.debug("Size caseIds before filtering of the cases without body weight: {}",
+          filteredCaseIds.size());
       Map<RenalReplacementRiskParameters, List<CoreBaseDataItem>> finalRenalReplacementModelParameterSetMap = renalReplacementModelParameterSetMap;
       filteredCaseIds.removeAll(filteredCaseIds.parallelStream()
           .filter(x -> !finalRenalReplacementModelParameterSetMap.get(BODY_WEIGHT).stream().map(
               CoreBaseDataItem::hisCaseId).collect(Collectors.toSet()).contains(x))
           .collect(Collectors.toSet()));
-      log.debug(
-          "Size caseIds after filtering of the cases without body weight: "
-              + filteredCaseIds.size());
+      log.debug("Size caseIds after filtering of the cases without body weight: {}",
+          filteredCaseIds.size());
 //        Set<String> caseIdsObservations = icuLocalCaseIds.parallelStream()
 //            .filter(x -> renalReplacementModelParameterSetMap.get(LACTATE).stream().map(
 //                CoreBaseDataItem::caseId).contains(x))
@@ -316,8 +323,9 @@ public class UkbModelController {
 //                dataRetrievalService.getUkbRenalReplacementUrineOutput(icuLocalCaseIds));
 //        renalReplacementModelParameterSetMap.put(URINE_OUTPUT,
 //            dataRetrievalService.getUkbRenalReplacementUrineOutput(filteredRecentCaseIds, CLAPP));
-    List<CoreBaseDataItem> urineOutputRecent = dataRetrievalService.getUkbRenalReplacementUrineOutput(
-        filteredRecentCaseIds, CLAPP);
+    List<CoreBaseDataItem> urineOutputRecent =
+        dataRetrievalService.getUkbRenalReplacementUrineOutput(
+            filteredRecentCaseIds, CLAPP);
     renalReplacementModelParameterSetMap.get(URINE_OUTPUT).addAll(urineOutputRecent);
     processTimer.stopLoggingTime(urineOutputRecent);
 
@@ -395,8 +403,8 @@ public class UkbModelController {
       }
     }
 
-    log.debug(context + ": Size of entries after filtering to intersections only: "
-        + filteredValues.size());
+    log.debug("{}: Size of entries after filtering to intersections only: {}", context,
+        filteredValues.size());
 
     // Temporary output to generate samples of filtered cases
     Set<String> filteredHisCaseIds = filteredValues.stream()
@@ -405,8 +413,7 @@ public class UkbModelController {
     inputEntries.stream().map(CoreBaseDataItem::hisCaseId)
         .filter(item -> !filteredHisCaseIds.contains(item))
         .limit(10)
-        .forEach(item -> log.debug("No valid " + context + " found for "
-            + item));
+        .forEach(item -> log.debug("No valid {} found for {}", context, item));
 
     return filteredValues;
   }
@@ -451,26 +458,26 @@ public class UkbModelController {
       List<CoreBaseDataItem> clappAll, List<CoreBaseDataItem> pdmsData,
       List<CoreBaseDataItem> clappRecentCases, boolean resourcesComparable) {
 
-    // Some outputs are just useful if the "recent" logic is not in use like comparing CLAPP-ALL with PDMS data
+    // Some outputs are just useful if the "recent" logic is not in use like comparing CLAPP-ALL
+    // with PDMS data
     boolean noRecentUsage = clappRecentCases == null || clappRecentCases.isEmpty();
 
     // Fill a list to get case id information once
     Map<String, String> resourceIdsByCaseId = new ConcurrentHashMap<>();
     clappAll.parallelStream()
         .forEach(item -> resourceIdsByCaseId.put(item.debugKey(), item.hisCaseId()));
-    log.debug("Size resourceIdsByCaseId resources : " + resourceIdsByCaseId.size());
+    log.debug("Size resourceIdsByCaseId resources : {}", resourceIdsByCaseId.size());
 
     pdmsData.parallelStream()
         .forEach(item -> resourceIdsByCaseId.putIfAbsent(item.debugKey(), item.hisCaseId()));
-    log.debug(
-        "Size resourceIdsByCaseId resources after pdmsData: " + resourceIdsByCaseId.size());
+    log.debug("Size resourceIdsByCaseId resources after pdmsData: {}", resourceIdsByCaseId.size());
 
     if (!noRecentUsage) {
       clappRecentCases.parallelStream()
           .forEach(
               item -> resourceIdsByCaseId.putIfAbsent(item.debugKey(), item.hisCaseId()));
-      log.debug(
-          "Size resourceIdsByCaseId resources after clappRecent: " + resourceIdsByCaseId.size());
+      log.debug("Size resourceIdsByCaseId resources after clappRecent: {}",
+          resourceIdsByCaseId.size());
     }
 
     Set<String> caseIdsClappAllByType = clappAll
@@ -490,19 +497,15 @@ public class UkbModelController {
     resourceIdsNotInBoth.removeAll(resourceIdsPdmsByType);
     if (noRecentUsage && resourcesComparable) {
       for (String resourceId : resourceIdsNotInBoth) {
-        log.debug(resourceId + " [ResourceID]  " + renalReplacementRiskParameter
-            + " is just in CLAPP not in ReportingDB [CASE= "
-            + resourceIdsByCaseId.get(resourceId) + "]");
+        log.debug("{} [ResourceID]  {} is just in CLAPP not in ReportingDB [CASE= {}]", resourceId,
+            renalReplacementRiskParameter, resourceIdsByCaseId.get(resourceId));
       }
     }
 
-    log.debug("Delta [ResourceIds] in " + renalReplacementRiskParameter
-        + " between CLAPP-ALL and REPORTING DB is: "
-        + resourceIdsNotInBoth.size());
-
-    log.debug("Delta [CaseIds] in " + renalReplacementRiskParameter
-        + " between CLAPP-ALL and REPORTING DB is: "
-        + caseIdsNotInBoth.size());
+    log.debug("Delta [ResourceIds] in {} between CLAPP-ALL and REPORTING DB is: {}",
+        renalReplacementRiskParameter, resourceIdsNotInBoth.size());
+    log.debug("Delta [CaseIds] in {} between CLAPP-ALL and REPORTING DB is: {}",
+        renalReplacementRiskParameter, caseIdsNotInBoth.size());
 
     Set<String> resourceIdsClappAllByTypeList = clappAll
         .parallelStream().map(CoreBaseDataItem::debugKey).collect(Collectors.toSet());
@@ -530,14 +533,12 @@ public class UkbModelController {
         caseIdsPdmsAndClappRecentByType);
     caseIdsClappAllByType.removeAll(caseIdsNotInBothByTypePlusRecents);
     log.debug(
-        renalReplacementRiskParameter
-            + ": Number of cases that are not in reporting db OR retrievable via the recent clapp: "
-            + caseIdsClappAllByType.size());
+        "{}: Number of cases that are not in reporting db OR retrievable via the recent clapp: {}",
+        renalReplacementRiskParameter, caseIdsClappAllByType.size());
 
     caseIdsClappAllByType.forEach(
-        x -> log.debug(
-            x + " " + renalReplacementRiskParameter
-                + " [CaseId] is just in CLAPP(ALL) not in ReportingDB or recent CLAPP"));
+        x -> log.debug("{} {} [CaseId] is just in CLAPP(ALL) not in ReportingDB or recent CLAPP", x,
+            renalReplacementRiskParameter));
 
     // RESOURCE LEVEL
     if (resourcesComparable) {
@@ -551,9 +552,9 @@ public class UkbModelController {
       Set<String> resourceIdsClappAllByTypeClone = new HashSet<>(resourceIdsClappAllByType);
       resourceIdsClappAllByTypeClone.removeAll(resourceIdsNotInBothByTypePlusRecents);
       log.debug(
-          renalReplacementRiskParameter
-              + ": Number of RESOURCES that are not in reporting db OR retrievable via the recent clapp: "
-              + resourceIdsClappAllByTypeClone.size());
+          "{}: Number of RESOURCES that are not in reporting db OR retrievable via the recent "
+              + "clapp: {}",
+          renalReplacementRiskParameter, resourceIdsClappAllByTypeClone.size());
 
       resourceIdsClappAllByTypeClone.forEach(
           resourceId -> log.debug(
@@ -562,10 +563,11 @@ public class UkbModelController {
                   + " [Resource] is just in CLAPP(ALL) not in ReportingDB or recent CLAPP. CaseId: "
                   + resourceIdsByCaseId.get(resourceId)));
 
-      log.debug("Delta [ResourceIds] in " + renalReplacementRiskParameter
-          + " between CLAPP-ALL [" + clappAll.size() + "] and REPORTING DB ["
-          + pdmsData.size() + "] + CLAPP-RECENT + [" + clappRecentCases.size() + "] is: "
-          + (clappAll.size() - pdmsData.size() - clappRecentCases.size()));
+      log.debug(
+          "Delta [ResourceIds] in {} between CLAPP-ALL [{}] and REPORTING DB [{}] + CLAPP-RECENT "
+              + "+ [{}] is: {}",
+          renalReplacementRiskParameter, clappAll.size(), pdmsData.size(), clappRecentCases.size(),
+          clappAll.size() - pdmsData.size() - clappRecentCases.size());
 
       // Vice versa. Entries in reporting db + clapp recent that are not in clapp all
       Set<String> resourceIdsNotInClappAll = new HashSet<>(
@@ -573,10 +575,9 @@ public class UkbModelController {
       resourceIdsPdmsAndClappRecentByType.removeAll(resourceIdsNotInClappAll);
       resourceIdsPdmsAndClappRecentByType.forEach(
           resourceId -> log.debug(
-              resourceId + " "
-                  + renalReplacementRiskParameter
-                  + " [Resource] is just in ReportingDB or recent CLAPP but not in CLAPP(ALL). CaseId: "
-                  + resourceIdsByCaseId.get(resourceId)));
+              "{} {} [Resource] is just in ReportingDB or recent CLAPP but not in CLAPP(ALL). "
+                  + "CaseId: {}",
+              resourceId, renalReplacementRiskParameter, resourceIdsByCaseId.get(resourceId)));
     }
   }
 

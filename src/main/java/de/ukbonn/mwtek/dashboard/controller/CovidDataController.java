@@ -33,7 +33,7 @@ import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality;
 import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
-import de.ukbonn.mwtek.utilities.fhir.misc.Converter;
+import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
@@ -60,7 +60,7 @@ public class CovidDataController {
     // Retrieval of the Observation resources
     processTimer.startLoggingTime(ResourceType.Observation);
     List<UkbObservation> ukbObservations =
-        (List<UkbObservation>) Converter.convert(
+        (List<UkbObservation>) ResourceConverter.convert(
             dataRetrievalService.getObservations(dataItemContext));
     processTimer.stopLoggingTime(ukbObservations);
 
@@ -68,7 +68,8 @@ public class CovidDataController {
     processTimer.startLoggingTime(ResourceType.Condition);
     // map fhir resources into ukb resources
     List<UkbCondition> ukbConditions =
-        (List<UkbCondition>) Converter.convert(dataRetrievalService.getConditions(dataItemContext));
+        (List<UkbCondition>) ResourceConverter.convert(
+            dataRetrievalService.getConditions(dataItemContext));
     processTimer.stopLoggingTime(ukbConditions);
 
     // If no conditions or observations were found, the following further data retrievals /
@@ -76,25 +77,26 @@ public class CovidDataController {
     if (!ukbObservations.isEmpty() || !ukbConditions.isEmpty()) {
       // Retrieval of the Patient resources
       processTimer.startLoggingTime(ResourceType.Patient);
-      List<UkbPatient> ukbPatients = (List<UkbPatient>) Converter.convert(
+      List<UkbPatient> ukbPatients = (List<UkbPatient>) ResourceConverter.convert(
           dataRetrievalService.getPatients(ukbObservations, ukbConditions, dataItemContext));
       processTimer.stopLoggingTime(ukbPatients);
 
       // Retrieval of the Encounter resources
       processTimer.startLoggingTime(ResourceType.Encounter);
       List<UkbEncounter> ukbEncounters =
-          (List<UkbEncounter>) Converter.convert(dataRetrievalService.getEncounters(), true);
+          (List<UkbEncounter>) ResourceConverter.convert(dataRetrievalService.getEncounters(),
+              true);
       processTimer.stopLoggingTime(ukbEncounters);
 
       // Retrieval of the Location resources
       processTimer.startLoggingTime(ResourceType.Location);
       List<UkbLocation> ukbLocations =
-          (List<UkbLocation>) Converter.convert(dataRetrievalService.getLocations());
+          (List<UkbLocation>) ResourceConverter.convert(dataRetrievalService.getLocations());
       processTimer.stopLoggingTime(ukbLocations);
 
       // Retrieval of the Procedure resources
       processTimer.startLoggingTime(ResourceType.Procedure);
-      List<UkbProcedure> ukbProcedures = (List<UkbProcedure>) Converter.convert(
+      List<UkbProcedure> ukbProcedures = (List<UkbProcedure>) ResourceConverter.convert(
           dataRetrievalService.getProcedures(ukbEncounters, ukbLocations,
               ukbObservations, ukbConditions, dataItemContext));
       processTimer.stopLoggingTime(ukbProcedures);
@@ -115,10 +117,14 @@ public class CovidDataController {
 
       // Generate an export with current case/encounter ids by treatment level on demand
       if (reportConfiguration.getCaseIdFileGeneration()) {
-        CoronaResultFunctionality.generateCurrentTreatmentLevelList(
-            dataItemGenerator.getMapCurrentTreatmentlevelCasenrs(),
-            reportConfiguration.getCaseIdFileDirectory(),
-            reportConfiguration.getCaseIdFileBaseName());
+        try {
+          CoronaResultFunctionality.generateCurrentTreatmentLevelList(
+              dataItemGenerator.getMapCurrentTreatmentlevelCasenrs(),
+              reportConfiguration.getCaseIdFileDirectory(),
+              reportConfiguration.getCaseIdFileBaseName());
+        } catch (Exception ex) {
+          log.error("Unable to create the crosstab data item. {}", ex.getMessage());
+        }
       }
 
       // Add resource sizes information to the output if needed

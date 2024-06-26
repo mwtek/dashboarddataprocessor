@@ -1,5 +1,35 @@
 # Release Notes - Version V0.5.3
 
+26/Jun/24
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* Add a handling to also generate json data if the encounter resources of type "Versorgungsstellenkontakt" cannot be used
+
+</div>
+
+## Improvements
+
+<div style='margin-left:30px;'>
+
+* Filtering supply contacts on inpatient transfers
+* Add further warnings if some results are inplaubsible
+* Adding new ventilation / ecmo procedure codes to the defaults
+
+</div> 
+
+## Tasks
+
+No tasks were part of this version.
+
+## Bugs
+
+* No bug fixes were part of this version.
+  
+# Release Notes - Version V0.5.3
+
 14/May/24
 
 ## New Features
@@ -8,7 +38,7 @@
 
 * Addition of fhir sample data from influenza patients
 * Adding unit test scenarios based on static test data json files.
-* Ensuring compatibility.
+* Ensuring compatibility
   with [KDS case profile 2024](https://simplifier.net/packages/de.medizininformatikinitiative.kerndatensatz.fall/2024.0.1).
 * `Encounter.partOf` will be used to determine encounter hierarchy if the `Encounter.identifier` is
   not usable.

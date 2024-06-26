@@ -54,7 +54,7 @@ import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
 import de.ukbonn.mwtek.utilities.fhir.mapping.kdscase.valuesets.KdsEncounterFixedValues;
-import de.ukbonn.mwtek.utilities.fhir.misc.Converter;
+import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
@@ -389,12 +389,11 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                       this), dataItemContext)
               .parallelStream().filter(listPatientsIcu::contains)
               .collect(Collectors.toSet());
+      logger.debug("Number of patients with ICU and positive SARS-CoV2 PCR test finding: {}",
+          patientIdsIcuPositiveFindings.size());
 
-      logger.debug(
-          "Number of patients with ICU and positive SARS-CoV2 PCR test finding: "
-              + patientIdsIcuPositiveFindings.size());
-
-      // get all cases with at least 1 icu transfer AND an U07.1 or U07.2 diagnosis and add them
+      // get all cases with at least 1 icu transfer AND an U07.1 or U07.2 diagnosis and add
+      // them
       // to the set with the positive lab findings
       patientIdsIcuPositiveFindings.addAll(
           CoronaResultFunctionality.getPidsWithGivenIcdCodes(listUkbConditions,
@@ -565,7 +564,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                 if (encounter.hasEpisodeOfCare()) {
                   // we need to convert the encounter resource to be able to use the "getCaseId"
                   // method
-                  UkbEncounter ukbEncounter = (UkbEncounter) Converter.convert(encounter);
+                  UkbEncounter ukbEncounter = (UkbEncounter) ResourceConverter.convert(encounter);
                   encounter.getEpisodeOfCare().forEach(encEpisodeRef -> {
                     episodeOfCareEncounterMap.put(encEpisodeRef.getResource().getIdElement().getValue(),
                         ukbEncounter.getCaseId());
@@ -711,8 +710,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                     bodyWeightObservation.getValueQuantity().getValue()
                         .doubleValue(), null, null, bodyWeightObservation.getId()));
           } else {
-            logger.trace("BodyWeight: " + bodyWeight + " got filtered. Case:"
-                + bodyWeightObservation.getEncounter().getReference());
+            logger.trace("BodyWeight: {} got filtered. Case:{}", bodyWeight,
+                bodyWeightObservation.getEncounter().getReference());
           }
         });
 /*
