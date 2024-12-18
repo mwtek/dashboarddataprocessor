@@ -38,8 +38,19 @@ public class X509AuthenticationServer extends WebSecurityConfigurerAdapter {
    * */
   @Override
   protected void configure(HttpSecurity httpSecurity) throws Exception {
-    httpSecurity.csrf().disable().authorizeRequests().anyRequest().authenticated().and().httpBasic()
-        .and().rememberMe().and().x509().subjectPrincipalRegex("CN=(.*?)(?:,|$)")
+    httpSecurity
+        .csrf()
+        .disable()
+        .authorizeRequests()
+        .anyRequest()
+        .authenticated()
+        .and()
+        .httpBasic()
+        .and()
+        .rememberMe()
+        .and()
+        .x509()
+        .subjectPrincipalRegex("CN=(.*?)(?:,|$)")
         .userDetailsService(userDetailsService());
   }
 }

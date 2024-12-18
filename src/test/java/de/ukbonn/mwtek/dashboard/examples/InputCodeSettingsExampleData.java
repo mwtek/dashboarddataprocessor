@@ -20,25 +20,29 @@ package de.ukbonn.mwtek.dashboard.examples;
 
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_ICD_CODES_COVID;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_ICD_CODES_INFLUENZA;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_KIDS_RADAR_MAP;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_KIDS_RADAR_RSV_DIAGNOSIS_MAP;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_PCR_LOINC_COVID;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_PCR_LOINC_COVID_VARIANTS;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_PCR_LOINC_INFLUENZA;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_SNOMED_PROCEDURE_ECMO;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_SNOMED_PROCEDURE_VENTILATION;
-import static de.ukbonn.mwtek.dashboard.misc.ListHelper.commaSeparatedStringIntoList;
+import static de.ukbonn.mwtek.utilities.generic.collections.ListTools.commaSeparatedStringIntoList;
 
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
 
 public class InputCodeSettingsExampleData {
 
   public static InputCodeSettings getExampleData() {
-    return new InputCodeSettings(commaSeparatedStringIntoList(DEFAULT_PCR_LOINC_COVID),
+    return new InputCodeSettings(
+        commaSeparatedStringIntoList(DEFAULT_PCR_LOINC_COVID),
         commaSeparatedStringIntoList(DEFAULT_PCR_LOINC_COVID_VARIANTS),
         commaSeparatedStringIntoList(DEFAULT_ICD_CODES_COVID),
         commaSeparatedStringIntoList(DEFAULT_SNOMED_PROCEDURE_VENTILATION),
         commaSeparatedStringIntoList(DEFAULT_SNOMED_PROCEDURE_ECMO),
         commaSeparatedStringIntoList(DEFAULT_PCR_LOINC_INFLUENZA),
-        commaSeparatedStringIntoList(DEFAULT_ICD_CODES_INFLUENZA));
+        commaSeparatedStringIntoList(DEFAULT_ICD_CODES_INFLUENZA),
+        DEFAULT_KIDS_RADAR_MAP,
+        DEFAULT_KIDS_RADAR_RSV_DIAGNOSIS_MAP);
   }
-
 }

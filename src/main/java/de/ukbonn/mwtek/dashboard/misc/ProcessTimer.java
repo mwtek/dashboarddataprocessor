@@ -46,7 +46,8 @@ public class ProcessTimer {
    * @param listResources A collection of FHIR resources that have been retrieved.
    */
   public void stopLoggingTime(Collection<?> listResources) {
-    log.info("Loading {}s took {} milliseconds for {} resources",
+    log.info(
+        "Loading {}s took {} milliseconds for {} resources",
         fhirResourceType.name(),
         System.currentTimeMillis() - startTimeProcess,
         listResources.size());
@@ -56,12 +57,13 @@ public class ProcessTimer {
    * Starts logging the time taken for retrieving a collection of FHIR resources.
    *
    * @param fhirResourceType The type of FHIR resources being retrieved.
-   * @param additions        Optional additional information to be logged.
+   * @param additions Optional additional information to be logged.
    */
   public void startLoggingTime(ResourceType fhirResourceType, String... additions) {
     this.fhirResourceType = fhirResourceType;
     startTimeProcess = System.currentTimeMillis();
-    log.info("Retrieval of the {} resources started{}",
+    log.info(
+        "Retrieval of the {} resources started{}",
         fhirResourceType.name(),
         additions.length > 0 ? " " + Arrays.toString(additions) : "");
   }
@@ -77,19 +79,12 @@ public class ProcessTimer {
     log.info("{} started", taskDescription);
   }
 
-  /**
-   * Stops logging the time taken for a specific task and logs the elapsed time.
-   */
+  /** Stops logging the time taken for a specific task and logs the elapsed time. */
   public void stopLoggingTime() {
     if (taskDescription == null) {
       throw new IllegalStateException("taskDescription not set");
     }
-    log.info("{} took {} milliseconds.",
-        taskDescription,
-        System.currentTimeMillis() - startTimeProcess);
+    log.info(
+        "{} took {} milliseconds.", taskDescription, System.currentTimeMillis() - startTimeProcess);
   }
 }
-
-
-
-

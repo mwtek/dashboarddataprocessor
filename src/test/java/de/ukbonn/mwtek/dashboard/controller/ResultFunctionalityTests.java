@@ -21,6 +21,7 @@ package de.ukbonn.mwtek.dashboard.controller;
 import static de.ukbonn.mwtek.dashboard.examples.InputCodeSettingsExampleData.getExampleData;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.COVID;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.INFLUENZA;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CURRENT_MAXTREATMENTLEVEL;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CURRENT_TREATMENTLEVEL;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.TIMELINE_MAXTREATMENTLEVEL;
@@ -31,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.ukbonn.mwtek.dashboardlogic.DataItemGenerator;
+import de.ukbonn.mwtek.dashboardlogic.KidsRadarDataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
@@ -68,6 +70,7 @@ public class ResultFunctionalityTests {
   private static final List<UkbProcedure> ukbProcedures = new ArrayList<>();
   private static final List<UkbLocation> ukbLocations = new ArrayList<>();
   public static final String SAMPLE_FILE_COVID = "./samples/SampleBundle_Covid.json";
+  public static final String SAMPLE_FILE_KIDS_RADAR = "./samples/SampleBundle_KiRadar.json";
   static List<DiseaseDataItem> sampleData;
 
   @BeforeAll
@@ -89,17 +92,43 @@ public class ResultFunctionalityTests {
 
     // First load the data items from the covid-19 sample file.
     parseSampleFile(SAMPLE_FILE_COVID);
-    List<DiseaseDataItem> resultDataCovid = new DataItemGenerator(ukbConditions,
-        ukbObservations, ukbPatients, ukbEncounters, ukbProcedures, ukbLocations).getDataItems(null,
-        true, null, getExampleData(), COVID, true);
+    List<DiseaseDataItem> resultDataCovid =
+        new DataItemGenerator(
+                ukbConditions,
+                ukbObservations,
+                ukbPatients,
+                ukbEncounters,
+                ukbProcedures,
+                ukbLocations)
+            .getDataItems(null, true, null, getExampleData(), null, COVID, true);
 
     // Then load the data items from the influenza sample file.
     parseSampleFile(SAMPLE_FILE_INFLUENZA);
-    List<DiseaseDataItem> resultDataInfluenza = new DataItemGenerator(ukbConditions,
-        ukbObservations, ukbPatients, ukbEncounters, ukbProcedures, ukbLocations).getDataItems(null,
-        true, null, getExampleData(), INFLUENZA, true);
+    List<DiseaseDataItem> resultDataInfluenza =
+        new DataItemGenerator(
+                ukbConditions,
+                ukbObservations,
+                ukbPatients,
+                ukbEncounters,
+                ukbProcedures,
+                ukbLocations)
+            .getDataItems(null, true, null, getExampleData(), null, INFLUENZA, true);
+
+    // Then load the data items from the influenza sample file.
+    parseSampleFile(SAMPLE_FILE_KIDS_RADAR);
+    List<DiseaseDataItem> resultDataKiRadar =
+        new KidsRadarDataItemGenerator(
+                ukbConditions,
+                ukbObservations,
+                ukbPatients,
+                ukbEncounters,
+                ukbProcedures,
+                ukbLocations)
+            .getDataItems(null, true, null, getExampleData(), null, KIDS_RADAR, true);
+
     output.addAll(resultDataCovid);
     output.addAll(resultDataInfluenza);
+    output.addAll(resultDataKiRadar);
     return output;
   }
 
@@ -160,21 +189,32 @@ public class ResultFunctionalityTests {
 
     // First load the data items from the covid-19 sample file.
     parseSampleFile(SAMPLE_FILE_COVID);
-    List<DiseaseDataItem> resultDataCovid = new DataItemGenerator(ukbConditions,
-        ukbObservations, ukbPatients, ukbEncounters, ukbProcedures, ukbLocations).getDataItems(
-        mapExcludeDataItems, true, null, getExampleData(), COVID, false);
+    List<DiseaseDataItem> resultDataCovid =
+        new DataItemGenerator(
+                ukbConditions,
+                ukbObservations,
+                ukbPatients,
+                ukbEncounters,
+                ukbProcedures,
+                ukbLocations)
+            .getDataItems(mapExcludeDataItems, true, null, getExampleData(), null, COVID, false);
 
-    assertAll("Data items should be excluded",
-        () -> assertTrue(
-            resultDataCovid.stream().noneMatch(x -> x.getItemname().equals(CURRENT_TREATMENTLEVEL)),
-            "CURRENT.TREATMENTLEVEL should be excluded"),
-        () -> assertTrue(resultDataCovid.stream()
-                .noneMatch(x -> x.getItemname().equals(CURRENT_MAXTREATMENTLEVEL)),
-            "CURRENT.MAXTREATMENTLEVEL should be excluded"),
-        () -> assertTrue(resultDataCovid.stream()
-                .noneMatch(x -> x.getItemname().equals(TIMELINE_MAXTREATMENTLEVEL)),
-            "TIMELINE.MAXTREATMENTLEVEL should be excluded")
-    );
+    assertAll(
+        "Data items should be excluded",
+        () ->
+            assertTrue(
+                resultDataCovid.stream()
+                    .noneMatch(x -> x.getItemname().equals(CURRENT_TREATMENTLEVEL)),
+                "CURRENT.TREATMENTLEVEL should be excluded"),
+        () ->
+            assertTrue(
+                resultDataCovid.stream()
+                    .noneMatch(x -> x.getItemname().equals(CURRENT_MAXTREATMENTLEVEL)),
+                "CURRENT.MAXTREATMENTLEVEL should be excluded"),
+        () ->
+            assertTrue(
+                resultDataCovid.stream()
+                    .noneMatch(x -> x.getItemname().equals(TIMELINE_MAXTREATMENTLEVEL)),
+                "TIMELINE.MAXTREATMENTLEVEL should be excluded"));
   }
-
 }

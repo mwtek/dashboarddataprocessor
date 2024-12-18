@@ -3,7 +3,7 @@ version: '3.4'
 services:
   dashboard-data-processor:
     # Local build Image
-    image: dashboard-data-processor:0.5.3-alpha1
+    image: dashboard-data-processor:0.5.4-dev.0
     # Docker-Hub Image
     #    image: mwtek/dashboarddataprocessor
     container_name: dashboard-data-processor

@@ -38,51 +38,34 @@ public abstract class AbstractRestConfiguration {
    */
   private boolean use = true;
 
-  /**
-   * The full url (including hostname, port and parameters) to the rest endpoint.
-   */
+  /** The full url (including hostname, port and parameters) to the rest endpoint. */
   private String restUrl;
 
-  /**
-   * The username used when basic authentication (default method) is selected.
-   */
+  /** The username used when basic authentication (default method) is selected. */
   private String restUser;
 
-  /**
-   * The password used when basic authentication (default method) is selected.
-   */
+  /** The password used when basic authentication (default method) is selected. */
   private String restPassword;
 
-  /**
-   * The body of the rest call.
-   */
+  /** The body of the rest call. */
   private String restBody;
 
-  /**
-   * The name and location of the key store file.
-   */
+  /** The name and location of the key store file. */
   private String keyStore;
 
-  /**
-   * The password for the key store.
-   */
+  /** The password for the key store. */
   private String keyStorePassword;
 
-  /**
-   * The name and location of the trust store file.
-   */
+  /** The name and location of the trust store file. */
   private String trustStore;
 
-  /**
-   * The password for the trust store.
-   */
+  /** The password for the trust store. */
   private String trustStorePassword;
 
   /**
-   * The authentication method used for the rest call, must be one of <code>NONE</code>,
-   * <code>BASIC</code> or <code>SSL</code>. If no value is specified, <code>BASIC</code>
-   * authentication is used.
+   * The authentication method used for the rest call, must be one of <code>NONE</code>, <code>BASIC
+   * </code> or <code>SSL</code>. If no value is specified, <code>BASIC</code> authentication is
+   * used.
    */
   private String authMethod;
-
 }

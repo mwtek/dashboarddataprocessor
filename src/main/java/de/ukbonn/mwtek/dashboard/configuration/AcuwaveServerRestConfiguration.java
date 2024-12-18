@@ -33,6 +33,4 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "acuwave.server")
 @Getter
 @Setter
-public class AcuwaveServerRestConfiguration extends AbstractRestConfiguration {
-
-}
+public class AcuwaveServerRestConfiguration extends AbstractRestConfiguration {}

@@ -30,6 +30,7 @@ import de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
@@ -39,27 +40,28 @@ import org.hl7.fhir.r4.model.DomainResource;
 public class LoggingHelper {
 
   public static void logParsingResourceException(Exception ex, String context) {
-    log.warn("Parsing a bundle failed with reason: " + ex.getMessage()
-        + ". Probably the results are empty for query: " + context);
+    log.warn(
+        "Parsing a bundle failed with reason: {}. Probably the results are empty for query: {}",
+        ex.getMessage(),
+        context);
   }
 
   public static void logWarningForUnexpectedResource(
-      Class<? extends DomainResource> expectedResource,
-      Bundle.BundleEntryComponent bundleEntry) {
+      Class<? extends DomainResource> expectedResource, Bundle.BundleEntryComponent bundleEntry) {
     log.warn(
-        "Expected an " + expectedResource.getName()
-            + " resource in the response of the body weight query but found: "
-            + bundleEntry.getResource().fhirType() + " with id " + bundleEntry.getResource()
-            .getId());
+        "Expected an {} resource in the response of the body weight query but found: {} with id {}",
+        expectedResource.getName(),
+        bundleEntry.getResource().fhirType(),
+        bundleEntry.getResource().getId());
   }
 
   static Boolean covidWorkflowAborted = false;
   static Boolean influenzaWorkflowAborted = false;
-  @Getter
-  static String abortMessage;
+  static Boolean kidsRadarWorkflowAborted = false;
+  @Getter static String abortMessage;
 
-  public static void logAbortWorkflowMessage(InputCodeSettings inputCodeSettings,
-      DataItemContext dataItemContext) {
+  public static void logAbortWorkflowMessage(
+      InputCodeSettings inputCodeSettings, DataItemContext dataItemContext) {
     List<String> pcrCodes = new ArrayList<>();
     List<String> icdCodes = new ArrayList<>();
     switch (dataItemContext) {
@@ -73,17 +75,31 @@ public class LoggingHelper {
         icdCodes = inputCodeSettings.getInfluenzaConditionIcdCodes();
         influenzaWorkflowAborted = true;
       }
+      case KIDS_RADAR -> {
+        // No observation codes here; just icd codes
+        icdCodes =
+            inputCodeSettings.getKidsRadarConditionKjpIcdCodes().values().stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+        icdCodes.addAll(
+            inputCodeSettings.getKidsRadarConditionRsvIcdCodes().values().stream()
+                .flatMap(List::stream)
+                .toList());
+        kidsRadarWorkflowAborted = true;
+      }
     }
     abortMessage =
-        "Unable to find any " + dataItemContext + " related observations (loinc codes:"
-            + pcrCodes + ") or conditions (icd codes: "
-            + icdCodes + ").";
-    log.error(WORKFLOW_ABORTED + abortMessage);
+        "Unable to find any "
+            + dataItemContext
+            + " related observations (loinc codes:"
+            + pcrCodes
+            + ") or conditions (icd codes: "
+            + icdCodes
+            + ").";
+    log.error(WORKFLOW_ABORTED + "{}", abortMessage);
   }
 
-  /**
-   * Was the workflow of a context interrupted for any reason?
-   */
+  /** Was the workflow of a context interrupted for any reason? */
   public static boolean gotWorkflowAborted(DataItemContext dataItemContext) {
     switch (dataItemContext) {
       case COVID -> {
@@ -96,22 +112,32 @@ public class LoggingHelper {
     return false;
   }
 
-  public static void addResourceSizesToOutput(ObjectNode result,
+  public static void addResourceSizesToOutput(
+      ObjectNode result,
       List<UkbCondition> ukbConditions,
-      List<UkbObservation> ukbObservations, List<UkbPatient> ukbPatients,
-      List<UkbEncounter> ukbEncounters, List<UkbLocation> ukbLocations,
-      List<UkbProcedure> ukbProcedures, DataItemContext dataItemContext) {
+      List<UkbObservation> ukbObservations,
+      List<UkbPatient> ukbPatients,
+      List<UkbEncounter> ukbEncounters,
+      List<UkbLocation> ukbLocations,
+      List<UkbProcedure> ukbProcedures,
+      DataItemContext dataItemContext) {
     String contextPrefix = "";
     switch (dataItemContext) {
       case COVID -> contextPrefix = "covid";
       case INFLUENZA -> contextPrefix = "influenza";
+      case KIDS_RADAR -> contextPrefix = "kira";
     }
     result.put(contextPrefix + "ConditionSize", ukbConditions.size());
-    result.put(contextPrefix + "ObservationSize", ukbObservations.size());
+    if (ukbObservations != null) {
+      result.put(contextPrefix + "ObservationSize", ukbObservations.size());
+    }
     result.put(contextPrefix + "PatientSize", ukbPatients.size());
     result.put(contextPrefix + "EncounterSize", ukbEncounters.size());
-    result.put(contextPrefix + "LocationSize", ukbLocations.size());
-    result.put(contextPrefix + "ProcedureSize", ukbProcedures.size());
+    if (ukbLocations != null) {
+      result.put(contextPrefix + "LocationSize", ukbLocations.size());
+    }
+    if (ukbProcedures != null) {
+      result.put(contextPrefix + "ProcedureSize", ukbProcedures.size());
+    }
   }
-
 }

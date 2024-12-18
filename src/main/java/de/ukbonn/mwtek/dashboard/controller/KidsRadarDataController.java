@@ -29,25 +29,22 @@ import de.ukbonn.mwtek.dashboard.exceptions.SearchException;
 import de.ukbonn.mwtek.dashboard.misc.ProcessTimer;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.DataItemGenerator;
+import de.ukbonn.mwtek.dashboardlogic.KidsRadarDataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
-import de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality;
 import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
 import de.ukbonn.mwtek.dashboardlogic.settings.QualitativeLabCodesSettings;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.ResourceType;
 
 @Slf4j
-public class InfluenzaDataController {
+public class KidsRadarDataController {
 
   public static List<DiseaseDataItem> generateData(
       DataItemContext dataItemContext,
@@ -63,13 +60,6 @@ public class InfluenzaDataController {
       throws SearchException {
     List<DiseaseDataItem> dataItems = new ArrayList<>();
 
-    // Retrieval of the Observation resources
-    processTimer.startLoggingTime(ResourceType.Observation);
-    List<UkbObservation> ukbObservations =
-        (List<UkbObservation>)
-            ResourceConverter.convert(dataRetrievalService.getObservations(dataItemContext));
-    processTimer.stopLoggingTime(ukbObservations);
-
     // Retrieval of the Condition resources
     processTimer.startLoggingTime(ResourceType.Condition);
     // map fhir resources into ukb resources
@@ -80,54 +70,30 @@ public class InfluenzaDataController {
 
     // If no conditions or observations were found, the following further data retrievals /
     // calculation steps are irrelevant
-    if (!ukbObservations.isEmpty() || !ukbConditions.isEmpty()) {
+    if (!ukbConditions.isEmpty()) {
       // Retrieval of the Patient resources
       processTimer.startLoggingTime(ResourceType.Patient);
       List<UkbPatient> ukbPatients =
           (List<UkbPatient>)
               ResourceConverter.convert(
-                  dataRetrievalService.getPatients(
-                      ukbObservations, ukbConditions, dataItemContext));
+                  dataRetrievalService.getPatients(null, ukbConditions, dataItemContext));
       processTimer.stopLoggingTime(ukbPatients);
 
       // Retrieval of the Encounter resources
       processTimer.startLoggingTime(ResourceType.Encounter);
       List<UkbEncounter> ukbEncounters =
           (List<UkbEncounter>)
-              ResourceConverter.convert(dataRetrievalService.getEncounters(dataItemContext), true);
-      processTimer.stopLoggingTime(ukbEncounters);
-
-      // Retrieval of the Location resources
-      processTimer.startLoggingTime(ResourceType.Location);
-      List<UkbLocation> ukbLocations =
-          (List<UkbLocation>) ResourceConverter.convert(dataRetrievalService.getLocations());
-      processTimer.stopLoggingTime(ukbLocations);
-
-      // Retrieval of the Procedure resources
-      processTimer.startLoggingTime(ResourceType.Procedure);
-      List<UkbProcedure> ukbProcedures =
-          (List<UkbProcedure>)
               ResourceConverter.convert(
-                  dataRetrievalService.getProcedures(
-                      ukbEncounters,
-                      ukbLocations,
-                      ukbObservations,
-                      ukbConditions,
-                      dataItemContext));
-      processTimer.stopLoggingTime(ukbProcedures);
+                  dataRetrievalService.getEncounters(DataItemContext.KIDS_RADAR), true);
+      processTimer.stopLoggingTime(ukbEncounters);
 
       processTimer.startLoggingTime("Processing logic");
 
       // Start of the processing logic
       // Formatting of resources in json specification
       DataItemGenerator dataItemGenerator =
-          new DataItemGenerator(
-              ukbConditions,
-              ukbObservations,
-              ukbPatients,
-              ukbEncounters,
-              ukbProcedures,
-              ukbLocations);
+          new KidsRadarDataItemGenerator(
+              ukbConditions, null, ukbPatients, ukbEncounters, null, null);
 
       // Creation of the data items of the dataset specification
       dataItems.addAll(
@@ -140,31 +106,15 @@ public class InfluenzaDataController {
               dataItemContext,
               globalConfiguration.getUsePartOfInsteadOfIdentifier()));
 
-      // Generate an export with current case/encounter ids by treatment level on demand
-      if (reportConfiguration.getCaseIdFileGeneration()) {
-        CoronaResultFunctionality.generateCurrentTreatmentLevelList(
-            dataItemGenerator.getMapCurrentTreatmentlevelCasenrs(),
-            reportConfiguration.getCaseIdFileDirectory(),
-            reportConfiguration.getCaseIdFileBaseName());
-      }
-
       // Add resource sizes information to the output if needed
       if (globalConfiguration.getDebug()) {
         addResourceSizesToOutput(
-            result,
-            ukbConditions,
-            ukbObservations,
-            ukbPatients,
-            ukbEncounters,
-            ukbLocations,
-            ukbProcedures,
-            dataItemContext);
+            result, ukbConditions, null, ukbPatients, ukbEncounters, null, null, dataItemContext);
       }
-
       processTimer.stopLoggingTime();
     } else {
       // No conditions or observations found
-      logAbortWorkflowMessage(inputCodeSettings, DataItemContext.INFLUENZA);
+      logAbortWorkflowMessage(inputCodeSettings, DataItemContext.KIDS_RADAR);
     }
     return dataItems;
   }

@@ -22,7 +22,7 @@ projects and is further supported
 by [NUM RDP](https://www.netzwerk-universitaetsmedizin.de/projekte/num-rdp) (FKZ
 01KX2121).
 
-For information regarding active participation in the dashboard endeavour, please contact us at
+For information regarding active participation in the dashboard endeavor, please contact us at
 ddp-support@ukbonn.de. For bug reports, improvement suggestions, and related technical
 conversations, please use the usual GitHub mechanisms.
 
@@ -36,15 +36,19 @@ on [Simplifier](https://simplifier.net/organization/koordinationsstellemii/~proj
 The following table gives an overview of the documents used, as well as their corresponding links
 and a short description.
 
-<table style="width:100%" border="1" >
+<table style="width:100%" >
 <tr>
 <th>Document name and link</th>
 <th>Description</th>
 </tr>
 <tr>
-<td><a href="./files/Datensatzbeschreibung_Dashboard_v0_5_3_20240416-release.pdf" target="_blank">JSON dataset description</a></td>
+<td><a href="./files/Datensatzbeschreibung_Dashboard_v0_5_4_20241028.pdf" target="_blank">JSON dataset description</a></td>
 <td>The dataset description of the resulting JSON format, including the description of the aggregated data items.</td> 
 </tr> 
+<tr>
+<td><a href="./files/Data_Items_Composition.md" target="_blank">Data items composition</a></td>
+<td>Overview of the FHIR attributes used/needed in data items aggregation.</td>
+</tr>
 <tr>
 <td><a href="./files/Dokumentation_Dashboard_Backend_v0_3_0a.pdf" target="_blank">Documentation of the FHIR implementation</a></td>
 <td>A documentation of which data items are filled with which FHIR resources and attributes according to which logic.</td>
@@ -64,7 +68,9 @@ and a short description.
 </table>
 
 Not all items are currently supported by the DDP, a list of unsupported items can be
-found [here](#not-supported-items).
+found [here](./data-items-support.md).
+
+Important note: The DDP does not yet offer k-anonymity options, but may do so in the future.
 
 ## License
 
@@ -136,7 +142,7 @@ FHIR server:
 
 | Resource    | FHIR Search Query                                                                | Comments                                         |
 |-------------|----------------------------------------------------------------------------------|--------------------------------------------------|
-| Condition   | [base]/Condition?code=U07.1,U07.2&_pretty=false&_count=500                       |                                                  |
+| Condition   | [base]/Condition?code=U07.1&_pretty=false&_count=500                             |                                                  |
 | Observation | [base]/Observation?code=94640-0,94306-8,96763-8,96895-8&_pretty=false&_count=500 |                                                  |
 | Patient     | [base]/Patient?_id=1234,1235,1236                                                | IDs from Observation.subject + Condition.subject |
 | Encounter   | [base]/Encounter?subject=1234,1235,1236                                          | IDs from Patient.subject                         |
@@ -145,7 +151,7 @@ FHIR server:
 
 ## Compatibility KDS profile versions
 
-The KDS profiles are highly dynamic and the current status quo of the profiles can differ
+The KDS profiles are highly dynamic, and the current status quo of the profiles can differ
 significantly from the development status of the Dashboard Processor. To cover future changes, we
 have always worked with the current working versions in the Simplifier. The risk that profile
 changes will also affect the workflow in the Dashboard Processor is small, but not impossible. The
@@ -154,14 +160,14 @@ release and for which compatibility has been adequately tested. In case of probl
 incompatibilities, please email the developer or open an issue. It is tried to respond to the
 constant innovations by new Dashboard Processor versions.
 
-| KDS Module                                                                                        | Profile(s)                                                                                                 | Minimum Version | Comments                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-|---------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [KDS Person](https://simplifier.net/medizininformatikinitiative-modulperson)                      | [Patient](https://simplifier.net/medizininformatikinitiative-modulperson/sdmiipersonpatient)               | 2024.0.0        |                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| [KDS Fall](https://simplifier.net/medizininformatikinitiative-modulfall)                          | [Encounter](https://simplifier.net/medizininformatikinitiative-modulfall/kontaktgesundheitseinrichtung)    | 2024.0.0        | `Encounter.location` usage on `Versorgungsstellenkontakt` level is necessary for the usage of data items that are based on transfer history (e.g. `current.treatmentlevel`). These resources must have a linkage to the `Einrichtungskontakt` encounter, either via the `Encounter.identifier.Aufnahmenummer` or indirectly, recursively via `Encounter.partOf` (after setting `use-part-of-instead-of-identifier` to `true` in the application.yaml). | 
-| [KDS Labor](https://simplifier.net/medizininformatikinitiative-modullabor)                        | [Observation](https://simplifier.net/medizininformatikinitiative-modullabor/observationlab)                | 1.0.6           |                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| [KDS Diagnose](https://simplifier.net/medizininformatikinitiative-moduldiagnosen)                 | [Condition](https://simplifier.net/medizininformatikinitiative-moduldiagnosen/diagnose)                    | 2024.0.0        |                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| [KDS ICU](https://simplifier.net/MedizininformatikInitiative-Modul-Intensivmedizin/~introduction) | [MII_Beatmung](https://simplifier.net/medizininformatikinitiative-modul-intensivmedizin/miibeatmung)       | 2024.0.0        |                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| [KDS Strukturdaten](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten)        | [Location](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten/sd_mii_struktur_location) | 1.0             |                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| KDS Module                                                                                        | Profile(s)                                                                                                   | Minimum Version | Comments                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+|---------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [KDS Person](https://simplifier.net/medizininformatikinitiative-modulperson)                      | [Patient](https://simplifier.net/medizininformatikinitiative-modulperson/sdmiipersonpatient)                 | 2024.0.0        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| [KDS Fall](https://simplifier.net/medizininformatikinitiative-modulfall)                          | [Encounter](https://simplifier.net/medizininformatikinitiative-modulfall/kontaktgesundheitseinrichtung)      | 2024.0.0        | `Encounter.location` usage on `Versorgungsstellenkontakt` level is necessary (or alternative a flagging of icu providers via `Encounter.serviceProvider`) for the usage of data items that are based on transfer history (e.g. `current.treatmentlevel`). These resources must have a linkage to the `Einrichtungskontakt` encounter, either via the `Encounter.identifier.Aufnahmenummer` or indirectly, recursively via `Encounter.partOf` (after setting `use-part-of-instead-of-identifier` to `true` in the application.yaml). | 
+| [KDS Labor](https://simplifier.net/medizininformatikinitiative-modullabor)                        | [Observation](https://simplifier.net/medizininformatikinitiative-modullabor/observationlab)                  | 1.0.6           |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| [KDS Diagnose](https://simplifier.net/medizininformatikinitiative-moduldiagnosen)                 | [Condition](https://simplifier.net/medizininformatikinitiative-moduldiagnosen/diagnose)                      | 2024.0.0        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| [KDS ICU](https://simplifier.net/MedizininformatikInitiative-Modul-Intensivmedizin/~introduction) | [MII_Beatmung](https://simplifier.net/medizininformatikinitiative-modul-intensivmedizin/sd_mii_icu_beatmung) | 2024.0.0-alpha1 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| [KDS Strukturdaten](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten)        | [Location](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten/sd_mii_struktur_location)   | 1.0             | Optional since the modul is still in the draft phase.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 
 ## Runtime Configuration
 
@@ -183,7 +189,7 @@ The main adjustments that need to be made:
 
 Optional adjustments:
 
-- If a location cannot serve various data items from the specification, these can be explicitly
+- If a provider cannot serve various data items from the specification, these can be explicitly
   excluded here
 - If LOINC/ICD/Procedure codes are to be replaced by internal code identifiers, this can be
   configured here (e.g. because the local mapping has not yet been completed)
@@ -208,9 +214,9 @@ cd dashboardprocessor
 * Clone the repos in there via:
 
 ```
-git clone https://www.github.com/mwtek/utilities.git
-git clone https://www.github.com/mwtek/dashboardlogic.git
-git clone https://www.github.com/mwtek/dashboarddataprocessor.git
+git clone --branch v0.5.4-dev.0 https://www.github.com/mwtek/utilities.git
+git clone --branch v0.5.4-dev.0 https://www.github.com/mwtek/dashboardlogic.git
+git clone --branch v0.5.4-dev.0 https://www.github.com/mwtek/dashboarddataprocessor.git
 ```
 
 * Go into "dashboarddataprocessor"
@@ -264,7 +270,7 @@ mvn spring-boot:run
 base folder and configured with the local settings. When the .JAR file is executed,
 the `application.yaml` is taken from the base directory by default at runtime.
 
-A precompiled file named `dashboarddataprocessor-0.5.3.jar` can be found in the project
+A precompiled file named `dashboarddataprocessor-0.5.4.jar` can be found in the project
 target directory. Be aware that before you can access the .jar file, you have to successfully build
 the project following one of the before mentioned approaches of 'Install and run via script' or '
 Install and run manually'.
@@ -272,7 +278,7 @@ Install and run manually'.
 Execute this file (or the precompiled file accordingly):
 
 ```
-java -jar target/dashboarddataprocessor-0.5.3.jar
+java -jar target/dashboarddataprocessor-0.5.4.jar
 ```
 
 Note that the settings must be adjusted in the .yaml file inside the packed .jar archive. This can
@@ -285,19 +291,19 @@ We provided files for **creating DDP-Image** and using it with docker. There is 
 -script in `docker-image`-folder you can execute to
 build DDP-Image on local Server.
 The script will use the file `Dockerfile` in same directory to create the docker container. It is
-needed to have the `dashboarddataprocessor-0.5.3.jar` and the `application.yaml` you want to use
+needed to have the `dashboarddataprocessor-0.5.4.jar` and the `application.yaml` you want to use
 on
 the right place. By default, the created jar by `build.sh`-script in the target-folder is used and a
 copy of the `application.yaml` in the dashboarddataprocessor-folder. You can adapt the used files by
 editing following lines in `Dockerfile`.
 
 ```
-COPY dashboarddataprocessor/target/dashboarddataprocessor-0.5.3.jar /dashboarddataprocessor/dashboard-data-processor.jar
+COPY dashboarddataprocessor/target/dashboarddataprocessor-0.5.4.jar /dashboarddataprocessor/dashboard-data-processor.jar
 COPY dashboarddataprocessor/application.yaml /dashboarddataprocessor
 ```
 
 After the script has been finished, you can use the created container locally. Besides this the
-file `DDP-V0.5.3.tar` is created, which contains the whole software. You can put it to any
+file `DDP-V0.5.4.tar` is created, which contains the whole software. You can put it to any
 server
 you want to use for DDP. To deploy it you can use ansible-script `deploy-docker.yaml` which also
 handles whole serversetup.
@@ -371,6 +377,19 @@ The response to this HTTP request should contain a fully completed dashboard spe
 data from the local FHIR server. This can then be submitted via `PUT` to the dashboard backend as
 usual. An automatic solution is currently being worked on.
 
+## Parameterization options
+
+It is possible to control the projects for which data is to be generated via a REST call. A
+comma-separated list with at least one value from the value set [`covid`,`influenza`,`kiradar`] can
+be transferred via the `scopes` parameter. If the parameter is not specified, the settings from the
+`application.yaml` are used as usual.
+
+Example call:
+
+```
+http://localhost:9091/createJson?scopes=covid,influenza,kiradar
+```
+
 # Installing a version upgrade
 
 IMPORTANT: When using a new dashboard data processor version, please always use the
@@ -391,13 +410,12 @@ The number of parameterizable settings can be extended as desired (for example, 
 local FHIR resources have special characteristics). If there should be wishes in this regard, please
 send mail to one of the developers or alternatively create an issue.
 
-Consideration is being given to taking the `Encounter.serviceType` of the department contact to
-detect ICU stays instead of the location information, as this is likely to be served by more sites
-kds compliant by default. For the location, the KDS module is currently under construction and no
-implementation guide exists yet.
-
 In addition, the <a href="./files/Documentation_Dashboard_Backend_v0_3_0a.pdf" target="_blank">
-documentation of the FHIR implementation</a> still needs to be updated to version 0.5.3.
+documentation of the FHIR implementation</a> still needs to be updated to version 0.5.4.
+
+We have also started implementing a token-based fhir server authentication option. It is already
+executable, but has not yet been tested intensively, so the chances are high that this option will
+make it into an upcoming release soon.
 
 Presumably, there will also soon be an option to switch FHIR search requests from GET to POST.
 
@@ -432,7 +450,7 @@ If you discover that the Java VM has too little RAM available (OutOfMemoryError:
 you can try increasing the maximum heap size. For example, in this way:
 
 ```
-java -jar -xMx 8G  target/dashboarddataprocessor-0.5.3.jar
+java -jar -xMx 8G  target/dashboarddataprocessor-0.5.4.jar
 ```
 
 **Connection to the FHIR server failed: 431 Request Header Fields Too Large**
@@ -457,6 +475,18 @@ Solution: Caching the data before retrieving it can be helpful in the short term
 via `?_summary=count`) on the corresponding resource. Otherwise, this timeout value would have to be
 increased (configuration varies depending on the FHIR server).
 
+**We do not use any location resources at our site. Can we still annotate encounter as ICU cases?**
+
+Yes, if you have a local list with IDs of ICU organizational units, and you use the
+`Encounter.serviceProvider` attribute for the annotation, these can be used alternatively. To do
+this, a comma-separated list of IDs must be entered in `application.yaml`
+under `global.service-provider-identifier-of-icu-locations`. This list
+works additionally, any `Encounter.location` entries are also checked. Only the encounter at the
+lowest level (`Versorgungsstellenkontakt`) is checked.
+In addition, the `Encounter.type` is checked for slice `kontaktart` = `intensivstationaer` if no
+location references can be found within the Encounter. This offers another possibility to annotate
+supply contacts as ICU stays.
+
 # Contributors
 
 Thanks to everyone who contributed to this project:
@@ -465,3 +495,4 @@ Thanks to everyone who contributed to this project:
 - [FloSeidel](https://github.com/FloSeidel)
 - [schwzr](https://github.com/schwzr)
 - [UMEihle](https://github.com/UMEihle)
+- [KutSaleh](https://github.com/KutSaleh)

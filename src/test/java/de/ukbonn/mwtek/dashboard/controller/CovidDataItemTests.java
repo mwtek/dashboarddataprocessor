@@ -19,12 +19,20 @@
 package de.ukbonn.mwtek.dashboard.controller;
 
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.COVID;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_AGE_MAXTREATMENTLEVEL_ICU;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_AGE_MAXTREATMENTLEVEL_ICU_WITH_ECMO;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_AGE_MAXTREATMENTLEVEL_ICU_WITH_VENTILATION;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_AGE_MAXTREATMENTLEVEL_NORMAL_WARD;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_AGE_MAXTREATMENTLEVEL_OUTPATIENT;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_GENDER;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_LENGTHOFSTAY_ICU_DEAD;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_MAXTREATMENTLEVEL;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_RESULTS;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_ZIPCODE;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CURRENT_AGE_MAXTREATMENTLEVEL_ICU;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CURRENT_AGE_MAXTREATMENTLEVEL_ICU_WITH_ECMO;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CURRENT_AGE_MAXTREATMENTLEVEL_ICU_WITH_VENTILATION;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CURRENT_AGE_MAXTREATMENTLEVEL_NORMAL_WARD;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CURRENT_MAXTREATMENTLEVEL;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CURRENT_TREATMENTLEVEL;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.TIMELINE_MAXTREATMENTLEVEL;
@@ -111,40 +119,44 @@ public class CovidDataItemTests extends DataItemTests {
   @Test
   @DisplayName("Testing timeline.maxtreatmentlevel")
   void testTimelineMaxTreatmentlevel() {
-    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1614384000L, 0,
-        OUTPATIENT);
-    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1614470400L, 1,
-        OUTPATIENT);
-    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1614556800L, 0,
-        OUTPATIENT);
+    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1614384000L, 0, OUTPATIENT);
+    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1614470400L, 1, OUTPATIENT);
+    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1614556800L, 0, OUTPATIENT);
 
-    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1672444800L, 0,
-        NORMAL_WARD);
-    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1672531200L, 0,
-        NORMAL_WARD);
-    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1672617600L, 0,
-        NORMAL_WARD);
+    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1672444800L, 0, NORMAL_WARD);
+    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1672531200L, 0, NORMAL_WARD);
+    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1672617600L, 0, NORMAL_WARD);
 
-    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659225600L, 0,
-        ICU);
-    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659312000L, 1,
-        ICU);
-    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659398400L, 2,
-        ICU);
+    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659225600L, 0, ICU);
+    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659312000L, 1, ICU);
+    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659398400L, 2, ICU);
 
-    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659225600L, 0,
-        ICU_VENTILATION);
-    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659312000L, 0,
-        ICU_VENTILATION);
-    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659398400L, 1,
-        ICU_VENTILATION);
+    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659225600L, 0, ICU_VENTILATION);
+    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659312000L, 0, ICU_VENTILATION);
+    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659398400L, 1, ICU_VENTILATION);
 
-    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1664496000L, 0,
-        ICU_ECMO);
-    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1664582400L, 1,
-        ICU_ECMO);
-    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1664668800L, 1,
-        ICU_ECMO);
+    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1664496000L, 0, ICU_ECMO);
+    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1664582400L, 1, ICU_ECMO);
+    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1664668800L, 1, ICU_ECMO);
   }
 
+  @Test
+  @DisplayName("Testing current.age.maxtreatmentlevel")
+  void testCurrentAgeMaxTreatmentlevel() {
+    // No dedicated entry tests since the values increase in time
+    assertListIsEmpty(COVID, CURRENT_AGE_MAXTREATMENTLEVEL_NORMAL_WARD);
+    assertListIsEmpty(COVID, CURRENT_AGE_MAXTREATMENTLEVEL_ICU);
+    assertListIsEmpty(COVID, CURRENT_AGE_MAXTREATMENTLEVEL_ICU_WITH_VENTILATION);
+    assertListSize(COVID, CURRENT_AGE_MAXTREATMENTLEVEL_ICU_WITH_ECMO, 1);
+  }
+
+  @Test
+  @DisplayName("Testing cumulative.age.maxtreatmentlevel")
+  void testCumulativeAgeMaxTreatmentlevel() {
+    assertListEqual(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_OUTPATIENT, List.of(60));
+    assertListEqual(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_NORMAL_WARD, List.of());
+    assertListEqual(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_ICU, List.of());
+    assertListEqual(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_ICU_WITH_VENTILATION, List.of(90));
+    assertListEqual(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_ICU_WITH_ECMO, List.of(70, 70));
+  }
 }

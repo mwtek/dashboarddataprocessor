@@ -17,6 +17,8 @@
  */
 package de.ukbonn.mwtek.dashboard.misc;
 
+import static de.ukbonn.mwtek.dashboardlogic.logic.DiseaseResultFunctionality.getKickOffDateStringFormat;
+
 import de.ukbonn.mwtek.dashboard.enums.AcuwaveDataSourceType;
 import de.ukbonn.mwtek.dashboard.interfaces.DataSourceType;
 import de.ukbonn.mwtek.dashboard.interfaces.QuerySuffixBuilder;
@@ -29,118 +31,156 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Building the templates of the individual REST requests to the Acuwaveles server.
- */
+/** Building the templates of the individual REST requests to the Acuwaveles server. */
 public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
 
   public static final String DELIMITER = ",";
 
-  public String getObservations(AbstractDataRetrievalService acuwaveDataRetrievalService,
-      Integer month, boolean summary, DataItemContext dataItemContext) {
+  public String getObservations(
+      AbstractDataRetrievalService acuwaveDataRetrievalService,
+      Integer month,
+      boolean summary,
+      DataItemContext dataItemContext) {
     String orbisLabPcrCodes = "";
     String orbisLabVariantCodes = "";
     switch (dataItemContext) {
       case COVID -> {
-        orbisLabPcrCodes = ((AcuwaveDataRetrievalService) acuwaveDataRetrievalService).getCovidOrbisLabPcrCodes()
-            .stream()
-            .map(String::valueOf).collect(Collectors.joining(
-                DELIMITER));
-        orbisLabVariantCodes = ((AcuwaveDataRetrievalService) acuwaveDataRetrievalService).getCovidOrbisLabVariantCodes()
-            .stream()
-            .map(String::valueOf).collect(Collectors.joining(
-                DELIMITER));
+        orbisLabPcrCodes =
+            ((AcuwaveDataRetrievalService) acuwaveDataRetrievalService)
+                .getCovidOrbisLabPcrCodes().stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(DELIMITER));
+        orbisLabVariantCodes =
+            ((AcuwaveDataRetrievalService) acuwaveDataRetrievalService)
+                .getCovidOrbisLabVariantCodes().stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(DELIMITER));
       }
       case INFLUENZA ->
-          orbisLabPcrCodes = ((AcuwaveDataRetrievalService) acuwaveDataRetrievalService).getInfluenzaOrbisLabPcrCodes()
-              .stream()
-              .map(String::valueOf).collect(Collectors.joining(
-                  DELIMITER));
+          orbisLabPcrCodes =
+              ((AcuwaveDataRetrievalService) acuwaveDataRetrievalService)
+                  .getInfluenzaOrbisLabPcrCodes().stream()
+                      .map(String::valueOf)
+                      .collect(Collectors.joining(DELIMITER));
     }
     return "kdslabor?codes="
-        + orbisLabPcrCodes + (!orbisLabVariantCodes.isBlank() ? DELIMITER
-        + orbisLabVariantCodes : "") + "&months=" + month
+        + orbisLabPcrCodes
+        + (!orbisLabVariantCodes.isBlank() ? DELIMITER + orbisLabVariantCodes : "")
+        + "&months="
+        + month
         + "&hideResourceTypes=ServiceRequest,DiagnosticReport";
   }
 
-  public String getConditions(AbstractDataRetrievalService acuwaveDataRetrievalService,
-      Integer month, boolean summary, DataItemContext dataItemContext) {
+  public String getConditions(
+      AbstractDataRetrievalService acuwaveDataRetrievalService,
+      Integer month,
+      boolean summary,
+      DataItemContext dataItemContext) {
     String icdCodes = "";
     switch (dataItemContext) {
-      case COVID -> {
-        icdCodes = String.join(DELIMITER,
-            acuwaveDataRetrievalService.getCovidIcdCodes());
+      case COVID ->
+          icdCodes = String.join(DELIMITER, acuwaveDataRetrievalService.getCovidIcdCodes());
+      case INFLUENZA ->
+          icdCodes = String.join(DELIMITER, acuwaveDataRetrievalService.getInfluenzaIcdCodes());
+      case KIDS_RADAR ->
+          icdCodes = String.join(DELIMITER, acuwaveDataRetrievalService.getKidsRadarIcdCodesAll());
+    }
+    return "kdsdiagnose?codes="
+        + icdCodes
+        + "&months="
+        + month
+        + "&reportDateFrom="
+        + getKickOffDateStringFormat(dataItemContext);
+  }
+
+  @Override
+  public String getPatients(
+      AbstractDataRetrievalService abstractRestConfiguration, List<String> patientIdList) {
+    return "kdsperson?patients="
+        + String.join(DELIMITER, patientIdList)
+        + "&hideResourceTypes=Observation";
+  }
+
+  @Override
+  public String getEncounters(
+      AbstractDataRetrievalService abstractRestConfiguration,
+      List<String> patientIdList,
+      DataItemContext dataItemContext,
+      Boolean askTotal) {
+    switch (dataItemContext) {
+      case COVID, INFLUENZA -> {
+        return "kdsfall?patients="
+            + String.join(DELIMITER, patientIdList)
+            + "&admissionDateFrom="
+            + getStartingDate(dataItemContext);
       }
-      case INFLUENZA -> {
-        icdCodes = String.join(DELIMITER,
-            acuwaveDataRetrievalService.getInfluenzaIcdCodes());
+      case KIDS_RADAR -> {
+        return "kdsfall?patients="
+            + String.join(DELIMITER, patientIdList)
+            + "&admissionDateFrom="
+            + getStartingDate(dataItemContext)
+            + "&classes=ST";
       }
     }
-    return "kdsdiagnose?codes=" + icdCodes + "&months=" + month;
+    return null;
   }
 
   @Override
-  public String getPatients(AbstractDataRetrievalService abstractRestConfiguration,
-      List<String> patientIdList) {
-    return "kdsperson?patients=" + String.join(DELIMITER,
-        patientIdList) + "&hideResourceTypes=Observation";
-  }
-
-  @Override
-  public String getEncounters(AbstractDataRetrievalService abstractRestConfiguration,
-      List<String> patientIdList) {
-    return "kdsfall?patients=" + String.join(DELIMITER, patientIdList)
-        + "&admissionDateFrom=2020-03-01";
-  }
-
-  @Override
-  public String getProcedures(AbstractDataRetrievalService abstractRestConfiguration,
-      List<String> encounterIdList) {
+  public String getProcedures(
+      AbstractDataRetrievalService abstractRestConfiguration,
+      List<String> encounterIdList,
+      Boolean askTotal) {
     return "kdsicu?cases=" + String.join(DELIMITER, encounterIdList) + "&skipDuplicateCheck=true";
   }
 
   @Override
-  public String getLocations(AbstractDataRetrievalService abstractRestConfiguration,
-      List<?> locationIdSublist) {
-    return "location?ids=" + locationIdSublist.stream().map(String::valueOf)
-        .collect(Collectors.joining(DELIMITER));
+  public String getLocations(
+      AbstractDataRetrievalService abstractRestConfiguration, List<?> locationIdSublist) {
+    return "location?ids="
+        + locationIdSublist.stream().map(String::valueOf).collect(Collectors.joining(DELIMITER));
   }
 
   @Override
-  public String getIcuEncounters(AbstractDataRetrievalService abstractRestConfiguration,
-      Integer calendarYear) {
-    return "kdsfall?admissionDateFrom=" + calendarYear + "-01-01&admissionDateTo=" + calendarYear
+  public String getIcuEncounters(
+      AbstractDataRetrievalService abstractRestConfiguration, Integer calendarYear) {
+    return "kdsfall?admissionDateFrom="
+        + calendarYear
+        + "-01-01&admissionDateTo="
+        + calendarYear
         + "-12-31&icuOnly=true&classes=st,post";
   }
 
-  public String getEncountersDebug(AbstractDataRetrievalService abstractRestConfiguration,
-      List<String> encounterIdList) {
-    return "kdsfall?cases=" + String.join(DELIMITER, encounterIdList)
+  public String getEncountersDebug(
+      AbstractDataRetrievalService abstractRestConfiguration, List<String> encounterIdList) {
+    return "kdsfall?cases="
+        + String.join(DELIMITER, encounterIdList)
         + "&episodeSystems=PDMSREPORTING";
   }
 
   @Override
-  public String getIcuEpisodes(AbstractDataRetrievalService abstractRestConfiguration,
-      List<String> encounterIdList) {
-    return "kdsfall?&cases=" + String.join(DELIMITER, encounterIdList)
+  public String getIcuEpisodes(
+      AbstractDataRetrievalService abstractRestConfiguration, List<String> encounterIdList) {
+    return "kdsfall?&cases="
+        + String.join(DELIMITER, encounterIdList)
         + "&episodeSystems=PDMSREPORTING&episodeSystemsWards=01A,03A,03B,04A";
   }
 
   @Override
   public String getUkbRenalReplacementObservations(
       AbstractDataRetrievalService abstractDataRetrievalService,
-      List<String> encounterIdList, Set<Integer> orbisCodes) {
+      List<String> encounterIdList,
+      Set<Integer> orbisCodes) {
 
     return "kdslabor?codes="
-        + commaSeparatedListOfInteger(orbisCodes) + "&cases="
+        + commaSeparatedListOfInteger(orbisCodes)
+        + "&cases="
         + String.join(DELIMITER, encounterIdList)
         + "&hideResourceTypes=ServiceRequest,DiagnosticReport";
   }
 
   private String commaSeparatedListOfInteger(Set<Integer> orbisCodes) {
     if (orbisCodes != null) {
-      return (orbisCodes.stream().map(String::valueOf)
-          .collect(Collectors.joining(DELIMITER)));
+      return (orbisCodes.stream().map(String::valueOf).collect(Collectors.joining(DELIMITER)));
     } else {
       return null;
     }
@@ -149,19 +189,22 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
   private static Set<Integer> getOrbisCodesAsInteger(
       Map<String, Set<Integer>> predictionModelUkbObservationOrbisCodes) {
     Set<Integer> orbisCodesAsInteger = new HashSet<>();
-    predictionModelUkbObservationOrbisCodes.forEach((x, y) -> {
-      orbisCodesAsInteger.addAll(y);
-    });
+    predictionModelUkbObservationOrbisCodes.forEach(
+        (x, y) -> {
+          orbisCodesAsInteger.addAll(y);
+        });
     return orbisCodesAsInteger;
   }
 
   @Override
   public String getUkbRenalReplacementBodyWeight(
-      AcuwaveDataRetrievalService acuwaveDataRetrievalService, List<String> encounterIdList,
+      AcuwaveDataRetrievalService acuwaveDataRetrievalService,
+      List<String> encounterIdList,
       DataSourceType dataSourceType) {
     if (dataSourceType instanceof AcuwaveDataSourceType acuwaveDataSourceType) {
-      return getModuleName(acuwaveDataSourceType) + "?cases=" + String.join(DELIMITER,
-          encounterIdList)
+      return getModuleName(acuwaveDataSourceType)
+          + "?cases="
+          + String.join(DELIMITER, encounterIdList)
           + "&skipDuplicateCheck=true&profileFilters=BODYWEIGHT";
     }
     return null;
@@ -169,12 +212,14 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
 
   @Override
   public String getUkbRenalReplacementStart(
-      AcuwaveDataRetrievalService acuwaveDataRetrievalService, List<String> encounterIdList,
+      AcuwaveDataRetrievalService acuwaveDataRetrievalService,
+      List<String> encounterIdList,
       DataSourceType dataSourceType) {
 
     if (dataSourceType instanceof AcuwaveDataSourceType acuwaveDataSourceType) {
-      return getModuleName(acuwaveDataSourceType) + "?cases=" + String.join(DELIMITER,
-          encounterIdList)
+      return getModuleName(acuwaveDataSourceType)
+          + "?cases="
+          + String.join(DELIMITER, encounterIdList)
           + "&skipDuplicateCheck=true&profileFilters=RENALREPLACEMENT";
     }
     return null;
@@ -182,12 +227,14 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
 
   @Override
   public String getUkbRenalReplacementUrineOutput(
-      AcuwaveDataRetrievalService acuwaveDataRetrievalService, List<String> encounterIdList,
+      AcuwaveDataRetrievalService acuwaveDataRetrievalService,
+      List<String> encounterIdList,
       DataSourceType dataSourceType) {
 
     if (dataSourceType instanceof AcuwaveDataSourceType acuwaveDataSourceType) {
-      return getModuleName(acuwaveDataSourceType) + "?cases=" + String.join(DELIMITER,
-          encounterIdList)
+      return getModuleName(acuwaveDataSourceType)
+          + "?cases="
+          + String.join(DELIMITER, encounterIdList)
           + "&skipDuplicateCheck=true&profileFilters=URINEOUTPUT&filterZeroValues=true";
     }
     return null;

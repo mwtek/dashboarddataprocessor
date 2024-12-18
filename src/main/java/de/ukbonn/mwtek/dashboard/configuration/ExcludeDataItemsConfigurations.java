@@ -25,7 +25,6 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-
 /**
  * This class is used to parameterize an exclusion of data items of the Json specification on
  * request.
@@ -38,8 +37,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "data-items", ignoreInvalidFields = true)
 public class ExcludeDataItemsConfigurations {
 
-  /**
-   * a list with the data items that should be hide from the output
-   */
+  /** a list with the data items that should be hide from the output */
   private Map<String, Boolean> excludes = new HashMap<>();
 }

@@ -17,6 +17,10 @@
  */
 package de.ukbonn.mwtek.dashboard.misc;
 
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.COVID;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.INFLUENZA;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR;
+
 import de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration;
 import de.ukbonn.mwtek.dashboard.interfaces.DataSourceType;
 import de.ukbonn.mwtek.dashboard.interfaces.QuerySuffixBuilder;
@@ -27,75 +31,93 @@ import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * Building the templates of the individual REST requests to the Acuwaveles server.
- */
+/** Building the templates of the individual REST requests to the Acuwaveles server. */
 public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
 
   private static final String COUNT_EQUALS = "&_count=";
   private static final String DELIMITER = ",";
 
-  public String getObservations(AbstractDataRetrievalService dataRetrievalService, Integer month,
-      boolean summary, DataItemContext dataItemContext) {
+  public String getObservations(
+      AbstractDataRetrievalService dataRetrievalService,
+      Integer month,
+      boolean summary,
+      DataItemContext dataItemContext) {
     String labPcrCodes = "";
     String labVariantCodes = "";
     switch (dataItemContext) {
       case COVID -> {
-        labPcrCodes = String.join(DELIMITER,
-            dataRetrievalService.getCovidLabPcrCodes());
-        labVariantCodes = String.join(DELIMITER,
-            dataRetrievalService.getCovidLabVariantCodes());
+        labPcrCodes = String.join(DELIMITER, dataRetrievalService.getCovidLabPcrCodes());
+        labVariantCodes = String.join(DELIMITER, dataRetrievalService.getCovidLabVariantCodes());
       }
       case INFLUENZA -> {
-        labPcrCodes = String.join(DELIMITER,
-            dataRetrievalService.getInfluenzaLabPcrCodes());
+        labPcrCodes = String.join(DELIMITER, dataRetrievalService.getInfluenzaLabPcrCodes());
       }
     }
-    return "Observation?code=" + labPcrCodes + (!labVariantCodes.isBlank() ? (DELIMITER
-        + labVariantCodes) : "") + "&_pretty=false" + COUNT_EQUALS
-        + dataRetrievalService.getBatchSize() + (summary ? "&_summary=count" : "");
+    return "Observation?code="
+        + labPcrCodes
+        + (!labVariantCodes.isBlank() ? (DELIMITER + labVariantCodes) : "")
+        + "&_pretty=false"
+        + COUNT_EQUALS
+        + dataRetrievalService.getBatchSize()
+        + (summary ? "&_summary=count" : "");
   }
 
-  public String getConditions(AbstractDataRetrievalService dataRetrievalService, Integer month,
-      boolean summary, DataItemContext dataItemContext) {
-    String icdCodes = "";
-    switch (dataItemContext) {
-      case COVID -> icdCodes = String.join(DELIMITER,
-          dataRetrievalService.getCovidIcdCodes());
-      case INFLUENZA -> icdCodes = String.join(DELIMITER,
-          dataRetrievalService.getInfluenzaIcdCodes());
-    }
-    return "Condition?code=" + icdCodes + "&_pretty=false" + COUNT_EQUALS
-        + dataRetrievalService.getBatchSize() + (summary ? "&_summary=count" : "");
-  }
-
-  /**
-   * Used if parameter <code>useEncounterConditionReference</code> in the
-   * {@link FhirSearchConfiguration} is set on <code>true</code>.
-   */
-  public String getConditionsIncludingEncounter(AbstractDataRetrievalService dataRetrievalService,
+  public String getConditions(
+      AbstractDataRetrievalService dataRetrievalService,
+      Integer month,
+      boolean summary,
       DataItemContext dataItemContext) {
     String icdCodes = "";
     switch (dataItemContext) {
-      case COVID -> icdCodes = String.join(DELIMITER,
-          dataRetrievalService.getCovidIcdCodes());
-      case INFLUENZA -> icdCodes = String.join(DELIMITER,
-          dataRetrievalService.getInfluenzaIcdCodes());
+      case COVID -> icdCodes = String.join(DELIMITER, dataRetrievalService.getCovidIcdCodes());
+      case INFLUENZA ->
+          icdCodes = String.join(DELIMITER, dataRetrievalService.getInfluenzaIcdCodes());
+      case KIDS_RADAR ->
+          icdCodes = String.join(DELIMITER, dataRetrievalService.getKidsRadarIcdCodesAll());
     }
-    return "Condition?code=" + icdCodes + "&_revinclude=Encounter:diagnosis&_pretty=false"
+    return "Condition?code="
+        + icdCodes
+        + "&_pretty=false"
+        + COUNT_EQUALS
+        + dataRetrievalService.getBatchSize()
+        + (summary ? "&_summary=count" : "");
+  }
+
+  /**
+   * Used if parameter <code>useEncounterConditionReference</code> in the {@link
+   * FhirSearchConfiguration} is set on <code>true</code>.
+   */
+  public String getConditionsIncludingEncounter(
+      AbstractDataRetrievalService dataRetrievalService, DataItemContext dataItemContext) {
+    String icdCodes = "";
+    switch (dataItemContext) {
+      case COVID -> icdCodes = String.join(DELIMITER, dataRetrievalService.getCovidIcdCodes());
+      case INFLUENZA ->
+          icdCodes = String.join(DELIMITER, dataRetrievalService.getInfluenzaIcdCodes());
+      case KIDS_RADAR ->
+          icdCodes = String.join(DELIMITER, dataRetrievalService.getKidsRadarIcdCodesAll());
+    }
+    return "Condition?code="
+        + icdCodes
+        + "&_revinclude=Encounter:diagnosis&_pretty=false"
         + COUNT_EQUALS
         + dataRetrievalService.getBatchSize();
   }
 
-  public String getPatients(AbstractDataRetrievalService dataRetrievalService,
-      List<String> patientIdList) {
-    return "Patient?_id=" + String.join(DELIMITER,
-        patientIdList) + COUNT_EQUALS + dataRetrievalService.getBatchSize();
+  public String getPatients(
+      AbstractDataRetrievalService dataRetrievalService, List<String> patientIdList) {
+    return "Patient?_id="
+        + String.join(DELIMITER, patientIdList)
+        + COUNT_EQUALS
+        + dataRetrievalService.getBatchSize();
   }
 
   @Override
-  public String getEncounters(AbstractDataRetrievalService dataRetrievalService,
-      List<String> patientIdList) {
+  public String getEncounters(
+      AbstractDataRetrievalService dataRetrievalService,
+      List<String> patientIdList,
+      DataItemContext dataItemContext,
+      Boolean askTotal) {
     StringBuilder suffixBuilder = new StringBuilder();
     suffixBuilder.append("Encounter?subject=").append(String.join(DELIMITER, patientIdList));
 
@@ -105,69 +127,90 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
      we cannot assume that every location stores the transfer history in the Encounter
      resource.*/
     if (dataRetrievalService.getFilterEncounterByDate()) {
-      suffixBuilder.append("&date=gt2020-01-27");
+      switch (dataItemContext) {
+        case COVID -> suffixBuilder.append("&date=gt").append(getStartingDate(COVID));
+        case INFLUENZA -> suffixBuilder.append("&date=gt").append(getStartingDate(INFLUENZA));
+        case KIDS_RADAR ->
+            suffixBuilder
+                .append("&date=gt")
+                .append(getStartingDate(KIDS_RADAR))
+                .append("&_class=IMP");
+      }
     }
-    suffixBuilder.append(COUNT_EQUALS).append(dataRetrievalService.getMaxCountSize());
+    suffixBuilder.append(COUNT_EQUALS).append(dataRetrievalService.getBatchSize());
 
+    if (askTotal) {
+      suffixBuilder.append("&_summary=count");
+    }
     return suffixBuilder.toString();
   }
 
   @Override
-  public String getProcedures(AbstractDataRetrievalService dataRetrievalService,
-      List<String> patientIdList) {
-    return "Procedure?code=" + String.join(DELIMITER,
-        dataRetrievalService.getProcedureVentilationCodes()) + DELIMITER
-        + String.join(DELIMITER,
-        dataRetrievalService.getProcedureEcmoCodes()) + "&subject="
-        + StringUtils.join(
-        patientIdList,
-        ',') + COUNT_EQUALS + dataRetrievalService.getMaxCountSize();
+  public String getProcedures(
+      AbstractDataRetrievalService dataRetrievalService,
+      List<String> patientIdList,
+      Boolean askTotal) {
+    return "Procedure?code="
+        + String.join(DELIMITER, dataRetrievalService.getProcedureVentilationCodes())
+        + DELIMITER
+        + String.join(DELIMITER, dataRetrievalService.getProcedureEcmoCodes())
+        + "&subject="
+        + StringUtils.join(patientIdList, ',')
+        + COUNT_EQUALS
+        + dataRetrievalService.getBatchSize()
+        + (askTotal ? "&_summary=count" : "");
   }
 
   @Override
-  public String getLocations(AbstractDataRetrievalService dataRetrievalService,
-      List<?> locationIdList) {
-    return "Location?_id=" + StringUtils.join(locationIdList,
-        ',') + COUNT_EQUALS + dataRetrievalService.getMaxCountSize();
+  public String getLocations(
+      AbstractDataRetrievalService dataRetrievalService, List<?> locationIdList) {
+    return "Location?_id="
+        + StringUtils.join(locationIdList, ',')
+        + COUNT_EQUALS
+        + dataRetrievalService.getBatchSize();
   }
 
   @Override
-  public String getIcuEncounters(AbstractDataRetrievalService dataRetrievalService,
-      Integer calendarYear) {
+  public String getIcuEncounters(
+      AbstractDataRetrievalService dataRetrievalService, Integer calendarYear) {
     return null;
   }
 
   @Override
-  public String getIcuEpisodes(AbstractDataRetrievalService dataRetrievalService,
-      List<String> encounterIdList) {
+  public String getIcuEpisodes(
+      AbstractDataRetrievalService dataRetrievalService, List<String> encounterIdList) {
     return null;
   }
 
   @Override
   public String getUkbRenalReplacementObservations(
-      AbstractDataRetrievalService abstractRestConfiguration, List<String> encounterIdList,
+      AbstractDataRetrievalService abstractRestConfiguration,
+      List<String> encounterIdList,
       Set<Integer> orbisCodes) {
     return null;
   }
 
   @Override
   public String getUkbRenalReplacementBodyWeight(
-      AcuwaveDataRetrievalService acuwaveDataRetrievalService, List<String> encounterIdSublist,
+      AcuwaveDataRetrievalService acuwaveDataRetrievalService,
+      List<String> encounterIdSublist,
       DataSourceType dataSourceType) {
     return null;
   }
 
   @Override
-  public String getUkbRenalReplacementStart(AcuwaveDataRetrievalService acuwaveDataRetrievalService,
-      List<String> encounterIdSublist, DataSourceType dataSourceType) {
+  public String getUkbRenalReplacementStart(
+      AcuwaveDataRetrievalService acuwaveDataRetrievalService,
+      List<String> encounterIdSublist,
+      DataSourceType dataSourceType) {
     return null;
   }
 
   @Override
   public String getUkbRenalReplacementUrineOutput(
-      AcuwaveDataRetrievalService acuwaveDataRetrievalService, List<String> encounterIdSublist,
+      AcuwaveDataRetrievalService acuwaveDataRetrievalService,
+      List<String> encounterIdSublist,
       DataSourceType dataSourceType) {
     return null;
   }
-
 }

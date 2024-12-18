@@ -34,6 +34,4 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "variants")
 @Getter
 @Setter
-public class VariantConfiguration extends VariantSettings {
-
-}
+public class VariantConfiguration extends VariantSettings {}

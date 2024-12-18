@@ -54,14 +54,13 @@ public class AcuwaveSearchService extends RestConsumer implements SearchService 
   }
 
   /**
-   * Retrieve a FHIR search query and parse the result in FHIR
-   * {@link Bundle#getEntry() bundle entry components} This method is used when pagination is not
-   * necessary.
+   * Retrieve a FHIR search query and parse the result in FHIR {@link Bundle#getEntry() bundle entry
+   * components} This method is used when pagination is not necessary.
    *
    * @param querySuffix The suffix with the Acuwave search logic to be appended to the FHIR server
-   *                    endpoint url (e.g. Kdslabor?code=1234).
-   * @return The response from the FHIR search query, parsed into a FHIR
-   * {@link Bundle#getEntry() bundle entry components}
+   *     endpoint url (e.g. Kdslabor?code=1234).
+   * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle#getEntry()
+   *     bundle entry components}
    */
   public List<Bundle.BundleEntryComponent> getBundleData(String querySuffix) {
     IParser parser = ctx.newJsonParser();
@@ -71,8 +70,7 @@ public class AcuwaveSearchService extends RestConsumer implements SearchService 
     String queryUrl = acuwaveServerEndpoint + querySuffix;
     log.info(queryUrl);
     try {
-      ResponseEntity<String> searchRequest =
-          rest.getForEntity(queryUrl, String.class);
+      ResponseEntity<String> searchRequest = rest.getForEntity(queryUrl, String.class);
       Bundle requestBundle = parser.parseResource(Bundle.class, searchRequest.getBody());
       return requestBundle.getEntry();
     } catch (Exception ex) {
@@ -90,6 +88,4 @@ public class AcuwaveSearchService extends RestConsumer implements SearchService 
   public Bundle getBundlePart(String linkToNextPart) {
     return null;
   }
-
-
 }

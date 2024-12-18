@@ -26,8 +26,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * This class is used to parameterize the FHIR Search queries at the local
- * {@link de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum#FHIR FHIR} server of the data providers.
+ * This class is used to parameterize the FHIR Search queries at the local {@link
+ * de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum#FHIR FHIR} server of the data providers.
  *
  * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
@@ -37,22 +37,13 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class FhirSearchConfiguration extends SearchConfiguration {
 
-  /**
-   * batch size of the parallelized partial FHIR searches
-   */
+  /** batch size of the parallelized partial FHIR searches */
   private int batchSize = 500;
 
   /**
-   * Maximum 'count' size per fhir search request (e.g. if querying encounter resources by patient
-   * IDs). This value should never be reached (default: 1000000).
-   */
-  private int maxCountSize = 1000000;
-
-  /**
-   * Does a reference exist from {@link org.hl7.fhir.r4.model.Condition} resource to
-   * {@link org.hl7.fhir.r4.model.Encounter} via {@link Condition#getEncounter()} or only the
-   * reverse way via {@link Encounter#getDiagnosis()}? This results in differences in the FHIR
-   * search queries.
+   * Does a reference exist from {@link org.hl7.fhir.r4.model.Condition} resource to {@link
+   * org.hl7.fhir.r4.model.Encounter} via {@link Condition#getEncounter()} or only the reverse way
+   * via {@link Encounter#getDiagnosis()}? This results in differences in the FHIR search queries.
    */
   private boolean useEncounterConditionReference = false;
 }

@@ -19,10 +19,5 @@
  */
 package de.ukbonn.mwtek.dashboard.interfaces;
 
-/**
- * Enum class with all supported acuwave data source types.
- */
-public interface DataSourceType {
-
-}
-
+/** Enum class with all supported acuwave data source types. */
+public interface DataSourceType {}

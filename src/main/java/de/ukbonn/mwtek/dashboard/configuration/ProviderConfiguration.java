@@ -35,13 +35,9 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class ProviderConfiguration {
 
-  /**
-   * The provider name
-   */
+  /** The provider name */
   private String name;
 
-  /**
-   * The provider author
-   */
+  /** The provider author */
   private String author;
 }

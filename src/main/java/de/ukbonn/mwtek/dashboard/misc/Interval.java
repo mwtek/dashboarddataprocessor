@@ -22,5 +22,5 @@ import java.util.Date;
 
 public record Interval(Date startDate, Date endDate) {
 
-    // Implement other methods as needed
+  // Implement other methods as needed
 }

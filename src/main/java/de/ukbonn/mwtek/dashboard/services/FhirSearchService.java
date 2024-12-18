@@ -57,14 +57,13 @@ public class FhirSearchService extends RestConsumer implements SearchService {
   }
 
   /**
-   * Retrieve a FHIR search query and parse the result in FHIR
-   * {@link Bundle#getEntry() bundle entry components} This method is used when pagination is not
-   * necessary.
+   * Retrieve a FHIR search query and parse the result in FHIR {@link Bundle#getEntry() bundle entry
+   * components} This method is used when pagination is not necessary.
    *
    * @param querySuffix The suffix with the FHIR search logic to be appended to the FHIR server
-   *                    endpoint url (e.g. Patient?id=1).
-   * @return The response from the FHIR search query, parsed into a FHIR
-   * {@link Bundle#getEntry() bundle entry components}
+   *     endpoint url (e.g. Patient?id=1).
+   * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle#getEntry()
+   *     bundle entry components}
    */
   public List<BundleEntryComponent> getBundleData(String querySuffix) {
     IParser parser = ctx.newJsonParser();
@@ -84,7 +83,7 @@ public class FhirSearchService extends RestConsumer implements SearchService {
    * the next offset), not at bundle entry level.
    *
    * @param querySuffix The suffix with the FHIR search logic to be appended to the FHIR server
-   *                    endpoint url (e.g. Patient?id=1).
+   *     endpoint url (e.g. Patient?id=1).
    * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle} object
    */
   public Bundle getInitialBundle(String querySuffix) {
@@ -100,24 +99,25 @@ public class FhirSearchService extends RestConsumer implements SearchService {
   /**
    * After execution, the initial FHIR search query returns the attributes "self" and "next" within
    * the attribute "link" if the number of resources to be retrieved is too large. These values can
-   * be used to control pagination and are used to retrieve additional
-   * {@link BundleLinkComponent#getUrl() FhirBundleParts} Since the URL is already supplied in the
-   * "next" attribute (in contrast to method {@link #getInitialBundle(String)}) simplified handling
-   * is possible here, since the FHIR search query no longer has to be assembled.
+   * be used to control pagination and are used to retrieve additional {@link
+   * BundleLinkComponent#getUrl() FhirBundleParts} Since the URL is already supplied in the "next"
+   * attribute (in contrast to method {@link #getInitialBundle(String)}) simplified handling is
+   * possible here, since the FHIR search query no longer has to be assembled.
    *
    * @param linkToNextPart The FHIR search query to retrieve the next FHIR {@link Bundle} block via
-   *                       {@link Bundle#getLink()}.
+   *     {@link Bundle#getLink()}.
    * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle} object.
    */
   public Bundle getBundlePart(String linkToNextPart) {
     IParser parser = ctx.newJsonParser();
     RestTemplate rest = this.getRestTemplate();
-    // The resource.link.next URL can be URL encoded (e.g. on the Blaze server). This allows, for example, comma-separated code arrays to be interpreted as a single string. That's why we decode the URL again. (Alternatively, you could also adjust the header).
+    // The resource.link.next URL can be URL encoded (e.g. on the Blaze server). This allows, for
+    // example, comma-separated code arrays to be interpreted as a single string. That's why we
+    // decode the URL again. (Alternatively, you could also adjust the header).
     String linkToNextPartDecoded = URLDecoder.decode(linkToNextPart, Charset.defaultCharset());
     log.debug(linkToNextPartDecoded);
 
     ResponseEntity<String> searchRequest = rest.getForEntity(linkToNextPartDecoded, String.class);
     return parser.parseResource(Bundle.class, searchRequest.getBody());
   }
-
 }

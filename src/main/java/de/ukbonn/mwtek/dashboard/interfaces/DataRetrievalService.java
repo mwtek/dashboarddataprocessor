@@ -66,28 +66,29 @@ public interface DataRetrievalService {
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient} resources.
    *
    * @param listUkbObservations A list of all FHIR observation resources that include a covid
-   *                            finding.
-   * @param listUkbConditions   A list of all FHIR condition resources that include a covid
-   *                            diagnosis.
+   *     finding.
+   * @param listUkbConditions A list of all FHIR condition resources that include a covid diagnosis.
    * @return A list of all patient resources that have at least one covid observation and/or covid
-   * diagnosis.
+   *     diagnosis.
    */
-  List<Patient> getPatients(List<UkbObservation> listUkbObservations,
-      List<UkbCondition> listUkbConditions, DataItemContext dataItemContext);
+  List<Patient> getPatients(
+      List<UkbObservation> listUkbObservations,
+      List<UkbCondition> listUkbConditions,
+      DataItemContext dataItemContext);
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter} resources.
    *
    * @return A list of all FHIR encounter resources of the detected patients after a specified
-   * cut-off date.
+   *     cut-off date.
    */
-  List<Encounter> getEncounters();
+  List<Encounter> getEncounters(DataItemContext dataItemContext);
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure} resources.
    *
    * @return A list of all requested FHIR procedure resources that contain artificial ventilation
-   * data for patients with  at least one covid observation and/or covid diagnosis.
+   *     data for patients with at least one covid observation and/or covid diagnosis.
    */
   List<Procedure> getProcedures();
 
@@ -96,20 +97,22 @@ public interface DataRetrievalService {
    * The input resources are needed for a preprocessing filtering in the acuwave sided procedure
    * data retrieval.
    *
-   * @param listUkbEncounters   A list of all FHIR encounter resources of the detected patients
-   *                            after a specified cut-off date.
-   * @param listUkbLocations    A list of all FHIR location resources that are referenced in any
-   *                            encounter resources.
+   * @param listUkbEncounters A list of all FHIR encounter resources of the detected patients after
+   *     a specified cut-off date.
+   * @param listUkbLocations A list of all FHIR location resources that are referenced in any
+   *     encounter resources.
    * @param listUkbObservations A list of all FHIR observation resources that include a covid
-   *                            finding.
-   * @param listUkbConditions   A list of all FHIR condition resources that include a covid
-   *                            diagnosis.
+   *     finding.
+   * @param listUkbConditions A list of all FHIR condition resources that include a covid diagnosis.
    * @return A list of all requested FHIR procedure resources that contain artificial ventilation
-   * data for patients with  at least one covid observation and/or covid diagnosis.
+   *     data for patients with at least one covid observation and/or covid diagnosis.
    */
-  List<Procedure> getProcedures(List<UkbEncounter> listUkbEncounters,
-      List<UkbLocation> listUkbLocations, List<UkbObservation> listUkbObservations,
-      List<UkbCondition> listUkbConditions, DataItemContext dataItemContext);
+  List<Procedure> getProcedures(
+      List<UkbEncounter> listUkbEncounters,
+      List<UkbLocation> listUkbLocations,
+      List<UkbObservation> listUkbObservations,
+      List<UkbCondition> listUkbConditions,
+      DataItemContext dataItemContext);
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation} resources.
@@ -121,14 +124,14 @@ public interface DataRetrievalService {
   /**
    * Retrieval of the used {@link ServerTypeEnum server type}.
    *
-   * @return The used {@link ServerTypeEnum server type} of the data retrieval service (e.g.
-   * {@link ServerTypeEnum#FHIR})
+   * @return The used {@link ServerTypeEnum server type} of the data retrieval service (e.g. {@link
+   *     ServerTypeEnum#FHIR})
    */
   ServerTypeEnum getServerType();
 
   /**
-   * Retrieval of the used batch size defined in the
-   * {@link de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration} class.
+   * Retrieval of the used batch size defined in the {@link
+   * de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration} class.
    *
    * @return The configured batch size of the parallelized partial FHIR searches
    */
@@ -138,8 +141,6 @@ public interface DataRetrievalService {
 
   List<CoreBaseDataItem> getIcuEpisodes(Collection<String> caseIds) throws SearchException;
 
-
   List<CoreBaseDataItem> getUkbRenalReplacementObservations(
       Collection<String> encounterIds, Set<Integer> codes);
-
 }

@@ -1,12 +1,20 @@
-# Release Notes - Version V0.5.3
+# Release Notes - Version V0.5.4
 
-26/Jun/24
+31/October/24
 
 ## New Features
 
 <div style='margin-left:30px;'>
 
-* Add a handling to also generate json data if the encounter resources of type "Versorgungsstellenkontakt" cannot be used
+* Full support for the new V0.5.4 kiradar data items
+* Added unit tests and example data for all of the kiradar data items.
+* Update of the influenza loinc codes to the [complete value set](https://loinc.org/LG32757-3)
+* It is now possible to detect ICU stays via `Encounter.serviceProvider` as an alternative to
+  location resource usage
+* If no `Encounter.location` resources can be
+  found, `Encounter.type.kontaktart` = `intensivstationaer` will be checked as alternative criteria
+  to flag a supply contact encounter as icu encounter.
+* Addition of an option to parameterize the qualitative codes of the laboratory results
 
 </div>
 
@@ -14,20 +22,36 @@
 
 <div style='margin-left:30px;'>
 
-* Filtering supply contacts on inpatient transfers
-* Add further warnings if some results are inplaubsible
-* Adding new ventilation / ecmo procedure codes to the defaults
+* Adding a new file that describes the data item composition.
+* Adding of many logging mechanisms for unexpected/missing fhir attributes.
+* At least a reduced json output will now be generated even if the "Versorgungsstellenkontakt"
+  resources cannot be used.
+* Upgrade of the HAPI libraries to 7.6.0.
 
 </div> 
 
 ## Tasks
 
-No tasks were part of this version.
+<div style='margin-left:30px;'>
+
+* The various cutoff dates by project are now activated.
+* Adding V0.5.4 data set description.
+* Adding a new variant loinc code to the default list.
+
+</div> 
 
 ## Bugs
 
-* No bug fixes were part of this version.
-  
+<div style='margin-left:30px;'>
+
+* With certain FHIR server configurations, it was possible that not all Encounter resources were
+  retrieved. This has now been ensured by switching to the use of the paging mechanism.
+* Attributes within `Patient.address` that dont hold a real value but an (data absent) extension now
+  doesn't throw NPE anymore.
+* It is now possible again to use proprietary observation codes instead of LOINC codes.
+
+</div> 
+
 # Release Notes - Version V0.5.3
 
 14/May/24
@@ -404,5 +428,5 @@ No bug fixes were part of this version.
 * Cumulative.gender and `cumulative.results` are both excluded if latter one is excluded.
 * NPE when `patient.address` is missing.
 
-</div> 
+</div> </div>
 

@@ -1,0 +1,16 @@
+stages:
+  - code_quality
+  - build
+  - test
+  - deploy
+
+include:
+  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/pmd-lint@v0.8.2
+    inputs:
+      allow_failure: true
+  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/format-check@v0.8.2
+    inputs:
+      allow_failure: true
+  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/compile@v0.8.2
+  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/test@v0.8.2
+  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/deploy@v0.8.2

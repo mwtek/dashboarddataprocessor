@@ -36,31 +36,30 @@ import org.springframework.context.annotation.Configuration;
 public abstract class SearchConfiguration {
 
   /**
-   * Filter the patient (and thus also the encounter) retrieval to SARS-CoV-2-patients only
+   * Filter the patient (and thus also the encounter) retrieval to disease-positive-patients only
    */
-  private Boolean covidFilterPatientRetrieval = true;
+  private Boolean filterPatientRetrieval = true;
 
   /**
-   * Filter the procedure retrieval to inpatient SARS-CoV-2-cases only (with at least one icu
+   * Filter the procedure retrieval to inpatient disease-positive-cases only (with at least one icu
    * transfer) to reduce the requests on an external server
    */
-  private Boolean covidFilterProcedureRetrieval = false;
+  private Boolean filterProcedureRetrieval = true;
 
   /**
    * Should procedures also be queried for specific non-ICU wards? If yes, specify the orbis
    * internal OEBENEID here.
    */
-  private List<String> covidFilterProcedureRetrievalAdditionalWards = new ArrayList<>();
+  private List<String> filterProcedureRetrievalAdditionalWards = new ArrayList<>();
 
   /**
-   * Should the Encounter FHIR search query be filtered by admission date (All cases by SARS-CoV-2
-   * start reference date) ? Must be disabled if outpatient cases do not have an end date.
+   * Should the Encounter FHIR search query be filtered by admission date (All cases by
+   * disease-positive-encounter start reference date)? Must be disabled if outpatient cases do not
+   * have an end date.
    */
-  private Boolean covidFilterEncounterByDate = true;
+  private Boolean filterEncounterByDate = true;
 
-  /**
-   * batch size of the parallelized partial searches
-   */
+  /** batch size of the parallelized partial searches */
   private int batchSize = 500;
 
   /**

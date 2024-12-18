@@ -53,21 +53,26 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
     return sampleData.stream()
         .filter(x -> x.getItemname().equals(determineLabel(context, dataItem)))
         .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException(
-            "Data item not found for context: " + context));
+        .orElseThrow(
+            () -> new IllegalArgumentException("Data item not found for context: " + context));
   }
 
   /**
    * Asserts the treatment level data for a specific context.
    *
-   * @param context        The data item context.
-   * @param normalWard     The expected value for normal ward treatment.
-   * @param icu            The expected value for ICU treatment.
+   * @param context The data item context.
+   * @param normalWard The expected value for normal ward treatment.
+   * @param icu The expected value for ICU treatment.
    * @param icuVentilation The expected value for ICU ventilation treatment.
-   * @param icuEcmo        The expected value for ICU ECMO treatment.
+   * @param icuEcmo The expected value for ICU ECMO treatment.
    */
-  protected void assertTreatmentLevel(DataItemContext context, String selectedDataItem,
-      Integer outpatient, Integer normalWard, Integer icu, Integer icuVentilation,
+  protected void assertTreatmentLevel(
+      DataItemContext context,
+      String selectedDataItem,
+      Integer outpatient,
+      Integer normalWard,
+      Integer icu,
+      Integer icuVentilation,
       Integer icuEcmo) {
     // Test setup
     assertNotNull(sampleData);
@@ -89,8 +94,12 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
     assertEquals(icuEcmo, result.get(ICU_ECMO.getValue()).intValue());
   }
 
-  protected void assertCumulativeResults(DataItemContext context, String selectedDataItem,
-      int positive, int borderlineSuspected, int negative) {
+  protected void assertCumulativeResults(
+      DataItemContext context,
+      String selectedDataItem,
+      int positive,
+      int borderlineSuspected,
+      int negative) {
     // Test setup
     assertNotNull(sampleData);
     assertFalse(sampleData.isEmpty());
@@ -106,8 +115,8 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
     assertEquals(negative, result.get(NEGATIVE.getValue()).intValue());
   }
 
-  protected void assertCumulativeGender(DataItemContext context, String selectedDataItem,
-      int male, int female, int diverse) {
+  protected void assertCumulativeGender(
+      DataItemContext context, String selectedDataItem, int male, int female, int diverse) {
     // Test setup
     assertNotNull(sampleData);
     assertFalse(sampleData.isEmpty());
@@ -123,8 +132,8 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
     assertEquals(diverse, result.get(DIVERSE_SPECIFICATION.getValue()).intValue());
   }
 
-  protected void assertListEqual(DataItemContext context, String selectedDataItem,
-      Collection<?> entries) {
+  protected void assertListEqual(
+      DataItemContext context, String selectedDataItem, Collection<?> entries) {
     // Your existing implementation
 
     // Assuming sampleData and positive are defined somewhere in your test class
@@ -150,9 +159,8 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
     }
   }
 
-
-  protected void assertTimelineValueByDay(DataItemContext context, String selectedDataItem,
-      Long timeStamp, long sum) {
+  protected void assertTimelineValueByDay(
+      DataItemContext context, String selectedDataItem, Long timeStamp, long sum) {
     // Test setup
     assertNotNull(sampleData);
     assertFalse(sampleData.isEmpty());
@@ -163,21 +171,24 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
     TimestampedListPair result = (TimestampedListPair) dataItem.getData();
     int indexByTimeStamp = result.getIndexByTimestamp(timeStamp);
     var resultValue = result.getPair(indexByTimeStamp).getValue();
-//    long resultValue = result.getValueByTimestamp(timeStamp);
+    //    long resultValue = result.getValueByTimestamp(timeStamp);
     // Perform assertions for treatment level
     assertEquals(sum, resultValue);
   }
 
-  protected void assertTimelineValueByDay(DataItemContext context, String selectedDataItem,
-      Long timeStamp, long sum, TreatmentLevels treatmentLevel) {
+  protected void assertTimelineValueByDay(
+      DataItemContext context,
+      String selectedDataItem,
+      Long timeStamp,
+      long sum,
+      TreatmentLevels treatmentLevel) {
     // Test setup
     assertNotNull(sampleData);
     assertFalse(sampleData.isEmpty());
 
     // Get the data item for treatment level
     DiseaseDataItem dataItem = getTreatmentDataItem(context, selectedDataItem);
-    Map<String, List<Long>> result =
-        (Map<String, List<Long>>) dataItem.getData();
+    Map<String, List<Long>> result = (Map<String, List<Long>>) dataItem.getData();
 
     var resultByTreatmentlevel = result.get(treatmentLevel.getValue());
     int indexByTimeStamp = getIndexByTimestamp(timeStamp, result.get(DATE.getValue()));
@@ -187,10 +198,15 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
   }
 
   protected void assertListIsEmpty(DataItemContext context, String selectedDataItem) {
+    assertListSize(context, selectedDataItem, 0);
+  }
+
+  protected void assertListSize(
+      DataItemContext context, String selectedDataItem, Integer expectedSize) {
     // Get the data item for treatment level
     DiseaseDataItem dataItem = getTreatmentDataItem(context, selectedDataItem);
     List<?> dataItemType = (ArrayList<?>) dataItem.getData();
-    assertEquals(0, dataItemType.size());
+    assertEquals(expectedSize, dataItemType.size());
   }
 
   @Test

@@ -19,11 +19,8 @@ package de.ukbonn.mwtek.dashboard.enums;
 
 import de.ukbonn.mwtek.dashboard.interfaces.DataSourceType;
 
-/**
- * Enum class with all supported acuwave data source types.
- */
+/** Enum class with all supported acuwave data source types. */
 public enum AcuwaveDataSourceType implements DataSourceType {
   CLAPP,
   PDMS_REPORTING_DB
 }
-

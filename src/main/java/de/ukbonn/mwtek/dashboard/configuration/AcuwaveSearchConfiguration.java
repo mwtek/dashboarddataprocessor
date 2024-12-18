@@ -31,9 +31,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * This class is used to parameterize the Search queries at the local
- * {@link de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum#ACUWAVE Acuwave} server of the data
- * providers.
+ * This class is used to parameterize the Search queries at the local {@link
+ * de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum#ACUWAVE Acuwave} server of the data providers.
  *
  * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
@@ -43,37 +42,29 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class AcuwaveSearchConfiguration extends SearchConfiguration {
 
-  /**
-   * Orbis internal keys for laboratory codes.
-   */
+  /** Orbis internal keys for laboratory codes. */
   private List<Integer> covidOrbisLabPcrCodes = new ArrayList<>();
 
-  /**
-   * Orbis internal keys for laboratory codes that describe covid variants.
-   */
+  /** Orbis internal keys for laboratory codes that describe covid variants. */
   private List<Integer> covidOrbisLabVariantCodes = new ArrayList<>();
 
-  /**
-   * batch size of the parallelized partial acuwave searches
-   */
+  /** batch size of the parallelized partial acuwave searches */
   private int batchSize = 200;
 
   /**
    * Orbis internal keys for parameter 1 in the ukb modell [Creatinine [Mass/volume] in Serum or
    * Plasma]
    */
-  private Set<Integer> predictionModelUkbObservationOrbisCreatinineCodes = new HashSet<>(
-      Arrays.asList(10143, 131, 132, 17342, 17360));
+  private Set<Integer> predictionModelUkbObservationOrbisCreatinineCodes =
+      new HashSet<>(Arrays.asList(10143, 131, 132, 17342, 17360));
 
-  private Set<Integer> predictionModelUkbObservationOrbisLactateCodes = new HashSet<>(
-      Arrays.asList(189, 6037, 17197));
+  private Set<Integer> predictionModelUkbObservationOrbisLactateCodes =
+      new HashSet<>(Arrays.asList(189, 6037, 17197));
 
-  private Set<Integer> predictionModelUkbObservationOrbisUreaCodes = new HashSet<>(
-      Arrays.asList(133, 10142, 17343, 17361, 17437));
+  private Set<Integer> predictionModelUkbObservationOrbisUreaCodes =
+      new HashSet<>(Arrays.asList(133, 10142, 17343, 17361, 17437));
 
-  /**
-   * Comma-separated list with input codes for FHIR Search and processing logic.
-   */
+  /** Comma-separated list with input codes for FHIR Search and processing logic. */
   private Map<String, String> predictionModelUkbObservationOrbisCodes = new HashMap<>();
 
   /**
@@ -82,15 +73,9 @@ public class AcuwaveSearchConfiguration extends SearchConfiguration {
    */
   private List<String> predictionModelUkbCaseIds = new ArrayList<>();
 
-  /**
-   * For debugging purposes. The calendar years to query can be set this way.
-   */
+  /** For debugging purposes. The calendar years to query can be set this way. */
   private List<Integer> predictionModelYears = null;
 
-
-  /**
-   * Orbis internal keys for influenza laboratory codes.
-   */
+  /** Orbis internal keys for influenza laboratory codes. */
   private List<Integer> influenzaOrbisLabPcrCodes = new ArrayList<>();
-
 }

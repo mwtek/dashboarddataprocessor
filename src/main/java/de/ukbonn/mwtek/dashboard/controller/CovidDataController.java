@@ -19,6 +19,7 @@ package de.ukbonn.mwtek.dashboard.controller;
 
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.addResourceSizesToOutput;
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.logAbortWorkflowMessage;
+import static de.ukbonn.mwtek.utilities.fhir.misc.LocationTools.isDummyIcuLocation;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.ukbonn.mwtek.dashboard.configuration.ExcludeDataItemsConfigurations;
@@ -33,6 +34,8 @@ import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality;
 import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
+import de.ukbonn.mwtek.dashboardlogic.settings.QualitativeLabCodesSettings;
+import de.ukbonn.mwtek.utilities.fhir.misc.LocationTools;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
@@ -43,33 +46,39 @@ import de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.ResourceType;
 
 @Slf4j
 public class CovidDataController {
 
-  public static List<DiseaseDataItem> generateData(DataItemContext dataItemContext,
+  public static List<DiseaseDataItem> generateData(
+      DataItemContext dataItemContext,
       AbstractDataRetrievalService dataRetrievalService,
-      ReportsConfiguration reportConfiguration, ProcessTimer processTimer,
-      GlobalConfiguration globalConfiguration, VariantConfiguration variantConfiguration,
+      ReportsConfiguration reportConfiguration,
+      ProcessTimer processTimer,
+      GlobalConfiguration globalConfiguration,
+      VariantConfiguration variantConfiguration,
       InputCodeSettings inputCodeSettings,
-      ExcludeDataItemsConfigurations exclDataItems, ObjectNode result)
+      QualitativeLabCodesSettings qualitativeLabCodesSettings,
+      ExcludeDataItemsConfigurations exclDataItems,
+      ObjectNode result)
       throws SearchException {
     List<DiseaseDataItem> dataItems = new ArrayList<>();
 
     // Retrieval of the Observation resources
     processTimer.startLoggingTime(ResourceType.Observation);
     List<UkbObservation> ukbObservations =
-        (List<UkbObservation>) ResourceConverter.convert(
-            dataRetrievalService.getObservations(dataItemContext));
+        (List<UkbObservation>)
+            ResourceConverter.convert(dataRetrievalService.getObservations(dataItemContext));
     processTimer.stopLoggingTime(ukbObservations);
 
     // Retrieval of the Condition resources
     processTimer.startLoggingTime(ResourceType.Condition);
     // map fhir resources into ukb resources
     List<UkbCondition> ukbConditions =
-        (List<UkbCondition>) ResourceConverter.convert(
-            dataRetrievalService.getConditions(dataItemContext));
+        (List<UkbCondition>)
+            ResourceConverter.convert(dataRetrievalService.getConditions(dataItemContext));
     processTimer.stopLoggingTime(ukbConditions);
 
     // If no conditions or observations were found, the following further data retrievals /
@@ -77,15 +86,18 @@ public class CovidDataController {
     if (!ukbObservations.isEmpty() || !ukbConditions.isEmpty()) {
       // Retrieval of the Patient resources
       processTimer.startLoggingTime(ResourceType.Patient);
-      List<UkbPatient> ukbPatients = (List<UkbPatient>) ResourceConverter.convert(
-          dataRetrievalService.getPatients(ukbObservations, ukbConditions, dataItemContext));
+      List<UkbPatient> ukbPatients =
+          (List<UkbPatient>)
+              ResourceConverter.convert(
+                  dataRetrievalService.getPatients(
+                      ukbObservations, ukbConditions, dataItemContext));
       processTimer.stopLoggingTime(ukbPatients);
 
       // Retrieval of the Encounter resources
       processTimer.startLoggingTime(ResourceType.Encounter);
       List<UkbEncounter> ukbEncounters =
-          (List<UkbEncounter>) ResourceConverter.convert(dataRetrievalService.getEncounters(),
-              true);
+          (List<UkbEncounter>)
+              ResourceConverter.convert(dataRetrievalService.getEncounters(dataItemContext), true);
       processTimer.stopLoggingTime(ukbEncounters);
 
       // Retrieval of the Location resources
@@ -94,11 +106,21 @@ public class CovidDataController {
           (List<UkbLocation>) ResourceConverter.convert(dataRetrievalService.getLocations());
       processTimer.stopLoggingTime(ukbLocations);
 
+      // If at least one service provider entry was found or a corresponding contact type
+      // => add a dummy icu location
+      addDummyIcuLocationIfNeeded(ukbEncounters, ukbLocations);
+
       // Retrieval of the Procedure resources
       processTimer.startLoggingTime(ResourceType.Procedure);
-      List<UkbProcedure> ukbProcedures = (List<UkbProcedure>) ResourceConverter.convert(
-          dataRetrievalService.getProcedures(ukbEncounters, ukbLocations,
-              ukbObservations, ukbConditions, dataItemContext));
+      List<UkbProcedure> ukbProcedures =
+          (List<UkbProcedure>)
+              ResourceConverter.convert(
+                  dataRetrievalService.getProcedures(
+                      ukbEncounters,
+                      ukbLocations,
+                      ukbObservations,
+                      ukbConditions,
+                      dataItemContext));
       processTimer.stopLoggingTime(ukbProcedures);
 
       processTimer.startLoggingTime("Processing logic");
@@ -106,14 +128,24 @@ public class CovidDataController {
       // Start of the processing logic
       // Formatting of resources in json specification
       DataItemGenerator dataItemGenerator =
-          new DataItemGenerator(ukbConditions, ukbObservations, ukbPatients,
-              ukbEncounters, ukbProcedures, ukbLocations);
+          new DataItemGenerator(
+              ukbConditions,
+              ukbObservations,
+              ukbPatients,
+              ukbEncounters,
+              ukbProcedures,
+              ukbLocations);
 
       // Creation of the data items of the dataset specification
       dataItems.addAll(
-          dataItemGenerator.getDataItems(exclDataItems.getExcludes(),
-              globalConfiguration.getDebug(), variantConfiguration, inputCodeSettings,
-              dataItemContext, globalConfiguration.getUsePartOfInsteadOfIdentifier()));
+          dataItemGenerator.getDataItems(
+              exclDataItems.getExcludes(),
+              globalConfiguration.getDebug(),
+              variantConfiguration,
+              inputCodeSettings,
+              qualitativeLabCodesSettings,
+              dataItemContext,
+              globalConfiguration.getUsePartOfInsteadOfIdentifier()));
 
       // Generate an export with current case/encounter ids by treatment level on demand
       if (reportConfiguration.getCaseIdFileGeneration()) {
@@ -129,8 +161,15 @@ public class CovidDataController {
 
       // Add resource sizes information to the output if needed
       if (globalConfiguration.getDebug()) {
-        addResourceSizesToOutput(result, ukbConditions, ukbObservations, ukbPatients,
-            ukbEncounters, ukbLocations, ukbProcedures, dataItemContext);
+        addResourceSizesToOutput(
+            result,
+            ukbConditions,
+            ukbObservations,
+            ukbPatients,
+            ukbEncounters,
+            ukbLocations,
+            ukbProcedures,
+            dataItemContext);
       }
       processTimer.stopLoggingTime();
     } else {
@@ -140,5 +179,27 @@ public class CovidDataController {
     return dataItems;
   }
 
+  /**
+   * If at least one service provider entry was found in the encounter list the location list its
+   * possible that the icu transfer information is getting managed via this attribute. If so, we
+   * create references to a dummy icu location.
+   */
+  private static void addDummyIcuLocationIfNeeded(
+      List<UkbEncounter> ukbEncounters, List<UkbLocation> ukbLocations) {
+    boolean isServiceProviderUsed = ukbEncounters.stream().anyMatch(Encounter::hasServiceProvider);
 
+    boolean isDummyIcuLocationReferencePresent =
+        ukbEncounters.parallelStream()
+            .filter(Encounter::hasLocation)
+            .flatMap(encounter -> encounter.getLocation().stream())
+            .anyMatch(location -> isDummyIcuLocation(location.getLocation()));
+
+    if (isServiceProviderUsed || isDummyIcuLocationReferencePresent) {
+      ukbLocations.add(LocationTools.createDummyIcuWardLocation());
+      log.info(
+          "Dummy ICU location resource was added because service provider entries were found or a "
+              + "resource with Encounter.type.kontaktart = 'intensivstationaer' "
+              + "but without locations was found.");
+    }
+  }
 }

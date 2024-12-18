@@ -29,9 +29,7 @@ import org.hl7.fhir.r4.model.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Auxiliary methods to determine if certain attributes exist for better feedback to the user.
- */
+/** Auxiliary methods to determine if certain attributes exist for better feedback to the user. */
 @Slf4j
 public class ProcessHelper {
 
@@ -41,20 +39,19 @@ public class ProcessHelper {
    * Could a reference to the patient be found in at least one FHIR resource (usually via the
    * "Subject" attribute)?
    *
-   * @param patientIds   A set of {@link UkbPatient#getPatientId() patient ids}.
-   * @param resourceType The fhir resource type of the context, e.g.
-   *                     {@link ResourceType#Procedure}.
+   * @param patientIds A set of {@link UkbPatient#getPatientId() patient ids}.
+   * @param resourceType The fhir resource type of the context, e.g. {@link ResourceType#Procedure}.
    * @return <code>True</code>, if patient ids could be determined.
    */
   public static boolean patientIdsCouldBeFound(Set<?> patientIds, ResourceType resourceType) {
-    boolean patientIdsCouldBeFound = patientIds != null && patientIds.size() > 0;
+    boolean patientIdsCouldBeFound = patientIds != null && !patientIds.isEmpty();
     // If the set is empty after the observation and condition queries have run, most of the data
     // items can no longer be filled.
     if (!patientIdsCouldBeFound) {
       logger.error(
-          "No " + resourceType.name()
-              + " resources could be retrieved because no patient IDs could be determined from "
-              + "the input filters (observation + condition).");
+          "No {} resources could be retrieved because no patient IDs could be determined from the"
+              + " input filters (observation + condition).",
+          resourceType.name());
     }
     return patientIdsCouldBeFound;
   }
@@ -64,19 +61,19 @@ public class ProcessHelper {
    * attribute)?
    *
    * @param encounterIds A set of {@link UkbEncounter#getCaseId() case ids}.
-   * @param resourceType The fhir resource type of the context, e.g.
-   *                     {@link ResourceType#Observation}.
+   * @param resourceType The fhir resource type of the context, e.g. {@link
+   *     ResourceType#Observation}.
    * @return <code>True</code>, if encounter ids could be determined.
    */
-  public static boolean encounterIdsCouldBeFound(Collection<?> encounterIds,
-      ResourceType resourceType) {
-    boolean encounterIdsCouldBeFound = encounterIds != null && encounterIds.size() > 0;
+  public static boolean encounterIdsCouldBeFound(
+      Collection<?> encounterIds, ResourceType resourceType) {
+    boolean encounterIdsCouldBeFound = encounterIds != null && !encounterIds.isEmpty();
     // If the set is empty after the observation and condition queries have run, most of the data
     // items can no longer be filled.
     if (!encounterIdsCouldBeFound) {
       logger.warn(
-          "No " + resourceType.name()
-              + " resources could be retrieved because no encounter IDs were found.");
+          "No {} resources could be retrieved because no encounter IDs were found.",
+          resourceType.name());
     }
     return encounterIdsCouldBeFound;
   }
@@ -84,19 +81,19 @@ public class ProcessHelper {
   /**
    * Could a reference to the location be found in at least one FHIR encounter resource?
    *
-   * @param locationIds  A set of {@link UkbLocation#getId() location ids}.
-   * @param resourceType The fhir resource type of the context, which will mainly be
-   *                     {@link ResourceType#Location} here.
+   * @param locationIds A set of {@link UkbLocation#getId() location ids}.
+   * @param resourceType The fhir resource type of the context, which will mainly be {@link
+   *     ResourceType#Location} here.
    * @return <code>True</code>, if location ids could be determined.
    */
   public static boolean locationIdsCouldBeFound(Set<?> locationIds, ResourceType resourceType) {
-    boolean locationIdsCouldBeFound = locationIds != null && locationIds.size() > 0;
+    boolean locationIdsCouldBeFound = locationIds != null && !locationIds.isEmpty();
     // If the set is empty after the observation and condition queries have run, most of the data
     // items can no longer be filled.
     if (!locationIdsCouldBeFound) {
       logger.info(
-          "No " + resourceType.name()
-              + " resources could be retrieved because no location IDs were found.");
+          "No {} resources could be retrieved because no location IDs were found.",
+          resourceType.name());
     }
     return locationIdsCouldBeFound;
   }

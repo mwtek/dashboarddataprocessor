@@ -957,8 +957,8 @@
           }
         },
         "period": {
-          "start": "2023-01-01T00:00:00+02:00",
-          "end": "2023-01-30T00:00:00+02:00"
+          "start": "2024-01-01T00:00:00+02:00",
+          "end": "2024-01-30T00:00:00+02:00"
         },
         "hospitalization": {
           "admitSource": {
@@ -1088,8 +1088,8 @@
           }
         },
         "period": {
-          "start": "2023-01-01T00:00:00+02:00",
-          "end": "2023-01-30T00:00:00+02:00"
+          "start": "2024-01-01T00:00:00+02:00",
+          "end": "2024-01-30T00:00:00+02:00"
         },
         "partOf": {
           "reference": "Encounter/T-1234567911-000000-EK"
@@ -1191,8 +1191,8 @@
               ]
             },
             "period": {
-              "start": "2023-01-01T00:00:00+02:00",
-              "end": "2023-01-15T00:00:00+02:00"
+              "start": "2024-01-01T00:00:00+02:00",
+              "end": "2024-01-15T00:00:00+02:00"
             }
           },
           {
@@ -1209,8 +1209,8 @@
               ]
             },
             "period": {
-              "start": "2023-01-01T00:00:00+02:00",
-              "end": "2023-01-15T00:00:00+02:00"
+              "start": "2024-01-01T00:00:00+02:00",
+              "end": "2024-01-15T00:00:00+02:00"
             }
           },
           {
@@ -1227,14 +1227,14 @@
               ]
             },
             "period": {
-              "start": "2023-01-01T00:00:00+02:00",
-              "end": "2023-01-15T00:00:00+02:00"
+              "start": "2024-01-01T00:00:00+02:00",
+              "end": "2024-01-15T00:00:00+02:00"
             }
           }
         ],
         "period": {
-          "start": "2023-01-01T00:00:00+02:00",
-          "end": "2023-01-15T00:00:00+02:00"
+          "start": "2024-01-01T00:00:00+02:00",
+          "end": "2024-01-15T00:00:00+02:00"
         },
         "partOf": {
           "reference": "Encounter/T-1234567911-1234567911-AK"
@@ -1336,8 +1336,8 @@
               ]
             },
             "period": {
-              "start": "2023-01-15T00:00:00+02:00",
-              "end": "2023-01-30T00:00:00+02:00"
+              "start": "2024-01-15T00:00:00+02:00",
+              "end": "2024-01-30T00:00:00+02:00"
             }
           },
           {
@@ -1354,8 +1354,8 @@
               ]
             },
             "period": {
-              "start": "2023-01-15T00:00:00+02:00",
-              "end": "2023-01-30T00:00:00+02:00"
+              "start": "2024-01-15T00:00:00+02:00",
+              "end": "2024-01-30T00:00:00+02:00"
             }
           },
           {
@@ -1372,14 +1372,14 @@
               ]
             },
             "period": {
-              "start": "2023-01-15T00:00:00+02:00",
-              "end": "2023-01-30T00:00:00+02:00"
+              "start": "2024-01-15T00:00:00+02:00",
+              "end": "2024-01-30T00:00:00+02:00"
             }
           }
         ],
         "period": {
-          "start": "2023-01-15T00:00:00+02:00",
-          "end": "2023-01-30T00:00:00+02:00"
+          "start": "2024-01-15T00:00:00+02:00",
+          "end": "2024-01-30T00:00:00+02:00"
         },
         "partOf": {
           "reference": "Encounter/T-1234567911-1234567911-AK"
@@ -1419,7 +1419,7 @@
           "coding": [
             {
               "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
-              "version": "2023",
+              "version": "2024",
               "code": "Z22.8",
               "display": "Keimträger sonstiger Infektionskrankheiten"
             }
@@ -1431,8 +1431,8 @@
         "encounter": {
           "reference": "Encounter/T-1234567911-000000-EK"
         },
-        "onsetDateTime": "2023-01-10T00:00:00+02:00",
-        "recordedDate": "2023-01-10T00:00:00+02:00"
+        "onsetDateTime": "2024-01-10T00:00:00+02:00",
+        "recordedDate": "2024-01-10T00:00:00+02:00"
       },
       "request": {
         "method": "PUT",
@@ -1485,7 +1485,7 @@
                 }
               ],
               "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
-              "version": "2023",
+              "version": "2024",
               "code": "J10.0",
               "display": "Grippe mit Pneumonie, saisonale Influenzaviren nachgewiesen"
             }
@@ -1497,8 +1497,8 @@
         "encounter": {
           "reference": "Encounter/T-1234567911-000000-EK"
         },
-        "onsetDateTime": "2023-01-10T00:00:00+02:00",
-        "recordedDate": "2023-01-10T00:00:00+02:00"
+        "onsetDateTime": "2024-01-10T00:00:00+02:00",
+        "recordedDate": "2024-01-10T00:00:00+02:00"
       },
       "request": {
         "method": "PUT",
@@ -1567,7 +1567,7 @@
         "encounter": {
           "reference": "Encounter/T-1234567911-000000-EK"
         },
-        "effectiveDateTime": "2023-01-09T00:00:00+02:00",
+        "effectiveDateTime": "2024-01-09T00:00:00+02:00",
         "valueCodeableConcept": {
           "coding": [
             {
@@ -1646,7 +1646,7 @@
         "encounter": {
           "reference": "Encounter/T-1234567911-000000-EK"
         },
-        "effectiveDateTime": "2023-01-10T00:00:00+02:00",
+        "effectiveDateTime": "2024-01-10T00:00:00+02:00",
         "valueCodeableConcept": {
           "coding": [
             {
@@ -1699,8 +1699,8 @@
           "reference": "Encounter/T-1234567911-000000-EK"
         },
         "performedPeriod": {
-          "start": "2023-01-20T01:00:00+02:00",
-          "end": "2023-01-30T01:00:00+02:00"
+          "start": "2024-01-20T01:00:00+02:00",
+          "end": "2024-01-30T01:00:00+02:00"
         }
       },
       "request": {
@@ -1863,8 +1863,8 @@
           }
         },
         "period": {
-          "start": "2021-03-01T00:00:00+01:00",
-          "end": "2021-03-01T00:00:00+01:00"
+          "start": "2024-02-29T14:00:00+01:00",
+          "end": "2024-02-29T14:00:00+01:00"
         },
         "location": [
           {
@@ -1881,8 +1881,8 @@
               ]
             },
             "period": {
-              "start": "2021-03-01T00:00:00+01:00",
-              "end": "2021-03-01T00:00:00+01:00"
+              "start": "2024-02-29T14:00:00+01:00",
+              "end": "2024-02-29T14:00:00+01:00"
             }
           }
         ]
@@ -1940,7 +1940,7 @@
                 }
               ],
               "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
-              "version": "2021",
+              "version": "2024",
               "code": "J10.8",
               "display": "Grippe mit sonstigen Manifestationen, saisonale Influenzaviren nachgewiesen"
             }
@@ -1952,8 +1952,8 @@
         "encounter": {
           "reference": "Encounter/T-OUTPATIENT-000000-EK"
         },
-        "onsetDateTime": "2021-03-01T00:00:00+01:00",
-        "recordedDate": "2021-03-01T00:00:00+01:00"
+        "onsetDateTime": "2024-02-29T14:00:00+01:00",
+        "recordedDate": "2024-02-29T14:00:00+01:00"
       },
       "request": {
         "method": "PUT",
@@ -2096,8 +2096,8 @@
           }
         },
         "period": {
-          "start": "2021-06-01T00:00:00+01:00",
-          "end": "2021-06-01T00:00:00+01:00"
+          "start": "2024-06-01T00:00:00+01:00",
+          "end": "2024-06-01T00:00:00+01:00"
         },
         "location": [
           {
@@ -2114,8 +2114,8 @@
               ]
             },
             "period": {
-              "start": "2021-06-01T00:00:00+01:00",
-              "end": "2021-06-01T00:00:00+01:00"
+              "start": "2024-06-01T00:00:00+01:00",
+              "end": "2024-06-01T00:00:00+01:00"
             }
           }
         ]
@@ -2173,7 +2173,7 @@
                 }
               ],
               "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
-              "version": "2021",
+              "version": "2024",
               "code": "J10.8",
               "display": "Grippe mit sonstigen Manifestationen, saisonale Influenzaviren nachgewiesen"
             }
@@ -2185,8 +2185,8 @@
         "encounter": {
           "reference": "Encounter/T-PRESTATIONARY-000000-EK"
         },
-        "onsetDateTime": "2021-06-01T00:00:00+01:00",
-        "recordedDate": "2021-06-01T00:00:00+01:00"
+        "onsetDateTime": "2024-06-01T00:00:00+01:00",
+        "recordedDate": "2024-06-01T00:00:00+01:00"
       },
       "request": {
         "method": "PUT",

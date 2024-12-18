@@ -64,6 +64,16 @@
 - infl.timeline.test.positive
 - infl.timeline.maxtreatmentlevel
 - infl.timeline.deaths
+- kira.kjp.cumulative.diags.zipcode
+- kira.kjp.cumulative.diags.age
+- kira.kjp.cumulative.diags.gender
+- kira.kjp.cumulative.diags.lengthofstay
+- kira.kjp.timeline.diags.occurrence
+- kira.rsv.cumulative.diags.zipcode
+- kira.rsv.cumulative.diags.age
+- kira.rsv.cumulative.diags.gender
+- kira.rsv.cumulative.diags.lengthofstay
+- kira.rsv.timeline.diags.occurrence
 
 #### The processor currently doesn't generate the following data items (and sub items):
 

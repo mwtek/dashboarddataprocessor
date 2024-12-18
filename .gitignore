@@ -213,6 +213,7 @@ nbdist/
 ### Project related ###
 dashboarddataprocessor/
 currentTreatmentlevelExport/
+samples/SampleBundle_SP.json
 samples/SampleBundle_WA.json
 *.log
 *.gz

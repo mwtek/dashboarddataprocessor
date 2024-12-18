@@ -30,7 +30,7 @@
   </parent>
   <groupId>de.ukbonn.mwtek</groupId>
   <artifactId>dashboarddataprocessor</artifactId>
-  <version>0.5.3-alpha1</version>
+  <version>0.5.4-dev.0</version>
   <name>dashboard-data-processor</name>
   <description>MII-FHIR-to-NUM-Dashboard-Processor</description>
   <properties>
@@ -98,13 +98,13 @@
     <dependency>
       <groupId>de.ukbonn.mwtek</groupId>
       <artifactId>utilities</artifactId>
-      <version>0.5.3-alpha1</version>
+      <version>0.5.4-dev.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>de.ukbonn.mwtek</groupId>
       <artifactId>dashboardlogic</artifactId>
-      <version>0.5.3-alpha1</version>
+      <version>0.5.4-dev.0</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
@@ -148,4 +148,16 @@
       </plugin>
     </plugins>
   </build>
+  <distributionManagement>
+    <repository>
+      <id>gitlab-maven-deploy</id>
+      <name>MWTek GitLab Maven Repo</name>
+      <url>${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/maven</url>
+    </repository>
+    <snapshotRepository>
+      <id>gitlab-maven-deploy</id>
+      <name>MWTek GitLab Maven Repo</name>
+      <url>${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/maven</url>
+    </snapshotRepository>
+  </distributionManagement>
 </project>

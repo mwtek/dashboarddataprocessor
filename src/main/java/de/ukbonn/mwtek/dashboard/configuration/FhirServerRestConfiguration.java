@@ -29,6 +29,4 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ConfigurationProperties(prefix = "fhir.server")
-public class FhirServerRestConfiguration extends AbstractRestConfiguration {
-
-}
+public class FhirServerRestConfiguration extends AbstractRestConfiguration {}
