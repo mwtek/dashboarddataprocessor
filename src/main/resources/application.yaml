@@ -74,6 +74,11 @@ fhir:
     key-store-password: pwd
     trust-store: src/main/resources/certs/truststore.jks
     trust-store-password: pwd
+    ## TOKEN
+    token: <insert-token-here>
+    token-refresh: true
+    token-refresh-url: <insert-refresh-url-here>
+    token-refresh-interval: 30
   ## Adjustment of FHIR search requests on the FHIR server
   search:
     ## Batch size of the partial FHIR searches. If the length of the GET request URL is too long, this value must be reduced.

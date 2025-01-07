@@ -28,6 +28,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.ResourceUtils;
@@ -66,6 +67,9 @@ public class RestConsumer {
       } // case
       case "SSL" -> {
         return getRestTemplateCertificateAuth();
+      } // case
+      case "TOKEN" -> {
+        return getRestTokenAuth();
       } // case
       case "NONE" -> {
         return getRestTemplateNone();
@@ -142,5 +146,20 @@ public class RestConsumer {
     }
 
     return resultTemplate;
+  }
+
+  /**
+   * helper for REST calls that use Token Authentication
+   *
+   * @return a pre configured spring RestTemplate object
+   */
+  protected RestTemplate getRestTokenAuth() {
+    RestTemplate result =
+        new RestTemplateBuilder().additionalInterceptors((request, body, execution) -> {
+          request.getHeaders().add("Authorization", "Bearer " + restConfiguration.getToken() );
+          return execution.execute(request, body);
+        }).build();
+    result.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+    return result;
   }
 }

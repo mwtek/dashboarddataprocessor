@@ -63,6 +63,26 @@ public abstract class AbstractRestConfiguration {
   private String trustStorePassword;
 
   /**
+   * The token used when token authentication is selected.
+   */
+  private String token;
+
+  /**
+   * Specifies if a new token should be retrieved. Then tokenRefreshUrl must be set.
+   */
+  private boolean tokenRefresh;
+
+  /**
+   * The url from which a new token can be retrieved. The old token is used for authentication.
+   */
+  private String tokenRefreshUrl;
+
+  /**
+   * The interval in which the token should be refreshed in minutes.
+   */
+  private int tokenRefreshInterval = 10;
+
+  /**
    * The authentication method used for the rest call, must be one of <code>NONE</code>, <code>BASIC
    * </code> or <code>SSL</code>. If no value is specified, <code>BASIC</code> authentication is
    * used.
