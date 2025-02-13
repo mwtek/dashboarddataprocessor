@@ -129,8 +129,18 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
   public String getProcedures(
       AbstractDataRetrievalService abstractRestConfiguration,
       List<String> encounterIdList,
+      String systemUrl,
       Boolean askTotal) {
     return "kdsicu?cases=" + String.join(DELIMITER, encounterIdList) + "&skipDuplicateCheck=true";
+  }
+
+  @Override
+  public String getProceduresPost(
+      AbstractDataRetrievalService dataRetrievalService,
+      List<String> encounterIdList,
+      String systemUrl) {
+    // Not used
+    return null;
   }
 
   @Override
@@ -138,6 +148,12 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
       AbstractDataRetrievalService abstractRestConfiguration, List<?> locationIdSublist) {
     return "location?ids="
         + locationIdSublist.stream().map(String::valueOf).collect(Collectors.joining(DELIMITER));
+  }
+
+  @Override
+  public String getLocationsPost(
+      AbstractDataRetrievalService dataRetrievalService, List<?> locationIdList) {
+    return "";
   }
 
   @Override

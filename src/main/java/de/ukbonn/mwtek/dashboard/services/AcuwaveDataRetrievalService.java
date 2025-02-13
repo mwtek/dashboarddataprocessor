@@ -34,6 +34,7 @@ import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.logWarningForUnexpect
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.encounterIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.locationIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.patientIdsCouldBeFound;
+import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.removeNotNeededAttributes;
 import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.KJP;
 import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.RSV;
 import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.ICU;
@@ -91,6 +92,7 @@ import org.hl7.fhir.r4.model.Procedure;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpMethod;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpServerErrorException;
 
@@ -192,15 +194,16 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                     this.getSearchService()
                         .getBundleData(
                             new AcuwaveQuerySuffixBuilder()
-                                .getObservations(this, month, false,
-                                    dataItemContext));
+                                .getObservations(this, month, false, dataItemContext),
+                            HttpMethod.GET,
+                            null);
                 listTemp.forEach(
                     bundleEntry -> {
                       if (bundleEntry.getResource().getResourceType() == ResourceType.Observation) {
                         Observation obs = (Observation) bundleEntry.getResource();
                         ResourceHandler.storeObservationPatientKeys(
                             obs, patientIds, encounterIds, this.getServerType());
-                        setObservations.add(obs);
+                        setObservations.add(removeNotNeededAttributes(obs));
                       }
                     });
               } catch (HttpServerErrorException e) {
@@ -228,15 +231,16 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                     this.getSearchService()
                         .getBundleData(
                             new AcuwaveQuerySuffixBuilder()
-                                .getConditions(this, month, false,
-                                    dataItemContext));
+                                .getConditions(this, month, false, dataItemContext),
+                            HttpMethod.GET,
+                            null);
                 listTemp.forEach(
                     bundleEntry -> {
                       if (bundleEntry.getResource().getResourceType() == ResourceType.Condition) {
                         Condition cond = (Condition) bundleEntry.getResource();
                         ResourceHandler.storeConditionPatientKeys(
                             cond, patientIds, encounterIds, this.getServerType());
-                        setConditions.add(cond);
+                        setConditions.add(removeNotNeededAttributes(cond));
                       }
                     });
               } catch (Exception e) {
@@ -291,7 +295,9 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                 List<Bundle.BundleEntryComponent> listTemp =
                     this.getSearchService()
                         .getBundleData(
-                            new AcuwaveQuerySuffixBuilder().getPatients(this, patientIdList));
+                            new AcuwaveQuerySuffixBuilder().getPatients(this, patientIdList),
+                            HttpMethod.GET,
+                            null);
                 listTemp.forEach(
                     bundleEntry -> {
                       if (bundleEntry.getResource().getResourceType() == ResourceType.Patient) {
@@ -301,8 +307,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
 
               } catch (Exception e) {
                 logger.error(
-                    "Retrieval patient resources: Unable to build a json module chain: "
-                        + e.getMessage());
+                    "Retrieval patient resources: Unable to build a json module chain: {}",
+                    e.getMessage());
               }
             });
     return new ArrayList<>(patientsOutput);
@@ -329,7 +335,9 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                     this.getSearchService()
                         .getBundleData(
                             new AcuwaveQuerySuffixBuilder()
-                                .getEncounters(this, patientIdList, dataItemContext, false));
+                                .getEncounters(this, patientIdList, dataItemContext, false),
+                            HttpMethod.GET,
+                            null);
                 listTemp.forEach(
                     bundleEntry -> {
                       if (bundleEntry.getResource().getResourceType() == ResourceType.Encounter) {
@@ -340,7 +348,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                                 loc ->
                                     locationIds.add(
                                         loc.getLocation().getReference().split("/")[1]));
-                        setEncounters.add(encounter);
+                        setEncounters.add(removeNotNeededAttributes(encounter));
                       }
                     });
 
@@ -435,7 +443,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
           CoronaResultFunctionality.getPidsWithPosLabResult(
                   listUkbObservations,
                   ConfigurationTransformer.extractInputCodeSettings(this),
-                  dataItemContext, ConfigurationTransformer.extractQualitativeLabCodesSettings(this))
+                  dataItemContext,
+                  ConfigurationTransformer.extractQualitativeLabCodesSettings(this))
               .parallelStream()
               .filter(listPatientsIcu::contains)
               .collect(Collectors.toSet());
@@ -483,7 +492,9 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                       this.getSearchService()
                           .getBundleData(
                               new AcuwaveQuerySuffixBuilder()
-                                  .getProcedures(this, encounterIds, null));
+                                  .getProcedures(this, encounterIds, null, null),
+                              HttpMethod.GET,
+                              null);
                   listTemp.forEach(
                       bundleEntry -> {
                         if (bundleEntry.getResource().getResourceType() == ResourceType.Procedure) {
@@ -528,7 +539,9 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                 List<Bundle.BundleEntryComponent> listTemp =
                     this.getSearchService()
                         .getBundleData(
-                            new AcuwaveQuerySuffixBuilder().getLocations(this, locationIdSublist));
+                            new AcuwaveQuerySuffixBuilder().getLocations(this, locationIdSublist),
+                            HttpMethod.GET,
+                            null);
                 listTemp.forEach(
                     bundleEntry -> {
                       if (bundleEntry.getResource().getResourceType() == ResourceType.Location) {
@@ -576,7 +589,9 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                   List<Bundle.BundleEntryComponent> listTemp =
                       this.getSearchService()
                           .getBundleData(
-                              new AcuwaveQuerySuffixBuilder().getIcuEncounters(this, year));
+                              new AcuwaveQuerySuffixBuilder().getIcuEncounters(this, year),
+                              HttpMethod.GET,
+                              null);
                   listTemp.parallelStream()
                       .forEach(
                           bundleEntry -> {
@@ -590,7 +605,9 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
         List<Bundle.BundleEntryComponent> listTemp =
             this.getSearchService()
                 .getBundleData(
-                    new AcuwaveQuerySuffixBuilder().getEncountersDebug(this, caseIdsSettings));
+                    new AcuwaveQuerySuffixBuilder().getEncountersDebug(this, caseIdsSettings),
+                    HttpMethod.GET,
+                    null);
         listTemp.parallelStream()
             .forEach(
                 bundleEntry -> {
@@ -630,7 +647,10 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
               cases -> {
                 List<Bundle.BundleEntryComponent> bundleEntries =
                     this.getSearchService()
-                        .getBundleData(new AcuwaveQuerySuffixBuilder().getIcuEpisodes(this, cases));
+                        .getBundleData(
+                            new AcuwaveQuerySuffixBuilder().getIcuEpisodes(this, cases),
+                            HttpMethod.GET,
+                            null);
                 // Process each bundle entry
                 bundleEntries.parallelStream()
                     .forEach(
@@ -705,7 +725,9 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                         .getBundleData(
                             new AcuwaveQuerySuffixBuilder()
                                 .getUkbRenalReplacementObservations(
-                                    this, encounterIdSubList, orbisCodes));
+                                    this, encounterIdSubList, orbisCodes),
+                            HttpMethod.GET,
+                            null);
                 listTemp.forEach(
                     bundleEntry -> {
                       if (bundleEntry.getResource().getResourceType() == ResourceType.Observation) {
@@ -765,14 +787,18 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                               .getBundleData(
                                   new AcuwaveQuerySuffixBuilder()
                                       .getUkbRenalReplacementBodyWeight(
-                                          this, encounterIdSublist, CLAPP));
+                                          this, encounterIdSublist, CLAPP),
+                                  HttpMethod.GET,
+                                  null);
                   case PDMS_REPORTING_DB ->
                       listTemp =
                           this.getSearchService()
                               .getBundleData(
                                   new AcuwaveQuerySuffixBuilder()
                                       .getUkbRenalReplacementBodyWeight(
-                                          this, encounterIdSublist, PDMS_REPORTING_DB));
+                                          this, encounterIdSublist, PDMS_REPORTING_DB),
+                                  HttpMethod.GET,
+                                  null);
                 }
 
                 // Casting the found observations to a list
@@ -880,14 +906,18 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                               .getBundleData(
                                   new AcuwaveQuerySuffixBuilder()
                                       .getUkbRenalReplacementUrineOutput(
-                                          this, encounterIdSublist, CLAPP));
+                                          this, encounterIdSublist, CLAPP),
+                                  HttpMethod.GET,
+                                  null);
                   case PDMS_REPORTING_DB ->
                       listTemp =
                           this.getSearchService()
                               .getBundleData(
                                   new AcuwaveQuerySuffixBuilder()
                                       .getUkbRenalReplacementUrineOutput(
-                                          this, encounterIdSublist, PDMS_REPORTING_DB));
+                                          this, encounterIdSublist, PDMS_REPORTING_DB),
+                                  HttpMethod.GET,
+                                  null);
                 }
                 listTemp.forEach(
                     bundleEntry -> {
@@ -975,15 +1005,18 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                           this.getSearchService()
                               .getBundleData(
                                   new AcuwaveQuerySuffixBuilder()
-                                      .getUkbRenalReplacementStart(
-                                          this, encounterIdSublist, CLAPP));
+                                      .getUkbRenalReplacementStart(this, encounterIdSublist, CLAPP),
+                                  HttpMethod.GET,
+                                  null);
                   case PDMS_REPORTING_DB ->
                       listTemp =
                           this.getSearchService()
                               .getBundleData(
                                   new AcuwaveQuerySuffixBuilder()
                                       .getUkbRenalReplacementStart(
-                                          this, encounterIdSublist, PDMS_REPORTING_DB));
+                                          this, encounterIdSublist, PDMS_REPORTING_DB),
+                                  HttpMethod.GET,
+                                  null);
                 }
                 listTemp.forEach(
                     bundleEntry -> {

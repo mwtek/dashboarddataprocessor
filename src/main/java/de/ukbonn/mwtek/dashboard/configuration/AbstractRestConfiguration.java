@@ -68,4 +68,24 @@ public abstract class AbstractRestConfiguration {
    * used.
    */
   private String authMethod;
+
+  /**
+   * The authentication method used for the rest call, must be one of <code>NONE</code>, <code>BASIC
+   * </code> or <code>SSL</code>. If no value is specified, <code>BASIC</code> authentication is
+   * used.
+   */
+  private TokenBasedAuth tokenBasedAuth;
+
+  @Getter
+  @Setter
+  public static class TokenBasedAuth {
+    String realm;
+    String grantType;
+    String clientId;
+    String clientSecret;
+    String username;
+    String password;
+    String token;
+    Boolean useSsl;
+  }
 }

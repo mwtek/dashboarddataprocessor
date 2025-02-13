@@ -1,6 +1,6 @@
 # Release Notes - Version V0.5.4
 
-31/October/24
+13/February/25
 
 ## New Features
 
@@ -14,7 +14,11 @@
 * If no `Encounter.location` resources can be
   found, `Encounter.type.kontaktart` = `intensivstationaer` will be checked as alternative criteria
   to flag a supply contact encounter as icu encounter.
-* Addition of an option to parameterize the qualitative codes of the laboratory results
+* Addition of an option to parameterize the qualitative codes of the laboratory results.
+* It is now possible to switch the FHIR server calls where IDs are transferred from GET to POST
+  requests to avoid the problem of URIs that are too long.
+* Added support for token-based authentification.
+* Added an option to set minimum thresholds to be reached for all data elements.
 
 </div>
 
@@ -27,6 +31,7 @@
 * At least a reduced json output will now be generated even if the "Versorgungsstellenkontakt"
   resources cannot be used.
 * Upgrade of the HAPI libraries to 7.6.0.
+* Procedure retrieval on blaze servers (0.31.0+) should be optimized now.
 
 </div> 
 
@@ -37,6 +42,10 @@
 * The various cutoff dates by project are now activated.
 * Adding V0.5.4 data set description.
 * Adding a new variant loinc code to the default list.
+* Switching from `subject` to `patient` for some calls of the fhir data query, as this parameter
+  does the same thing but
+  gets [further support](https://hl7.org/fhir/R4/compartmentdefinition-patient.html) regarding index
+  optimization.
 
 </div> 
 
@@ -49,6 +58,7 @@
 * Attributes within `Patient.address` that dont hold a real value but an (data absent) extension now
   doesn't throw NPE anymore.
 * It is now possible again to use proprietary observation codes instead of LOINC codes.
+* Possible discrepancies in the totals between the age charts have been fixed.
 
 </div> 
 

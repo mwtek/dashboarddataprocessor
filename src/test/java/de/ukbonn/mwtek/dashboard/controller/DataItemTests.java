@@ -45,8 +45,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
+@Slf4j
 public abstract class DataItemTests extends ResultFunctionalityTests {
 
   protected DiseaseDataItem getTreatmentDataItem(DataItemContext context, String dataItem) {
@@ -55,6 +57,20 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
         .findFirst()
         .orElseThrow(
             () -> new IllegalArgumentException("Data item not found for context: " + context));
+  }
+
+  /**
+   * Helper method to safely retrieve and cast treatment data.
+   *
+   * @param context The treatment category (e.g., COVID).
+   * @param dataType The specific cumulative age type.
+   * @return A list of integers representing the cumulative age data.
+   */
+  @SuppressWarnings("unchecked")
+  protected List<Integer> getDataAsIntegerList(DataItemContext context, String dataType) {
+    System.out.println(getTreatmentDataItem(context, dataType).getData().getClass());
+    log.error("" + getTreatmentDataItem(context, dataType).getData().getClass());
+    return (List<Integer>) getTreatmentDataItem(context, dataType).getData();
   }
 
   /**

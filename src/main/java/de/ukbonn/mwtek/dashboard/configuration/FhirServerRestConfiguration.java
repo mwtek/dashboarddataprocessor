@@ -18,6 +18,8 @@
 
 package de.ukbonn.mwtek.dashboard.configuration;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,5 +30,11 @@ import org.springframework.context.annotation.Configuration;
  * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
 @Configuration
+@Getter
+@Setter
 @ConfigurationProperties(prefix = "fhir.server")
-public class FhirServerRestConfiguration extends AbstractRestConfiguration {}
+public class FhirServerRestConfiguration extends AbstractRestConfiguration {
+
+  /** A prefix that should be added when the fhir server paging is using relative paths. */
+  private String prefixPagination;
+}

@@ -32,6 +32,10 @@ import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleLinkComponent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -60,21 +64,40 @@ public class FhirSearchService extends RestConsumer implements SearchService {
    * Retrieve a FHIR search query and parse the result in FHIR {@link Bundle#getEntry() bundle entry
    * components} This method is used when pagination is not necessary.
    *
-   * @param querySuffix The suffix with the FHIR search logic to be appended to the FHIR server
-   *     endpoint url (e.g. Patient?id=1).
+   * @param parametersInputString The suffix with the FHIR search logic to be appended to the FHIR
+   *     server endpoint url (e.g. Patient?id=1) or the body of the FHIR request if its an {@link
+   *     HttpMethod#POST} operation.
+   * @param resourceType The fhir resource type.
    * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle#getEntry()
    *     bundle entry components}
    */
-  public List<BundleEntryComponent> getBundleData(String querySuffix) {
+  public List<BundleEntryComponent> getBundleData(
+      String parametersInputString, HttpMethod httpMethod, String resourceType) {
+
     IParser parser = ctx.newJsonParser();
     String fhirServerEndpoint = this.fhirServerConf.getRestUrl();
-
     RestTemplate rest = this.getRestTemplate();
-    String restUrl = fhirServerEndpoint + querySuffix;
-    log.debug(restUrl);
-    ResponseEntity<String> searchRequest = rest.getForEntity(restUrl, String.class);
-    Bundle requestBundle = parser.parseResource(Bundle.class, searchRequest.getBody());
-    return requestBundle.getEntry();
+
+    switch (httpMethod) {
+      case GET -> {
+        String restUrl = fhirServerEndpoint + parametersInputString;
+        log.debug(restUrl);
+        ResponseEntity<String> searchRequest = rest.getForEntity(restUrl, String.class);
+        Bundle requestBundle = parser.parseResource(Bundle.class, searchRequest.getBody());
+        return requestBundle.getEntry();
+      }
+      case POST -> {
+        String restUrl = fhirServerEndpoint + resourceType + "/_search";
+        logPostBody(parametersInputString, restUrl);
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<String> entity = new HttpEntity<>(parametersInputString, header);
+        ResponseEntity<String> searchRequest = rest.postForEntity(restUrl, entity, String.class);
+        Bundle requestBundle = parser.parseResource(Bundle.class, searchRequest.getBody());
+        return requestBundle.getEntry();
+      }
+    }
+    return null;
   }
 
   /**
@@ -84,16 +107,35 @@ public class FhirSearchService extends RestConsumer implements SearchService {
    *
    * @param querySuffix The suffix with the FHIR search logic to be appended to the FHIR server
    *     endpoint url (e.g. Patient?id=1).
+   * @param resourceType The fhir resource type.
    * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle} object
    */
-  public Bundle getInitialBundle(String querySuffix) {
+  public Bundle getInitialBundle(String querySuffix, HttpMethod httpMethod, String resourceType) {
     IParser parser = ctx.newJsonParser();
     String fhirServerEndpoint = this.fhirServerConf.getRestUrl();
     RestTemplate rest = this.getRestTemplate();
-    String restUrl = fhirServerEndpoint + querySuffix;
-    log.debug(restUrl);
-    ResponseEntity<String> searchRequest = rest.getForEntity(restUrl, String.class);
-    return parser.parseResource(Bundle.class, searchRequest.getBody());
+    switch (httpMethod) {
+      case GET -> {
+        String restUrl = fhirServerEndpoint + querySuffix;
+        log.debug(restUrl);
+        ResponseEntity<String> searchRequest = rest.getForEntity(restUrl, String.class);
+        return parser.parseResource(Bundle.class, searchRequest.getBody());
+      }
+      case POST -> {
+        String restUrl = fhirServerEndpoint + resourceType + "/_search";
+        logPostBody(querySuffix, restUrl);
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<String> entity = new HttpEntity<>(querySuffix, header);
+        ResponseEntity<String> searchRequest = rest.postForEntity(restUrl, entity, String.class);
+        return parser.parseResource(Bundle.class, searchRequest.getBody());
+      }
+    }
+    return null;
+  }
+
+  private static void logPostBody(String querySuffix, String restUrl) {
+    log.trace("{} with body {}", restUrl, querySuffix);
   }
 
   /**
@@ -101,14 +143,15 @@ public class FhirSearchService extends RestConsumer implements SearchService {
    * the attribute "link" if the number of resources to be retrieved is too large. These values can
    * be used to control pagination and are used to retrieve additional {@link
    * BundleLinkComponent#getUrl() FhirBundleParts} Since the URL is already supplied in the "next"
-   * attribute (in contrast to method {@link #getInitialBundle(String)}) simplified handling is
-   * possible here, since the FHIR search query no longer has to be assembled.
+   * attribute (in contrast to method {@link #getInitialBundle(String,HttpMethod,String)})
+   * simplified handling is possible here, since the FHIR search query no longer has to be
+   * assembled.
    *
    * @param linkToNextPart The FHIR search query to retrieve the next FHIR {@link Bundle} block via
    *     {@link Bundle#getLink()}.
    * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle} object.
    */
-  public Bundle getBundlePart(String linkToNextPart) {
+  public Bundle getBundlePart(String linkToNextPart, HttpMethod httpMethod) {
     IParser parser = ctx.newJsonParser();
     RestTemplate rest = this.getRestTemplate();
     // The resource.link.next URL can be URL encoded (e.g. on the Blaze server). This allows, for

@@ -28,8 +28,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.ukbonn.mwtek.dashboard.DashboardApplication;
 import de.ukbonn.mwtek.dashboard.configuration.AcuwaveSearchConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.AcuwaveServerRestConfiguration;
-import de.ukbonn.mwtek.dashboard.configuration.ExcludeDataItemsConfigurations;
+import de.ukbonn.mwtek.dashboard.configuration.DataItemsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration;
+import de.ukbonn.mwtek.dashboard.configuration.FhirServerRestConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.ReportsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.VariantConfiguration;
@@ -99,8 +100,9 @@ public class DataRetrievalController {
 
   private final ProviderService providerService;
   @Autowired private GlobalConfiguration globalConfiguration;
-  @Autowired private ExcludeDataItemsConfigurations exclDataItems;
+  @Autowired private DataItemsConfiguration exclDataItems;
   @Autowired private FhirSearchConfiguration fhirSearchConfiguration;
+  @Autowired private FhirServerRestConfiguration fhirServerRestConfiguration;
   @Autowired private ReportsConfiguration reportConfiguration;
   @Autowired private AcuwaveServerRestConfiguration acuwaveServerConfiguration;
   @Autowired private AcuwaveSearchConfiguration acuwaveSearchConfiguration;
@@ -330,7 +332,10 @@ public class DataRetrievalController {
     } else {
       dataRetrievalService =
           new FhirDataRetrievalService(
-              fhirSearchService, this.fhirSearchConfiguration, this.globalConfiguration);
+              fhirSearchService,
+              this.fhirSearchConfiguration,
+              this.globalConfiguration,
+              this.fhirServerRestConfiguration);
     }
     return dataRetrievalService;
   }

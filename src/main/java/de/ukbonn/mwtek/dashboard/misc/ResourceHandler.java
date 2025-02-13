@@ -63,8 +63,8 @@ public class ResourceHandler {
    * Patient patient} ids and {@link Encounter encounter} ids to a given set.
    *
    * @param bundleResponse A FHIR response bundle that contains {@link Observation} resources
-   * @param listObservations List with FHIR-Observations in which the entries from the bundle are to
-   *     be stored
+   * @param observations List with FHIR-Observations in which the entries from the bundle are to be
+   *     stored
    * @param patientIds List of ids of the {@link Patient} resource to be extended by entries from
    *     the Observation resource.
    * @param encounterIds List of ids of the {@link Encounter} resource to be extended by entries
@@ -74,7 +74,7 @@ public class ResourceHandler {
    */
   public static void handleObservationEntries(
       Bundle bundleResponse,
-      Collection<Observation> listObservations,
+      Collection<Observation> observations,
       Set<String> patientIds,
       Set<String> encounterIds,
       ServerTypeEnum serverType) {
@@ -83,10 +83,35 @@ public class ResourceHandler {
         .forEach(
             entry -> {
               if (entry.getResource() instanceof Observation obs) {
-                storeObservationPatientKeys(obs, patientIds, encounterIds, serverType);
-                listObservations.add(obs);
+                storeObservationPatientKeys(
+                    removeNotNeededAttributes(obs), patientIds, encounterIds, serverType);
+                observations.add(obs);
               }
             });
+  }
+
+  /** Removing non-needed attributes to optimize the heap space usage. */
+  public static Observation removeNotNeededAttributes(Observation obs) {
+    obs.setMeta(null);
+    obs.setCategory(null);
+    obs.setIdentifier(null);
+    obs.setInterpretation(null);
+    return obs;
+  }
+
+  /** Removing non-needed attributes to optimize the heap space usage. */
+  public static Encounter removeNotNeededAttributes(Encounter enc) {
+    enc.setMeta(null);
+    enc.setExtension(null);
+    return enc;
+  }
+
+  /** Removing non-needed attributes to optimize the heap space usage. */
+  public static Condition removeNotNeededAttributes(Condition cond) {
+    cond.setMeta(null);
+    cond.setClinicalStatus(null);
+    cond.setExtension(null);
+    return cond;
   }
 
   /**
@@ -124,7 +149,7 @@ public class ResourceHandler {
       }
     } catch (Exception ex) {
       logger.warn(
-          "Unable to retrieve the patient or encounter ID for the observation ID: " + obs.getId());
+          "Unable to retrieve the patient or encounter ID for the observation ID: {}", obs.getId());
     }
   }
 
@@ -163,7 +188,7 @@ public class ResourceHandler {
       }
     } catch (Exception ex) {
       logger.warn(
-          "Unable to retrieve the patient or encounter ID for the condition ID: " + cond.getId());
+          "Unable to retrieve the patient or encounter ID for the condition ID: {}", cond.getId());
     }
   }
 
@@ -172,7 +197,7 @@ public class ResourceHandler {
    * Patient patient} ids and {@link Encounter encounter} ids to a given set.
    *
    * @param currentBundle A FHIR response bundle that contains {@link Observation} resources.
-   * @param listConditions List with FHIR-{@link Condition conditions} in which the entries from the
+   * @param conditions List with FHIR-{@link Condition conditions} in which the entries from the
    *     bundle are to be stored.
    * @param outputPatientIds List of ids of the {@link Patient} resource to be extended by entries
    *     from the Observation resource.
@@ -183,7 +208,7 @@ public class ResourceHandler {
    */
   public static void handleConditionEntries(
       Bundle currentBundle,
-      List<Condition> listConditions,
+      List<Condition> conditions,
       Set<String> outputPatientIds,
       Set<String> outputEncounterIds,
       ServerTypeEnum serverType) {
@@ -193,7 +218,7 @@ public class ResourceHandler {
             entry -> {
               if (entry.getResource() instanceof Condition cond) {
                 storeConditionPatientKeys(cond, outputPatientIds, outputEncounterIds, serverType);
-                listConditions.add(cond);
+                conditions.add(removeNotNeededAttributes(cond));
               }
             });
   }

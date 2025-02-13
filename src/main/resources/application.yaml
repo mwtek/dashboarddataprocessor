@@ -62,22 +62,35 @@ global:
     negative: 260385009,260415000,410594000
 fhir:
   server:
-    ## The authentication method, one of NONE, SSL or BASIC (default)
+    ## The authentication method, one of NONE, SSL, BASIC (default) or TOKEN
     auth-method: BASIC
     ## the base url of the fhir server (needs to end with a "/")
     rest-url: http://127.0.0.1/fhir/
     ## BASIC
     rest-user: x
     rest-password: y
+    ## A prefix to be added to the 'next' calls in the pagination.
+    # prefix-pagination: http://prefix.com
     ## SSL
     key-store: src/main/resources/certs/clinical_domain_keystore.jks
     key-store-password: pwd
     trust-store: src/main/resources/certs/truststore.jks
     trust-store-password: pwd
+    ## TOKEN-based authentication
+    token-based-auth:
+      ## The rest endpoint to get/refresh the access token
+      realm: https://127.0.0.1/auth/realms/fhir-realm/protocol/openid-connect/token
+      ## The authorization code grant, for example, 'password' or 'client_credentials'
+      grant_type: password
+      client_id: fhir-client
+      client_secret: secret
+      username: x
+      password: y
+      use-ssl: false
   ## Adjustment of FHIR search requests on the FHIR server
   search:
     ## Batch size of the partial FHIR searches. If the length of the GET request URL is too long, this value must be reduced.
-    batchsize: 500
+    batchsize: 200
     ## Filter the patient (and thus also the encounter) retrieval to disease-positive-patients only
     # filter-patient-retrieval: false
     ## Should the encounter fhir search query be filtered by admission date (all cases by disease related start reference date)? Must be disabled if outpatient cases do not have an end date.
@@ -86,8 +99,11 @@ fhir:
     # use-encounter-condition-reference: true 
     ## Filter the patient (and thus also the encounter) retrieval to influenza positive patients only which will reduce the data load
     # influenza-filter-patient-retrieval: false
-
-## Switching off data items in the output on demand. For data items that are excluded, please comment out the corresponding line(s).
+    ## Use POST instead of GET on the initialization of further patient data retrieval (useful if you see a '431 Request Header Fields Too Large' and you don't want/can decrease the batch-size)
+    # use-post-instead-of-get: true
+    ## The system url of the ecmo/ventilation codes of the procedure resources used in the procedure data retrieval. Change this value if you want to use proprietary local identifier instead of snomed codes.
+    # procedure-codes-system-url: http://snomed.info/sct
+## Disabling data items in the output on demand. Data elements that should be excluded, the boolean must be set to true.
 data-items:
   excludes:
     current.treatmentlevel: false
@@ -152,6 +168,7 @@ data-items:
     infl.timeline.tests: false
     infl.timeline.test.positive: false
     infl.timeline.maxtreatmentlevel: false
+    infl.timeline.deaths: false
     kira.kjp.cumulative.diags.zipcode: false
     kira.kjp.cumulative.diags.age: false
     kira.kjp.cumulative.diags.gender: false
@@ -164,6 +181,11 @@ data-items:
     kira.rsv.timeline.diags.occurrence: false
     ## internal items of the ukb
     current.treatmentlevel.crosstab: true
+  ## Configure individual thresholds for specific data elements.
+  thresholds:
+  ## Use the format <element.name>: <threshold.value>
+  ## Example: "current.treatmentlevel: 5" -> Suppresses the item if one subitem value ≤ 5.
+  # current.treatmentlevel: 5
 server:
   port: 9091
 

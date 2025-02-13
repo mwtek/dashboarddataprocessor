@@ -23,7 +23,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn -f $HOME_dashboarddataprocessor/pom.
 
 ### Package stage ###
 FROM maven:3.9.5-amazoncorretto-17 AS dashboard-data-processor
-# TODO: edit path
+# ToDo: edit path
 ARG JAR_FILE=/opt/dashboarddataprocessor/target/*.jar
 COPY --from=build_dashboarddataprocessor $JAR_FILE /dashboarddataprocessor/dashboard-data-processor.jar
 ENTRYPOINT ["java","-jar","/dashboarddataprocessor/dashboard-data-processor.jar","--spring.config.location=/dashboarddataprocessor/application.yaml"]

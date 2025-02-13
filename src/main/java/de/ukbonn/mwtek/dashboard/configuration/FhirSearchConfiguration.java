@@ -18,12 +18,14 @@
 
 package de.ukbonn.mwtek.dashboard.configuration;
 
+import de.ukbonn.mwtek.utilities.enums.TerminologySystems;
 import lombok.Getter;
 import lombok.Setter;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.Encounter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 
 /**
  * This class is used to parameterize the FHIR Search queries at the local {@link
@@ -46,4 +48,41 @@ public class FhirSearchConfiguration extends SearchConfiguration {
    * via {@link Encounter#getDiagnosis()}? This results in differences in the FHIR search queries.
    */
   private boolean useEncounterConditionReference = false;
+
+  /**
+   * This field allows you to handle "431 Request Header Fields Too Large" exceptions since it sends
+   * {@link org.springframework.http.HttpMethod#POST} requests on the initial bundle calls instead
+   * of {@link org.springframework.http.HttpMethod#GET} operations, that are limited in the number
+   * of characters.
+   *
+   * <p>After an initial bundle was received and a paging is the result, it will continue with get
+   * operations though, since the long url is not a problem anymore.
+   *
+   * <p>Default is <code>true</code>, since the procedure calls produce really long URLs by default
+   * if you don't reduce the number of codes.
+   */
+  private boolean usePostInsteadOfGet = true;
+
+  /**
+   * This field allows you to handle "431 Request Header Fields Too Large" exceptions since it sends
+   * {@link org.springframework.http.HttpMethod#POST} requests on the initial bundle calls instead
+   * of {@link org.springframework.http.HttpMethod#GET} operations, that are limited in the number
+   * of characters.
+   *
+   * <p>After an initial bundle was received and a paging is the result, it will continue with get
+   * operations though, since the long url is not a problem anymore.
+   */
+  public HttpMethod getHttpMethod() {
+    return usePostInsteadOfGet ? HttpMethod.POST : HttpMethod.GET;
+  }
+
+  /**
+   * The system url of the ecmo/ventilation codes of the procedure resources. It is set as a prefix
+   * in the FHIR search query before the codes, as it must be set in the Blaze Server queries to
+   * find the perfect index, which can significantly reduce query times. In the case of proprietary
+   * codes, this value must be overwritten with the local identifiers.
+   *
+   * <p>By default, the snomed system url is used.
+   */
+  private String procedureCodesSystemUrl = TerminologySystems.SNOMED;
 }

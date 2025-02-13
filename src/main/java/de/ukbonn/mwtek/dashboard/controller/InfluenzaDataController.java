@@ -19,9 +19,10 @@ package de.ukbonn.mwtek.dashboard.controller;
 
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.addResourceSizesToOutput;
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.logAbortWorkflowMessage;
+import static de.ukbonn.mwtek.dashboard.misc.ThresholdCheck.filterDataItemsByThreshold;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import de.ukbonn.mwtek.dashboard.configuration.ExcludeDataItemsConfigurations;
+import de.ukbonn.mwtek.dashboard.configuration.DataItemsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.ReportsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.VariantConfiguration;
@@ -58,7 +59,7 @@ public class InfluenzaDataController {
       VariantConfiguration variantConfiguration,
       InputCodeSettings inputCodeSettings,
       QualitativeLabCodesSettings qualitativeLabCodesSettings,
-      ExcludeDataItemsConfigurations exclDataItems,
+      DataItemsConfiguration dataItemsConfiguration,
       ObjectNode result)
       throws SearchException {
     List<DiseaseDataItem> dataItems = new ArrayList<>();
@@ -132,7 +133,7 @@ public class InfluenzaDataController {
       // Creation of the data items of the dataset specification
       dataItems.addAll(
           dataItemGenerator.getDataItems(
-              exclDataItems.getExcludes(),
+              dataItemsConfiguration.getExcludes(),
               globalConfiguration.getDebug(),
               variantConfiguration,
               inputCodeSettings,
@@ -146,6 +147,10 @@ public class InfluenzaDataController {
             dataItemGenerator.getMapCurrentTreatmentlevelCasenrs(),
             reportConfiguration.getCaseIdFileDirectory(),
             reportConfiguration.getCaseIdFileBaseName());
+      }
+
+      if (!dataItemsConfiguration.getThresholds().isEmpty()) {
+        dataItems = filterDataItemsByThreshold(dataItems, dataItemsConfiguration.getThresholds());
       }
 
       // Add resource sizes information to the output if needed

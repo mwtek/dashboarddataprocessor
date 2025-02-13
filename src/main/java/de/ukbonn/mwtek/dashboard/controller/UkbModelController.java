@@ -110,7 +110,7 @@ public class UkbModelController {
       return null;
     }
     icuLocalCaseIds.retainAll(casesWithEpisodes);
-    log.debug("Number of icu case ids after episode filtering: " + icuLocalCaseIds.size());
+    log.debug("Number of icu case ids after episode filtering: {}", icuLocalCaseIds.size());
 
     // Remove the encounter that got no icu episodes from the global list.
     List<CoreBaseDataItem> encounterWithIcuEpisodes =

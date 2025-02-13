@@ -29,6 +29,8 @@ import de.ukbonn.mwtek.dashboard.services.AcuwaveDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 /** Building the templates of the individual REST requests to the Acuwaveles server. */
@@ -36,6 +38,7 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
 
   private static final String COUNT_EQUALS = "&_count=";
   private static final String DELIMITER = ",";
+  public static final String SUMMARY_COUNT = "&_summary=count";
 
   public String getObservations(
       AbstractDataRetrievalService dataRetrievalService,
@@ -59,7 +62,7 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
         + "&_pretty=false"
         + COUNT_EQUALS
         + dataRetrievalService.getBatchSize()
-        + (summary ? "&_summary=count" : "");
+        + (summary ? SUMMARY_COUNT : "");
   }
 
   public String getConditions(
@@ -80,7 +83,7 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
         + "&_pretty=false"
         + COUNT_EQUALS
         + dataRetrievalService.getBatchSize()
-        + (summary ? "&_summary=count" : "");
+        + (summary ? SUMMARY_COUNT : "");
   }
 
   /**
@@ -104,10 +107,19 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
         + dataRetrievalService.getBatchSize();
   }
 
+  @Override
   public String getPatients(
       AbstractDataRetrievalService dataRetrievalService, List<String> patientIdList) {
     return "Patient?_id="
         + String.join(DELIMITER, patientIdList)
+        + COUNT_EQUALS
+        + dataRetrievalService.getBatchSize();
+  }
+
+  public String getPatientsPost(
+      AbstractDataRetrievalService dataRetrievalService, List<String> patientIdList) {
+    return "_id="
+        + getListAsString(patientIdList)
         + COUNT_EQUALS
         + dataRetrievalService.getBatchSize();
   }
@@ -140,8 +152,35 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
     suffixBuilder.append(COUNT_EQUALS).append(dataRetrievalService.getBatchSize());
 
     if (askTotal) {
-      suffixBuilder.append("&_summary=count");
+      suffixBuilder.append(SUMMARY_COUNT);
     }
+    return suffixBuilder.toString();
+  }
+
+  public String getEncountersPost(
+      AbstractDataRetrievalService dataRetrievalService,
+      List<String> patientIdList,
+      DataItemContext dataItemContext) {
+    StringBuilder suffixBuilder = new StringBuilder();
+    suffixBuilder.append("subject=").append(getListAsString(patientIdList));
+
+    /* For this project, theoretically only cases with an intake date after a cut-off date
+    (27/01/2020) are needed. To reduce the resource results and make the queries more
+     streamlined, a "&location-period=gt2020-27-01" is added on demand to the fhir search, as
+     we cannot assume that every location stores the transfer history in the Encounter
+     resource.*/
+    if (dataRetrievalService.getFilterEncounterByDate()) {
+      switch (dataItemContext) {
+        case COVID -> suffixBuilder.append("&date=gt").append(getStartingDate(COVID));
+        case INFLUENZA -> suffixBuilder.append("&date=gt").append(getStartingDate(INFLUENZA));
+        case KIDS_RADAR ->
+            suffixBuilder
+                .append("&date=gt")
+                .append(getStartingDate(KIDS_RADAR))
+                .append("&_class=IMP");
+      }
+    }
+    suffixBuilder.append(COUNT_EQUALS).append(dataRetrievalService.getBatchSize());
     return suffixBuilder.toString();
   }
 
@@ -149,16 +188,72 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
   public String getProcedures(
       AbstractDataRetrievalService dataRetrievalService,
       List<String> patientIdList,
+      String systemUrl,
       Boolean askTotal) {
-    return "Procedure?code="
-        + String.join(DELIMITER, dataRetrievalService.getProcedureVentilationCodes())
-        + DELIMITER
-        + String.join(DELIMITER, dataRetrievalService.getProcedureEcmoCodes())
-        + "&subject="
-        + StringUtils.join(patientIdList, ',')
+
+    String procedureCodes = getProcedureCodesAsString(dataRetrievalService, systemUrl);
+    String patients = getListAsString(patientIdList);
+
+    StringBuilder sb = new StringBuilder("Procedure?code=");
+    sb.append(procedureCodes)
+        .append("&patient=")
+        .append(patients)
+        .append(COUNT_EQUALS)
+        .append(dataRetrievalService.getBatchSize());
+
+    if (askTotal) {
+      sb.append(SUMMARY_COUNT);
+    }
+
+    return sb.toString();
+  }
+
+  public String getProceduresPost(
+      AbstractDataRetrievalService dataRetrievalService,
+      List<String> patientIdList,
+      String systemUrl) {
+    String procedureCodes = getProcedureCodesAsString(dataRetrievalService, systemUrl);
+    String patients = getListAsString(patientIdList);
+    return "patient="
+        + patients
+        + "&code="
+        + procedureCodes
         + COUNT_EQUALS
-        + dataRetrievalService.getBatchSize()
-        + (askTotal ? "&_summary=count" : "");
+        + dataRetrievalService.getBatchSize();
+  }
+
+  private static String getListAsString(List<?> idList) {
+    return StringUtils.join(idList, DELIMITER);
+  }
+
+  /**
+   * Retrieves procedure codes for ventilation and ECMO from the given data retrieval service,
+   * formats them by prefixing each code with the system URL and a delimiter, and returns the
+   * concatenated result as a single string.
+   *
+   * <p>The prefix is needed to boost queries on blaze fhir server.
+   *
+   * @param dataRetrievalService an instance of {@link AbstractDataRetrievalService} used to fetch
+   *     ventilation and ECMO procedure codes.
+   * @param systemUrl the URL prefix to be added to each procedure code.
+   * @return a concatenated string of formatted procedure codes, with ventilation codes followed by
+   *     ECMO codes, separated by the defined delimiter {@code DELIMITER}.
+   */
+  private static String getProcedureCodesAsString(
+      AbstractDataRetrievalService dataRetrievalService, String systemUrl) {
+    Function<String, String> addSystemUrlPrefix = code -> systemUrl + "|" + code;
+
+    String ventilationCodes =
+        dataRetrievalService.getProcedureVentilationCodes().stream()
+            .map(addSystemUrlPrefix)
+            .collect(Collectors.joining(DELIMITER));
+
+    String ecmoCodes =
+        dataRetrievalService.getProcedureEcmoCodes().stream()
+            .map(addSystemUrlPrefix)
+            .collect(Collectors.joining(DELIMITER));
+
+    return ventilationCodes + DELIMITER + ecmoCodes;
   }
 
   @Override
@@ -166,6 +261,15 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
       AbstractDataRetrievalService dataRetrievalService, List<?> locationIdList) {
     return "Location?_id="
         + StringUtils.join(locationIdList, ',')
+        + COUNT_EQUALS
+        + dataRetrievalService.getBatchSize();
+  }
+
+  @Override
+  public String getLocationsPost(
+      AbstractDataRetrievalService dataRetrievalService, List<?> locationIdList) {
+    return "_id="
+        + getListAsString(locationIdList)
         + COUNT_EQUALS
         + dataRetrievalService.getBatchSize();
   }

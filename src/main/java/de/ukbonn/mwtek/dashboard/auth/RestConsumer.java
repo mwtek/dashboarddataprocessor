@@ -67,6 +67,9 @@ public class RestConsumer {
       case "SSL" -> {
         return getRestTemplateCertificateAuth();
       } // case
+      case "TOKEN" -> {
+        return getRestTemplateTokenAuth();
+      }
       case "NONE" -> {
         return getRestTemplateNone();
       } // case
@@ -100,6 +103,18 @@ public class RestConsumer {
             .build();
     result.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
     return result;
+  }
+
+  private TokenAuthHelper tokenAuthHelper;
+
+  /**
+   * Helper for REST calls that use Token Authentication.
+   *
+   * @return {@link RestTemplate} initialized with the settings from the runtime configuration
+   */
+  protected RestTemplate getRestTemplateTokenAuth() {
+    if (tokenAuthHelper == null) tokenAuthHelper = new TokenAuthHelper(restConfiguration);
+    return tokenAuthHelper.getRestTemplateTokenAuth();
   }
 
   /**
@@ -138,7 +153,7 @@ public class RestConsumer {
 
     } catch (Exception ex) {
       // basic error handling if something goes wrong with the ssl context set up
-      log.error("Couldn't set up client ssl context: " + ex.getMessage());
+      log.error("Couldn't set up client ssl context: {}", ex.getMessage());
     }
 
     return resultTemplate;

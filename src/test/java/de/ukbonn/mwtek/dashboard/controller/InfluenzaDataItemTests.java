@@ -36,11 +36,17 @@ import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.ICU_VENTILATI
 import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.NORMAL_WARD;
 import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.OUTPATIENT;
 
+import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class InfluenzaDataItemTests extends DataItemTests {
+public class InfluenzaDataItemTests extends CovidInfluenzaDataItemTests {
+
+  @Override
+  protected DataItemContext getContext() {
+    return INFLUENZA;
+  }
 
   @Test
   @DisplayName("Testing infl.current.treatmentlevel")

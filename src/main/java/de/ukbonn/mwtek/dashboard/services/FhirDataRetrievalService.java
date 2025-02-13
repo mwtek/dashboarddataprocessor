@@ -30,13 +30,17 @@ import static de.ukbonn.mwtek.dashboard.misc.IcuStayDetection.addIcuDummyLocatio
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.encounterIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.locationIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.patientIdsCouldBeFound;
+import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.removeNotNeededAttributes;
 import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.KJP;
 import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.RSV;
 import static de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality.extractIdFromReference;
 import static de.ukbonn.mwtek.utilities.generic.collections.ListTools.splitList;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 import de.ukbonn.mwtek.dashboard.DashboardApplication;
 import de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration;
+import de.ukbonn.mwtek.dashboard.configuration.FhirServerRestConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
 import de.ukbonn.mwtek.dashboard.exceptions.SearchException;
@@ -82,6 +86,7 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
   private final FhirSearchConfiguration fhirSearchConfiguration;
   private final FhirServerQuerySuffixBuilder fhirServerQuerySuffixBuilder =
       new FhirServerQuerySuffixBuilder();
+  private final FhirServerRestConfiguration fhirServerRestConfiguration;
   Logger logger = LoggerFactory.getLogger(DashboardApplication.class);
 
   /** List with the entries of the bundles returned per FHIR search query */
@@ -90,8 +95,10 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
   public FhirDataRetrievalService(
       SearchService searchService,
       FhirSearchConfiguration fhirSearchConfiguration,
-      GlobalConfiguration globalConfiguration) {
+      GlobalConfiguration globalConfiguration,
+      FhirServerRestConfiguration fhirServerRestConfiguration) {
     this.fhirSearchConfiguration = fhirSearchConfiguration;
+    this.fhirServerRestConfiguration = fhirServerRestConfiguration;
     initializeSearchService(searchService, fhirSearchConfiguration, globalConfiguration);
   }
 
@@ -134,7 +141,9 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
     Bundle initialBundle =
         this.getSearchService()
             .getInitialBundle(
-                fhirServerQuerySuffixBuilder.getObservations(this, null, false, dataItemContext));
+                fhirServerQuerySuffixBuilder.getObservations(this, null, false, dataItemContext),
+                GET,
+                null);
     List<Observation> listObservations = new ArrayList<>();
     int resourcesTotal = initialBundle.getTotal();
 
@@ -144,7 +153,9 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
       resourcesTotal =
           this.getSearchService()
               .getInitialBundle(
-                  fhirServerQuerySuffixBuilder.getObservations(this, null, true, dataItemContext))
+                  fhirServerQuerySuffixBuilder.getObservations(this, null, true, dataItemContext),
+                  GET,
+                  null)
               .getTotal();
     }
 
@@ -157,7 +168,9 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
       // data queries.
       ResourceHandler.handleObservationEntries(
           initialBundle, listObservations, patientIds, encounterIds, this.getServerType());
-      initialBundle = this.getSearchService().getBundlePart(initialBundle.getLink(NEXT).getUrl());
+      initialBundle =
+          this.getSearchService()
+              .getBundlePart(getNextUrl(fhirServerRestConfiguration, initialBundle), GET);
 
       logStatusDataRetrievalSequential(
           resourcesTotal, counterObs++, Enumerations.FHIRAllTypes.OBSERVATION.getDisplay());
@@ -180,11 +193,15 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
         !isUseEncounterConditionReference
             ? this.getSearchService()
                 .getInitialBundle(
-                    fhirServerQuerySuffixBuilder.getConditions(this, null, false, dataItemContext))
+                    fhirServerQuerySuffixBuilder.getConditions(this, null, false, dataItemContext),
+                    GET,
+                    null)
             : this.getSearchService()
                 .getInitialBundle(
                     fhirServerQuerySuffixBuilder.getConditionsIncludingEncounter(
-                        this, dataItemContext));
+                        this, dataItemContext),
+                    GET,
+                    null);
     List<Condition> listConditions = new ArrayList<>();
     // This list is just being used if a parameter is set in the configuration.
     List<Encounter> listEncounters = new ArrayList<>();
@@ -197,7 +214,9 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
       resourcesTotal =
           this.getSearchService()
               .getInitialBundle(
-                  fhirServerQuerySuffixBuilder.getObservations(this, null, true, dataItemContext))
+                  fhirServerQuerySuffixBuilder.getObservations(this, null, true, dataItemContext),
+                  GET,
+                  null)
               .getTotal();
     }
 
@@ -215,7 +234,9 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
         ResourceHandler.storeConditionAndEncounterResources(
             initialBundle, listConditions, listEncounters, this.getServerType());
       }
-      initialBundle = this.getSearchService().getBundlePart(initialBundle.getLink(NEXT).getUrl());
+      initialBundle =
+          this.getSearchService()
+              .getBundlePart(getNextUrl(fhirServerRestConfiguration, initialBundle), GET);
 
       logStatusDataRetrievalSequential(
           resourcesTotal, counterCond++, Enumerations.FHIRAllTypes.CONDITION.getDisplay());
@@ -278,9 +299,22 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
               counter.getAndIncrement(),
               Enumerations.FHIRAllTypes.PATIENT.getDisplay());
 
-          reqBundleEntry =
-              this.getSearchService()
-                  .getBundleData(fhirServerQuerySuffixBuilder.getPatients(this, patientSubList));
+          switch (fhirSearchConfiguration.getHttpMethod()) {
+            case GET ->
+                reqBundleEntry =
+                    this.getSearchService()
+                        .getBundleData(
+                            fhirServerQuerySuffixBuilder.getPatients(this, patientSubList),
+                            GET,
+                            null);
+            case POST ->
+                reqBundleEntry =
+                    this.getSearchService()
+                        .getBundleData(
+                            fhirServerQuerySuffixBuilder.getPatientsPost(this, patientSubList),
+                            POST,
+                            ResourceType.Patient.name());
+          }
 
           reqBundleEntry.parallelStream()
               .forEach(singlePatient -> setPatients.add((Patient) singlePatient.getResource()));
@@ -336,13 +370,16 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
         });
 
     // Log the total and successfully retrieved encounters
-    log.debug("Tried to retrieve {} encounter resources.", overallTotal.get());
+    if (overallTotal.get() != 0)
+      log.debug("Tried to retrieve {} encounter resources.", overallTotal.get());
     log.debug("Retrieved {} encounter resources.", encounterSet.size());
 
     // Warn if there is a mismatch between the expected and retrieved encounter counts
-    if (overallTotal.get() != encounterSet.size()) {
+    if (overallTotal.get() != encounterSet.size()
+        && fhirSearchConfiguration.getHttpMethod() == GET) {
       log.warn(
-          "Mismatch between total and retrieved encounters. {} possibly missing due to batch size issues.",
+          "Mismatch between total and retrieved encounters. {} possibly missing due to batch size"
+              + " issues.",
           overallTotal.get() - encounterSet.size());
     }
 
@@ -357,26 +394,46 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
       AtomicLong overallTotal,
       Set<String> icuLocationIdsServiceProvider,
       boolean serviceProviderIdentifierFound) {
-    // Retrieve the total count of encounters for the current patient sublist
-    var totalBundle =
-        this.getSearchService()
-            .getInitialBundle(
-                fhirServerQuerySuffixBuilder.getEncounters(
-                    this, patientIdSublist, dataItemContext, true));
-    overallTotal.addAndGet(totalBundle.getTotal());
+    var totalBundle = new Bundle();
+    var initialBundle = new Bundle();
+    switch (fhirSearchConfiguration.getHttpMethod()) {
+      case GET -> { // Retrieve the total count of encounters for the current patient sublist
+        totalBundle =
+            this.getSearchService()
+                .getInitialBundle(
+                    fhirServerQuerySuffixBuilder.getEncounters(
+                        this, patientIdSublist, dataItemContext, true),
+                    GET,
+                    null);
+        overallTotal.addAndGet(totalBundle.getTotal());
 
-    // Retrieve the first page of encounters for the current sublist
-    var initialBundle =
-        this.getSearchService()
-            .getInitialBundle(
-                fhirServerQuerySuffixBuilder.getEncounters(
-                    this, patientIdSublist, dataItemContext, false));
+        // Retrieve the first page of encounters for the current sublist
+        initialBundle =
+            this.getSearchService()
+                .getInitialBundle(
+                    fhirServerQuerySuffixBuilder.getEncounters(
+                        this, patientIdSublist, dataItemContext, false),
+                    GET,
+                    null);
+      }
+      case POST -> // Retrieve the first page of encounters for the current sublist
+          initialBundle =
+              this.getSearchService()
+                  .getInitialBundle(
+                      fhirServerQuerySuffixBuilder.getEncountersPost(
+                          this, patientIdSublist, dataItemContext),
+                      POST,
+                      ResourceType.Encounter.name());
+    }
+
     processEncounterBundle(
         initialBundle, encounterSet, icuLocationIdsServiceProvider, serviceProviderIdentifierFound);
 
     // Handle pagination for additional pages of encounter resources
     while (initialBundle.hasLink() && initialBundle.getLink(NEXT) != null) {
-      initialBundle = this.getSearchService().getBundlePart(initialBundle.getLink(NEXT).getUrl());
+      initialBundle =
+          this.getSearchService()
+              .getBundlePart(getNextUrl(fhirServerRestConfiguration, initialBundle), GET);
       processEncounterBundle(
           initialBundle,
           encounterSet,
@@ -396,7 +453,8 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
         .forEach(
             bundleEntry -> {
               if (bundleEntry.getResource() instanceof Encounter encounter) {
-                encounterSet.add(encounter); // Add the encounter to the result set
+                encounterSet.add(
+                    removeNotNeededAttributes(encounter)); // Add the encounter to the result set
                 processEncounterLocations(
                     encounter, icuLocationIdsServiceProvider, serviceProviderIdentifierFound);
               }
@@ -447,47 +505,101 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
     List<String> patientIdList = new ArrayList<>(patientIds);
     List<List<String>> patientIdSublists = splitList(patientIdList, this.getBatchSize());
 
-    patientIdSublists.forEach(
-        patientIdSublist -> {
-          // Ask the total count to track if in the end the numbers are the same
-          var totalBundle =
-              this.getSearchService()
-                  .getInitialBundle(
-                      fhirServerQuerySuffixBuilder.getProcedures(this, patientIdSublist, true));
-          var initialBundle =
-              this.getSearchService()
-                  .getInitialBundle(
-                      fhirServerQuerySuffixBuilder.getProcedures(this, patientIdSublist, false));
-          log.debug("Procedures found for this part bundle: {}", totalBundle.getTotal());
-          overallTotal.addAndGet(totalBundle.getTotal());
+    patientIdSublists.parallelStream()
+        .forEach(
+            patientIdSublist -> {
+              var initialBundle = new Bundle();
+              var totalBundle = new Bundle();
+              switch (fhirSearchConfiguration.getHttpMethod()) {
+                case GET -> {
+                  // Ask the total count to track if in the end the numbers are the same
+                  totalBundle =
+                      this.getSearchService()
+                          .getInitialBundle(
+                              fhirServerQuerySuffixBuilder.getProcedures(
+                                  this,
+                                  patientIdSublist,
+                                  fhirSearchConfiguration.getProcedureCodesSystemUrl(),
+                                  true),
+                              GET,
+                              null);
+                  initialBundle =
+                      this.getSearchService()
+                          .getInitialBundle(
+                              fhirServerQuerySuffixBuilder.getProcedures(
+                                  this,
+                                  patientIdSublist,
+                                  fhirSearchConfiguration.getProcedureCodesSystemUrl(),
+                                  false),
+                              GET,
+                              null);
+                  log.debug("Procedures found for this part bundle: {}", totalBundle.getTotal());
+                }
+                case POST -> {
+                  initialBundle =
+                      this.getSearchService()
+                          .getInitialBundle(
+                              fhirServerQuerySuffixBuilder.getProceduresPost(
+                                  this,
+                                  patientIdSublist,
+                                  fhirSearchConfiguration.getProcedureCodesSystemUrl()),
+                              POST,
+                              ResourceType.Procedure.name());
+                  log.debug(
+                      "Initial procedures found for this part bundle: {}",
+                      initialBundle.getEntry().size());
+                }
+              }
+              overallTotal.addAndGet(totalBundle.getTotal());
 
-          // Collecting the encounter resources
-          initialBundle.getEntry().parallelStream()
-              .forEach(
-                  bundleEntry -> {
-                    if (bundleEntry.getResource() instanceof Procedure procedure) {
-                      setProcedures.add(procedure);
-                    }
-                  });
-          // Pagination through follow pages if existing
-          while (initialBundle.hasLink() && initialBundle.getLink(NEXT) != null) {
-            initialBundle =
-                this.getSearchService().getBundlePart(initialBundle.getLink(NEXT).getUrl());
-            initialBundle
-                .getEntry()
-                .forEach(
-                    bundleEntry -> {
-                      if (bundleEntry.getResource() instanceof Procedure procedure) {
-                        setProcedures.add(procedure);
-                      }
-                    });
-          }
-          logStatusDataRetrievalParallel(
-              patientIdList.size(),
-              countProcessedProcedures.getAndIncrement(),
-              Enumerations.FHIRAllTypes.PROCEDURE.getDisplay());
-        });
+              // Collecting the encounter resources
+              initialBundle
+                  .getEntry()
+                  .forEach(
+                      bundleEntry -> {
+                        if (bundleEntry.getResource() instanceof Procedure procedure) {
+                          setProcedures.add(procedure);
+                        }
+                      });
+              // Pagination through follow pages if existing
+              while (initialBundle.hasLink() && initialBundle.getLink(NEXT) != null) {
+                initialBundle =
+                    this.getSearchService()
+                        .getBundlePart(getNextUrl(fhirServerRestConfiguration, initialBundle), GET);
+                initialBundle
+                    .getEntry()
+                    .forEach(
+                        bundleEntry -> {
+                          if (bundleEntry.getResource() instanceof Procedure procedure) {
+                            setProcedures.add(procedure);
+                          }
+                        });
+              }
+              logStatusDataRetrievalParallel(
+                  patientIdList.size(),
+                  countProcessedProcedures.getAndIncrement(),
+                  Enumerations.FHIRAllTypes.PROCEDURE.getDisplay());
+            });
     return new ArrayList<>(setProcedures);
+  }
+
+  /**
+   * Retrieves the URL for the next page of a paginated FHIR Bundle.
+   *
+   * @param fhirServerRestConfiguration the FHIR server REST configuration containing potential
+   *     prefix settings for pagination.
+   * @param bundle the FHIR Bundle object, which contains links for pagination, including the "next"
+   *     link.
+   * @return the URL for the next page of the FHIR Bundle. If a prefix for pagination is specified
+   *     in the FHIR server REST configuration, it is prepended to the "next" URL.
+   * @throws NullPointerException if the "next" link is not present in the bundle.
+   */
+  private static String getNextUrl(
+      FhirServerRestConfiguration fhirServerRestConfiguration, Bundle bundle) {
+    String fhirServerPrefixPagination = fhirServerRestConfiguration.getPrefixPagination();
+    if (fhirServerPrefixPagination != null)
+      return fhirServerPrefixPagination + bundle.getLink(NEXT).getUrl();
+    return bundle.getLink(NEXT).getUrl();
   }
 
   @Override
@@ -517,18 +629,28 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
 
     locationIdSublists.forEach(
         locationIdSubList -> {
-          reqBundleEntry =
-              this.getSearchService()
-                  .getBundleData(
-                      fhirServerQuerySuffixBuilder.getLocations(this, locationIdSubList));
-
-          reqBundleEntry.parallelStream()
-              .forEach(
-                  bundleEntry -> {
-                    if (bundleEntry.getResource() instanceof Location location) {
-                      setLocations.add(location);
-                    }
-                  });
+          switch (fhirSearchConfiguration.getHttpMethod()) {
+            case GET ->
+                reqBundleEntry =
+                    this.getSearchService()
+                        .getBundleData(
+                            fhirServerQuerySuffixBuilder.getLocations(this, locationIdSubList),
+                            GET,
+                            null);
+            case POST ->
+                reqBundleEntry =
+                    this.getSearchService()
+                        .getBundleData(
+                            fhirServerQuerySuffixBuilder.getLocationsPost(this, locationIdSubList),
+                            POST,
+                            ResourceType.Location.name());
+          }
+          reqBundleEntry.forEach(
+              bundleEntry -> {
+                if (bundleEntry.getResource() instanceof Location location) {
+                  setLocations.add(location);
+                }
+              });
         });
     return new ArrayList<>(setLocations);
   }
@@ -547,7 +669,10 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
       int totalEntries, int counter, String resourceType) {
     if (counter > 0 && counter % 10 == 0) {
       logger.info(
-          "Retrieving {} data: {}/{}", resourceType, counter * this.getBatchSize(), totalEntries);
+          "Retrieving {} data: {}/{}",
+          resourceType,
+          counter * this.getBatchSize(),
+          totalEntries != 0 ? totalEntries : "?");
     }
   }
 

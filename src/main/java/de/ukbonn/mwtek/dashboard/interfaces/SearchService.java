@@ -22,6 +22,7 @@ import de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration;
 import java.util.List;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleLinkComponent;
+import org.springframework.http.HttpMethod;
 
 /**
  * Service for providing the {@link FhirSearchConfiguration} (e.g. which Loinc codes are to be used)
@@ -37,10 +38,12 @@ public interface SearchService {
    *
    * @param querySuffix The suffix with the FHIR search logic to be appended to the FHIR server
    *     endpoint url (e.g. Patient?id=1).
+   * @param resourceType The fhir resource type.
    * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle#getEntry()
    *     bundle entry components}
    */
-  List<Bundle.BundleEntryComponent> getBundleData(String querySuffix);
+  List<Bundle.BundleEntryComponent> getBundleData(
+      String querySuffix, HttpMethod httpMethod, String resourceType);
 
   /**
    * If the query of all entries of a particular FHIR resource needs to be split (for performance
@@ -49,21 +52,23 @@ public interface SearchService {
    *
    * @param querySuffix The suffix with the FHIR search logic to be appended to the FHIR server
    *     endpoint url (e.g. Patient?id=1).
+   * @param resourceType
    * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle} object
    */
-  Bundle getInitialBundle(String querySuffix);
+  Bundle getInitialBundle(String querySuffix, HttpMethod httpMethod, String resourceType);
 
   /**
    * After execution, the initial FHIR search query returns the attributes "self" and "next" within
    * the attribute "link" if the number of resources to be retrieved is too large. These values can
    * be used to control pagination and are used to retrieve additional {@link
    * BundleLinkComponent#getUrl() FhirBundleParts} Since the URL is already supplied in the "next"
-   * attribute (in contrast to method {@link #getInitialBundle(String)}) simplified handling is
-   * possible here, since the FHIR search query no longer has to be assembled.
+   * attribute (in contrast to method {@link #getInitialBundle(String, HttpMethod,String)})
+   * simplified handling is possible here, since the FHIR search query no longer has to be
+   * assembled.
    *
    * @param linkToNextPart The FHIR search query to retrieve the next FHIR {@link Bundle} block via
    *     {@link Bundle#getLink()}
    * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle} object
    */
-  Bundle getBundlePart(String linkToNextPart);
+  Bundle getBundlePart(String linkToNextPart, HttpMethod httpMethod);
 }

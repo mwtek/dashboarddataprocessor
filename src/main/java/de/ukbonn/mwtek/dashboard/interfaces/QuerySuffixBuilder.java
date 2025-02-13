@@ -92,7 +92,21 @@ public interface QuerySuffixBuilder {
   String getProcedures(
       AbstractDataRetrievalService dataRetrievalService,
       List<String> encounterIdList,
+      String systemUrl,
       Boolean askTotal);
+
+  /**
+   * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure} resources.
+   *
+   * @param dataRetrievalService The corresponding data search service.
+   * @param encounterIdList A list with encounter ids used as input criteria.
+   * @return A list of all requested FHIR procedure resources that contain artificial ventilation
+   *     data.
+   */
+  String getProceduresPost(
+      AbstractDataRetrievalService dataRetrievalService,
+      List<String> encounterIdList,
+      String systemUrl);
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation} resources.
@@ -102,6 +116,9 @@ public interface QuerySuffixBuilder {
    * @return A list of all requested FHIR location resources.
    */
   String getLocations(AbstractDataRetrievalService dataRetrievalService, List<?> locationIdList);
+
+  String getLocationsPost(
+      AbstractDataRetrievalService dataRetrievalService, List<?> locationIdList);
 
   String getIcuEncounters(AbstractDataRetrievalService dataRetrievalService, Integer calendarYear);
 
