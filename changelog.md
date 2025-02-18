@@ -1,3 +1,32 @@
+# Release Notes - Version V0.5.4+update.1
+
+18/February/25
+
+## New Features
+
+No features were part of this version.
+
+## Improvements
+
+No improvements were part of this version.
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* If `Encounter.location.period` is missing on supply contact encounters that `Encounter.period`will
+  be taken for the `*.cumulative.lengthofstay.icu` / `*.timeline.maxtreatmentlevel` calculation.
+
+</div> 
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* Fixed an exception that appeared when the visit number of an encounter is not existing.
+
+</div> 
+
 # Release Notes - Version V0.5.4
 
 13/February/25
