@@ -5,6 +5,7 @@ stages:
   - deploy
 
 include:
+  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/common-base@v0.9.0
   - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/pmd-lint@v0.9.0
     inputs:
       allow_failure: true
@@ -13,4 +14,27 @@ include:
       allow_failure: true
   - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/compile@v0.9.0
   - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/test@v0.9.0
-  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/deploy@v0.9.0
+
+push-to-registry:
+  extends:
+    - .job-base
+  script:
+    - "version=$(mvn -s .mvn-settings.xml help:evaluate -Dexpression=project.version -DforceStdout -q)"
+    - |
+      if [[ ( -n "$CI_COMMIT_TAG" && ( "$version" =~ -SNAPSHOT$ || "$CI_COMMIT_TAG" != *"$version" ) ) ]]; then 
+        echo "Attempting to deploy a new tagged version, but either the tag does not match the version or the version is marked as a snapshot"
+        echo "Version = $version"
+        echo "Tag     = $CI_COMMIT_TAG"
+        exit 1
+      elif [[ ( -z "$CI_COMMIT_TAG" && ! "$version" =~ -SNAPSHOT$ ) ]]; then
+        echo "Attempting to deploy a new version from the default branch ($CI_DEFAULT_BRANCH), but version is not marked as a snapshot"
+        echo "Version = $version"
+        echo "Skipping deployment"
+        exit 0
+      fi
+    - echo "Deploying version $version to package registry"
+    - mvn -s .mvn-settings.xml package deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+  stage: deploy

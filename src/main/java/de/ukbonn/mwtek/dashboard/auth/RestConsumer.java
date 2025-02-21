@@ -33,7 +33,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 
-/** Base class for all rest consumer in this project. */
+/** Base class for all rest consumers in this project. */
 @Slf4j
 public class RestConsumer {
 
@@ -128,7 +128,17 @@ public class RestConsumer {
     char[] truststorePassword = restConfiguration.getTrustStorePassword().toCharArray();
     char[] keystorePassword = restConfiguration.getKeyStorePassword().toCharArray();
 
-    RestTemplate resultTemplate = new RestTemplateBuilder().build();
+    String restUser = restConfiguration.getRestUser();
+    String restPassword = restConfiguration.getRestPassword();
+    RestTemplateBuilder builder = new RestTemplateBuilder();
+    // Apply Basic Auth only if both username and password are available
+    if (restUser != null && restPassword != null) {
+      builder = builder.basicAuthentication(restUser, restPassword);
+    } else {
+      log.info("No REST user and password found in the settings, proceeding without Basic Auth.");
+    }
+    RestTemplate resultTemplate = builder.build();
+
     try {
       // resolve key and trust store locations
       File keyStoreFile = ResourceUtils.getFile(keystore);
@@ -144,7 +154,6 @@ public class RestConsumer {
       // set the http client to use the loaded key and trust store
       HttpClient client = HttpClients.custom().setSSLContext(sslContext).build();
       ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(client);
-
       // set the charset
       resultTemplate
           .getMessageConverters()
@@ -153,7 +162,7 @@ public class RestConsumer {
 
     } catch (Exception ex) {
       // basic error handling if something goes wrong with the ssl context set up
-      log.error("Couldn't set up client ssl context: {}", ex.getMessage());
+      throw new IllegalStateException("SSL setup failed: " + ex.getMessage(), ex);
     }
 
     return resultTemplate;

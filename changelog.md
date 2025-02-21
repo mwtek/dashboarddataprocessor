@@ -1,3 +1,27 @@
+# Release Notes - Version V0.5.4+update.2
+
+21/February/25
+
+## New Features
+
+No features were part of this version.
+
+## Improvements
+
+No improvements were part of this version.
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* SSL-secured REST calls now include Basic Authentication if credentials are provided.
+
+</div> 
+
+## Bugs
+
+No bug fixes were part of this version.
+
 # Release Notes - Version V0.5.4+update.1
 
 18/February/25
