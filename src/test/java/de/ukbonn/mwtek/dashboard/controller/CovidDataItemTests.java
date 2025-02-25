@@ -35,6 +35,7 @@ import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CURRENT_AGE_MAXTREA
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CURRENT_AGE_MAXTREATMENTLEVEL_NORMAL_WARD;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CURRENT_MAXTREATMENTLEVEL;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CURRENT_TREATMENTLEVEL;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.TIMELINE_DEATHS;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.TIMELINE_MAXTREATMENTLEVEL;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.TIMELINE_TESTS;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.TIMELINE_TEST_POSITIVE;
@@ -100,13 +101,13 @@ public class CovidDataItemTests extends CovidInfluenzaDataItemTests {
   @Test
   @DisplayName("Testing cumulative.results")
   void testCumulativeResults() {
-    assertCumulativeResults(COVID, CUMULATIVE_RESULTS, 3, 0, 1);
+    assertCumulativeResults(COVID, CUMULATIVE_RESULTS, 4, 0, 1);
   }
 
   @Test
   @DisplayName("Testing cumulative.gender")
   void testCumulativeGender() {
-    assertCumulativeGender(COVID, CUMULATIVE_GENDER, 3, 1, 0);
+    assertCumulativeGender(COVID, CUMULATIVE_GENDER, 4, 1, 0);
   }
 
   @Test
@@ -119,7 +120,7 @@ public class CovidDataItemTests extends CovidInfluenzaDataItemTests {
   @Test
   @DisplayName("Testing cumulative.maxtreatmentlevel")
   void testCumulativeMaxTreatmentlevel() {
-    assertTreatmentLevel(COVID, CUMULATIVE_MAXTREATMENTLEVEL, 1, 0, 0, 1, 2);
+    assertTreatmentLevel(COVID, CUMULATIVE_MAXTREATMENTLEVEL, 1, 1, 0, 1, 2);
   }
 
   @Test
@@ -164,5 +165,14 @@ public class CovidDataItemTests extends CovidInfluenzaDataItemTests {
     assertListEqual(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_ICU, List.of());
     assertListEqual(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_ICU_WITH_VENTILATION, List.of(90));
     assertListEqual(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_ICU_WITH_ECMO, List.of(70, 70));
+  }
+
+  @Test
+  @DisplayName("Testing timeline.deaths")
+  void testTimelineDeaths() {
+    assertTimelineValueByDay(COVID, TIMELINE_DEATHS, 1661817600L, 0);
+    assertTimelineValueByDay(COVID, TIMELINE_DEATHS, 1661904000L, 0);
+    assertTimelineValueByDay(COVID, TIMELINE_DEATHS, 1737331200L, 1);
+    assertTimelineValueByDay(COVID, TIMELINE_DEATHS, 1737417600L, 0);
   }
 }

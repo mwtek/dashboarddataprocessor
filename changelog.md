@@ -1,3 +1,27 @@
+# Release Notes - Version V0.5.4+update.3
+
+25/February/25
+
+## New Features
+
+No features were part of this version.
+
+## Improvements
+
+No improvements were part of this version.
+
+## Tasks
+
+No tasks were part of this version.
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* If several `Observation.code` entries existed, the order of the codes was involuntarily decisive.
+
+</div> 
+
 # Release Notes - Version V0.5.4+update.2
 
 21/February/25

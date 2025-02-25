@@ -15,12 +15,13 @@ Currently, the following sample bundles exist with the following content charact
 
 * <a href="./SampleBundle_Covid.json" target="_blank">SampleBundle_Covid.json</a>
     * Bundle of 4 patients.
-        * 3 patients with inpatient icu covid-19 cases
+        * 4 patients with inpatient icu covid-19 cases
             * one with an in-progress encounter
             * one who got a finished case with discharge disposition 'dead' and who also got an
               alpha variant test result
             * one which an ecmo procedure that contains an additional ops code in addition to the
               snomed code
+            * one with a positive lab result that also uses an internal lab codes.
         * 1 patient with an outpatient covid-19 encounter
 * <a href="./SampleBundle_Influenza.json" target="_blank">SampleBundle_Influenza.json</a>
     * Bundle of 4 patients.
