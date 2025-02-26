@@ -52,6 +52,7 @@ import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.enums.
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
 import de.ukbonn.mwtek.dashboardlogic.settings.QualitativeLabCodesSettings;
+import de.ukbonn.mwtek.utilities.generic.time.DateTools;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -257,6 +258,7 @@ public class DataRetrievalController {
       result.put("author", this.providerService.provConf.getAuthor());
       result.put("file_generated_by", FILE_GENERATOR);
       result.put("ddp_version", CURRENT_DDP_VERSION);
+      result.put("exporttimestamp", DateTools.getCurrentUnixTime());
 
       byte[] resultBuffer = result.toString().getBytes(StandardCharsets.UTF_8);
       this.resultSize = resultBuffer.length;
