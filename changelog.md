@@ -1,3 +1,30 @@
+# Release Notes - Version V0.5.4+update.5
+
+05/March/25
+
+## New Features
+
+No features were part of this version.
+
+## Improvements
+
+No improvements were part of this version.
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* Just encounters with `Encounter.status` = `in-progress` or `finished` will be used in the
+  processing logic from now on, mainly to filter out canceled / uncertain cases.
+* Observations and Procedures resources with status `entered-in-error` or `not-done` are getting
+  ignored now as well.
+
+</div> 
+
+## Bugs
+
+No bug fixes were part of this version.
+
 # Release Notes - Version V0.5.4+update.4
 
 05/March/25

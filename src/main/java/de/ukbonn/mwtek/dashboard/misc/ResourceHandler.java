@@ -58,7 +58,10 @@ import org.hl7.fhir.r4.model.Encounter.EncounterLocationComponent;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Identifier.IdentifierUse;
 import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.Observation.ObservationStatus;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Procedure;
+import org.hl7.fhir.r4.model.Procedure.ProcedureStatus;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
 import org.slf4j.Logger;
@@ -99,11 +102,24 @@ public class ResourceHandler {
         .forEach(
             entry -> {
               if (entry.getResource() instanceof Observation obs) {
-                storeObservationPatientKeys(
-                    removeNotNeededAttributes(obs), patientIds, encounterIds, serverType);
-                observations.add(obs);
+                // Filtering of canceled / entered-in-error resources
+                if (isObservationStatusValid(obs)) {
+                  storeObservationPatientKeys(
+                      removeNotNeededAttributes(obs), patientIds, encounterIds, serverType);
+                  observations.add(obs);
+                }
               }
             });
+  }
+
+  /** Filtering of canceled + entered-in-error observations. */
+  private static boolean isObservationStatusValid(Observation observation) {
+    if (!observation.hasStatus()) return false;
+    else {
+      var observationStatus = observation.getStatus();
+      return observationStatus != ObservationStatus.CANCELLED
+          && observationStatus != ObservationStatus.ENTEREDINERROR;
+    }
   }
 
   /** Removing non-needed attributes to optimize the heap space usage. */
@@ -489,5 +505,16 @@ public class ResourceHandler {
 
     // Overwrite the existing hospitalization component of the encounter
     encounter.setHospitalization(hospitalizationComponent);
+  }
+
+  /** Filtering of not-done + entered-in-error observations. */
+  public static boolean isProcedureStatusValid(Procedure procedure) {
+    // If status is empty it is a non-valid resource
+    if (!procedure.hasStatus()) return false;
+    else {
+      var procedureStatus = procedure.getStatus();
+      return procedureStatus != ProcedureStatus.ENTEREDINERROR
+          && procedureStatus != ProcedureStatus.NOTDONE;
+    }
   }
 }

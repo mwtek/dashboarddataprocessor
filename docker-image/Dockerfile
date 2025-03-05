@@ -6,9 +6,9 @@ RUN apk add --no-cache openjdk17 maven
 RUN cd /opt && mkdir dashboardprocessor
 WORKDIR /opt/dashboardprocessor
 
-RUN git clone --depth 1 --branch v0.5.4+update.4 https://www.github.com/mwtek/utilities.git
-RUN git clone --depth 1 --branch v0.5.4+update.4 https://www.github.com/mwtek/dashboardlogic.git
-RUN git clone --depth 1 --branch v0.5.4+update.4 https://www.github.com/mwtek/dashboarddataprocessor.git
+RUN git clone --depth 1 --branch v0.5.4+update.5 https://www.github.com/mwtek/utilities.git
+RUN git clone --depth 1 --branch v0.5.4+update.5 https://www.github.com/mwtek/dashboardlogic.git
+RUN git clone --depth 1 --branch v0.5.4+update.5 https://www.github.com/mwtek/dashboarddataprocessor.git
 
 # Experimental
 #RUN git clone --depth 1 --branch main https://ghp_TOKEN@github.com/mwtek/utilities-experimental.git /opt/dashboardprocessor/utilities

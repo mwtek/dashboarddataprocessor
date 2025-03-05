@@ -30,6 +30,7 @@ import static de.ukbonn.mwtek.dashboard.misc.IcuStayDetection.addIcuDummyLocatio
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.encounterIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.locationIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.patientIdsCouldBeFound;
+import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.isProcedureStatusValid;
 import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.removeNotNeededAttributes;
 import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.KJP;
 import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.RSV;
@@ -63,8 +64,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.Encounter;
+import org.hl7.fhir.r4.model.Encounter.EncounterStatus;
 import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Observation;
@@ -453,12 +456,30 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
         .forEach(
             bundleEntry -> {
               if (bundleEntry.getResource() instanceof Encounter encounter) {
-                encounterSet.add(
-                    removeNotNeededAttributes(encounter)); // Add the encounter to the result set
-                processEncounterLocations(
-                    encounter, icuLocationIdsServiceProvider, serviceProviderIdentifierFound);
+                // Filtering of canceled / entered-in-error encounters
+                if (isEncounterStatusValid(encounter)) {
+                  encounterSet.add(
+                      removeNotNeededAttributes(encounter)); // Add the encounter to the result set
+                  processEncounterLocations(
+                      encounter, icuLocationIdsServiceProvider, serviceProviderIdentifierFound);
+                }
               }
             });
+  }
+
+  /**
+   * Filtering of non-usable encounters, for example, if they got canceled or entered in error.
+   *
+   * <p>Since many data items rely explicit on {@link EncounterStatus#INPROGRESS) oder {@link
+   * EncounterStatus#FINISHED}} we filter already to the corresponding values.
+   */
+  private static boolean isEncounterStatusValid(Encounter encounter) {
+    if (!encounter.hasStatus()) return false;
+    else {
+      var encounterStatus = encounter.getStatus();
+      return (encounterStatus == EncounterStatus.INPROGRESS
+          || encounterStatus == EncounterStatus.FINISHED);
+    }
   }
 
   private void processEncounterLocations(
@@ -557,9 +578,7 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
                   .getEntry()
                   .forEach(
                       bundleEntry -> {
-                        if (bundleEntry.getResource() instanceof Procedure procedure) {
-                          setProcedures.add(procedure);
-                        }
+                        handleProcedureResources(bundleEntry, setProcedures);
                       });
               // Pagination through follow pages if existing
               while (initialBundle.hasLink() && initialBundle.getLink(NEXT) != null) {
@@ -570,9 +589,7 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
                     .getEntry()
                     .forEach(
                         bundleEntry -> {
-                          if (bundleEntry.getResource() instanceof Procedure procedure) {
-                            setProcedures.add(procedure);
-                          }
+                          handleProcedureResources(bundleEntry, setProcedures);
                         });
               }
               logStatusDataRetrievalParallel(
@@ -581,6 +598,13 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
                   Enumerations.FHIRAllTypes.PROCEDURE.getDisplay());
             });
     return new ArrayList<>(setProcedures);
+  }
+
+  private static void handleProcedureResources(
+      BundleEntryComponent bundleEntry, Set<Procedure> setProcedures) {
+    if (bundleEntry.getResource() instanceof Procedure procedure) {
+      if (isProcedureStatusValid(procedure)) setProcedures.add(procedure);
+    }
   }
 
   /**
