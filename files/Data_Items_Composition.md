@@ -20,6 +20,11 @@ The following queries are used at the beginning of a run to determine the patien
 
 Most of the items just rely on data with at least one positive covid lab finding or diagnosis.
 
+For all items that require the `Versorgungsstellenkontakt`, it is important that either the visit
+number (`Encounter.identifier.value` while `Encounter.identifier.type.coding.code` = `VN` is present
+in all encounters, or alternatively can be navigated through the hierarchy via
+`Encounter.partOf` (not recommended due to inefficiency).
+
 | Itemname                             | FHIR attributes                                                                         | Forced Condition                             | Separation criterium                                                                                                                                                                                                                                                              |
 |--------------------------------------|-----------------------------------------------------------------------------------------|----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `current.treatmentlevel`             | Encounter.location                                                                      |                                              | referenced `Location.type` = `ICU`                                                                                                                                                                                                                                                |

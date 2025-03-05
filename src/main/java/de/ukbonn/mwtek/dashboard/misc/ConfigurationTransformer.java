@@ -20,6 +20,7 @@ package de.ukbonn.mwtek.dashboard.misc;
 
 import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.KJP;
 import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.RSV;
+import static de.ukbonn.mwtek.utilities.enums.TerminologySystems.SNOMED;
 import static de.ukbonn.mwtek.utilities.generic.collections.ListTools.commaSeparatedStringIntoList;
 
 import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
@@ -233,7 +234,12 @@ public class ConfigurationTransformer {
         extractLabCodes(
             dataRetrievalService.getGlobalConfiguration().getQualitativeLabCodes(), "borderline"),
         extractLabCodes(
-            dataRetrievalService.getGlobalConfiguration().getQualitativeLabCodes(), "negative"));
+            dataRetrievalService.getGlobalConfiguration().getQualitativeLabCodes(), "negative"),
+        // The code system is snomed by default
+        dataRetrievalService
+            .getGlobalConfiguration()
+            .getQualitativeLabCodes()
+            .getOrDefault("systems", List.of(SNOMED)));
   }
 
   private static List<String> extractLabCodes(

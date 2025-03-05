@@ -19,8 +19,9 @@ package de.ukbonn.mwtek.dashboard.controller;
 
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.addResourceSizesToOutput;
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.logAbortWorkflowMessage;
+import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.addDeceasedStatusToEncounters;
+import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.addDummyIcuLocationIfNeeded;
 import static de.ukbonn.mwtek.dashboard.misc.ThresholdCheck.filterDataItemsByThreshold;
-import static de.ukbonn.mwtek.utilities.fhir.misc.LocationTools.isDummyIcuLocation;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.ukbonn.mwtek.dashboard.configuration.DataItemsConfiguration;
@@ -36,7 +37,6 @@ import de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality;
 import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
 import de.ukbonn.mwtek.dashboardlogic.settings.QualitativeLabCodesSettings;
-import de.ukbonn.mwtek.utilities.fhir.misc.LocationTools;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
@@ -47,7 +47,6 @@ import de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.ResourceType;
 
 @Slf4j
@@ -110,6 +109,10 @@ public class CovidDataController {
       // If at least one service provider entry was found or a corresponding contact type
       // => add a dummy icu location
       addDummyIcuLocationIfNeeded(ukbEncounters, ukbLocations);
+
+      // If activated; use Patient.deceasedDateTime for the detection of deceased cases.
+      if (globalConfiguration.getUsePatientDeceased())
+        addDeceasedStatusToEncounters(ukbPatients, ukbEncounters);
 
       // Retrieval of the Procedure resources
       processTimer.startLoggingTime(ResourceType.Procedure);
@@ -182,29 +185,5 @@ public class CovidDataController {
       logAbortWorkflowMessage(inputCodeSettings, DataItemContext.COVID);
     }
     return dataItems;
-  }
-
-  /**
-   * If at least one service provider entry was found in the encounter list the location list its
-   * possible that the icu transfer information is getting managed via this attribute. If so, we
-   * create references to a dummy icu location.
-   */
-  private static void addDummyIcuLocationIfNeeded(
-      List<UkbEncounter> ukbEncounters, List<UkbLocation> ukbLocations) {
-    boolean isServiceProviderUsed = ukbEncounters.stream().anyMatch(Encounter::hasServiceProvider);
-
-    boolean isDummyIcuLocationReferencePresent =
-        ukbEncounters.parallelStream()
-            .filter(Encounter::hasLocation)
-            .flatMap(encounter -> encounter.getLocation().stream())
-            .anyMatch(location -> isDummyIcuLocation(location.getLocation()));
-
-    if (isServiceProviderUsed || isDummyIcuLocationReferencePresent) {
-      ukbLocations.add(LocationTools.createDummyIcuWardLocation());
-      log.info(
-          "Dummy ICU location resource was added because service provider entries were found or a "
-              + "resource with Encounter.type.kontaktart = 'intensivstationaer' "
-              + "but without locations was found.");
-    }
   }
 }

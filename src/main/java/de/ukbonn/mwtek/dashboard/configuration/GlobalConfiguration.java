@@ -56,6 +56,9 @@ public class GlobalConfiguration {
 
   private Boolean usePartOfInsteadOfIdentifier = false;
 
+  /** Use Patient.deceasedDateTime to classify encounters as deceased [default = false] */
+  private Boolean usePatientDeceased = false;
+
   /** Should the covid-19 data item generation take place? */
   private Boolean generateCovidData = true;
 

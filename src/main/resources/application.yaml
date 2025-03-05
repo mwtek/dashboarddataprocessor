@@ -3,7 +3,7 @@ provider:
   author: Universitätsklinikum Bonn, Stabsstelle Medizinisch-Wissenschaftliche Technologieentwicklung und -koordination, Datenintegrationszentrum, Venusberg-Campus 1, 53127 Bonn
 
 global:
-  ## Adding data items that contain the case numbers and show the composition of the aggregated numbers
+  ## This will add additional data items to the output that hold size and resource id information
   debug: false
   ## The type of the server that is used for data retrieval whether its FHIR (any fhir server) or ACUWAVE
   server-type: FHIR
@@ -11,13 +11,15 @@ global:
   use-part-of-instead-of-identifier: false
   ## Instead of Encounter.location references, Encounters can be marked as icu-encounter via service provider IDs (comma-separated-list of 'Encounter.serviceProvider.identifier.value')
   #service-provider-identifier-of-icu-locations: 123,234
+  ## Use Patient.deceasedDateTime to classify encounters as deceased [default = false]
+  #use-patient-deceased: true
   ## Comma-separated list of codes used for Corona patient identification (icd = Condition resources; loinc = Observation resources).
   inputcodes:
     ## ICD codes SARS-CoV-2
     condition: U07.1
     ## LOINC-Codes SARS-CoV-2 PCR tests [96895-8 for variant results]
     observation:
-      pcr: 94640-0,94306-8,96763-8,94500-6
+      pcr: 94640-0,94306-8,96763-8,94500-6,94759-8
       variants: 96895-8,96741-4,100156-9
     ## Ventilation snomed ct codes [Procedure.code.coding.code]
     procedure:
@@ -60,6 +62,8 @@ global:
     positive: 10828004,260373001,52101004
     borderline: 280416009,419984006
     negative: 260385009,260415000,410594000
+    ## You can add further code systems here if you want to use local code systems.
+    #systems: http://snomed.info/sct
 fhir:
   server:
     ## The authentication method, one of NONE, SSL, BASIC (default) or TOKEN

@@ -18,6 +18,12 @@
 
 package de.ukbonn.mwtek.dashboard.misc;
 
+import static de.ukbonn.mwtek.utilities.fhir.mapping.kdscase.valuesets.KdsEncounterFixedValues.DEATH_CODE;
+import static de.ukbonn.mwtek.utilities.fhir.mapping.kdscase.valuesets.KdsEncounterFixedValues.DEATH_CODE_DISPLAY;
+import static de.ukbonn.mwtek.utilities.fhir.mapping.kdscase.valuesets.KdsEncounterFixedValues.DISCHARGE_DISPOSITION_EXT_URL;
+import static de.ukbonn.mwtek.utilities.fhir.mapping.kdscase.valuesets.KdsEncounterFixedValues.DISCHARGE_DISPOSITION_FIRST_AND_SECOND_POS_EXT_URL;
+import static de.ukbonn.mwtek.utilities.fhir.mapping.kdscase.valuesets.KdsEncounterFixedValues.DISCHARGE_DISPOSITION_FIRST_AND_SECOND_POS_SYSTEM;
+import static de.ukbonn.mwtek.utilities.fhir.misc.LocationTools.isDummyIcuLocation;
 import static de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter.extractReferenceId;
 
 import de.ukbonn.mwtek.dashboard.DashboardApplication;
@@ -25,9 +31,12 @@ import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
 import de.ukbonn.mwtek.dashboard.exceptions.SearchException;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
+import de.ukbonn.mwtek.utilities.fhir.misc.LocationTools;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient;
+import de.ukbonn.mwtek.utilities.generic.time.DateTools;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,11 +45,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Condition;
+import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.Element;
 import org.hl7.fhir.r4.model.Encounter;
+import org.hl7.fhir.r4.model.Encounter.EncounterHospitalizationComponent;
 import org.hl7.fhir.r4.model.Encounter.EncounterLocationComponent;
+import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Identifier.IdentifierUse;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
@@ -54,6 +69,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
+@Slf4j
 public class ResourceHandler {
 
   static Logger logger = LoggerFactory.getLogger(DashboardApplication.class);
@@ -371,5 +387,107 @@ public class ResourceHandler {
               }
             });
     return new ArrayList<>(coreBaseDataItems);
+  }
+
+  /**
+   * If at least one service provider entry was found in the encounter list the location list its
+   * possible that the icu transfer information is getting managed via this attribute. If so, we
+   * create references to a dummy icu location.
+   */
+  public static void addDummyIcuLocationIfNeeded(
+      List<UkbEncounter> ukbEncounters, List<UkbLocation> ukbLocations) {
+    boolean isServiceProviderUsed = ukbEncounters.stream().anyMatch(Encounter::hasServiceProvider);
+
+    boolean isDummyIcuLocationReferencePresent =
+        ukbEncounters.parallelStream()
+            .filter(Encounter::hasLocation)
+            .flatMap(encounter -> encounter.getLocation().stream())
+            .anyMatch(location -> isDummyIcuLocation(location.getLocation()));
+
+    if (isServiceProviderUsed || isDummyIcuLocationReferencePresent) {
+      ukbLocations.add(LocationTools.createDummyIcuWardLocation());
+      log.info(
+          "Dummy ICU location resource was added because service provider entries were found or a "
+              + "resource with Encounter.type.kontaktart = 'intensivstationaer' "
+              + "but without locations was found.");
+    }
+  }
+
+  /**
+   * Adds a discharge disposition extension indicating "deceased" to encounters where the patient
+   * has died.
+   *
+   * <p>This method first creates a map of deceased patients based on their ID and date of death.
+   * Then, it filters encounters that belong to these patients and checks whether the encounter
+   * period includes the deceased date. If the conditions match, a discharge disposition extension
+   * is added to the encounter.
+   *
+   * @param ukbPatients The list of {@link UkbPatient} containing patient records.
+   * @param ukbEncounters The list of {@link UkbEncounter} representing encounters to be processed.
+   */
+  public static void addDeceasedStatusToEncounters(
+      List<UkbPatient> ukbPatients, List<UkbEncounter> ukbEncounters) {
+
+    // Create a map with Patient-ID as Key and DeceasedDateTimeType as Value
+    Map<String, DateTimeType> deceasedPatientsMap =
+        ukbPatients.parallelStream()
+            .filter(Patient::hasDeceasedDateTimeType)
+            .collect(Collectors.toMap(UkbPatient::getId, UkbPatient::getDeceasedDateTimeType));
+
+    // Filter relevant UkbEncounters
+    List<UkbEncounter> encountersDeceased =
+        ukbEncounters.stream()
+            .filter(
+                encounter -> {
+                  DateTimeType deceasedDate = deceasedPatientsMap.get(encounter.getPatientId());
+                  return deceasedDate != null
+                      && encounter.isFacilityContact()
+                      && encounter.hasPeriod()
+                      && DateTools.isWithinPeriod(deceasedDate.getValue(), encounter.getPeriod());
+                })
+            .toList();
+
+    encountersDeceased.forEach(ResourceHandler::addDischargeDispositionDeadToEncounter);
+    log.info(
+        "Added 'dischargeDispositions = dead' extensions to {} 'einrichtungskontakt' encounters.",
+        encountersDeceased.size());
+  }
+
+  // Static extension to avoid redundant object creation
+  private static final Extension DISCHARGE_REASON_EXTENSION;
+
+  static {
+    // Initialize the static discharge reason extension
+    DISCHARGE_REASON_EXTENSION = new Extension(DISCHARGE_DISPOSITION_EXT_URL);
+    Extension subExtFirstAndSecPos =
+        new Extension(DISCHARGE_DISPOSITION_FIRST_AND_SECOND_POS_EXT_URL);
+    subExtFirstAndSecPos.setValue(
+        new Coding(
+            DISCHARGE_DISPOSITION_FIRST_AND_SECOND_POS_SYSTEM, DEATH_CODE, DEATH_CODE_DISPLAY));
+    DISCHARGE_REASON_EXTENSION.addExtension(subExtFirstAndSecPos);
+  }
+
+  /**
+   * Sets the discharge disposition of the given encounter to "deceased".
+   *
+   * <p>This method always overwrites any existing hospitalization component with a new one
+   * containing the discharge disposition extension indicating death.
+   *
+   * @param encounter The {@link UkbEncounter} to update with a "deceased" discharge disposition.
+   */
+  public static void addDischargeDispositionDeadToEncounter(UkbEncounter encounter) {
+    // Create a new hospitalization component
+    EncounterHospitalizationComponent hospitalizationComponent =
+        new EncounterHospitalizationComponent();
+
+    // Create a new discharge disposition and reuse the pre-built extension
+    CodeableConcept dischargeDisposition = new CodeableConcept();
+    dischargeDisposition.addExtension(DISCHARGE_REASON_EXTENSION);
+
+    // Assign the discharge disposition to the hospitalization component
+    hospitalizationComponent.setDischargeDisposition(dischargeDisposition);
+
+    // Overwrite the existing hospitalization component of the encounter
+    encounter.setHospitalization(hospitalizationComponent);
   }
 }

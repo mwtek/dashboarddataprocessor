@@ -1,3 +1,40 @@
+# Release Notes - Version V0.5.4+update.4
+
+05/March/25
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* Added a new option to use `Patient.deceasedDateTime` to flag encounters with deceased status if
+  `dischargeDisposition` is not used.
+
+</div>
+
+## Improvements
+
+No improvements were part of this version.
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* Users can now add custom code system URLs in the `application.yaml` to use local (non-SNOMED)
+  identifier for qualitative lab value codes (i.e. `Observation.valueCodeableConcept.system`).
+* Added a new covid pcr code to the defaults
+* Added a `FAQ.md` file
+
+</div> 
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* The `Encounter.serviceProvider` workaround to flag ICU locations does now also work in the
+  influenza pipeline.
+
+</div> 
+
 # Release Notes - Version V0.5.4+update.3
 
 25/February/25

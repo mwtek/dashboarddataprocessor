@@ -19,6 +19,8 @@ package de.ukbonn.mwtek.dashboard.controller;
 
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.addResourceSizesToOutput;
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.logAbortWorkflowMessage;
+import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.addDeceasedStatusToEncounters;
+import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.addDummyIcuLocationIfNeeded;
 import static de.ukbonn.mwtek.dashboard.misc.ThresholdCheck.filterDataItemsByThreshold;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -117,10 +119,17 @@ public class InfluenzaDataController {
                       dataItemContext));
       processTimer.stopLoggingTime(ukbProcedures);
 
+      // If at least one service provider entry was found or a corresponding contact type
+      // => add a dummy icu location
+      addDummyIcuLocationIfNeeded(ukbEncounters, ukbLocations);
+
+      // If activated; use Patient.deceasedDateTime for the detection of deceased cases.
+      if (globalConfiguration.getUsePatientDeceased())
+        addDeceasedStatusToEncounters(ukbPatients, ukbEncounters);
+
       processTimer.startLoggingTime("Processing logic");
 
-      // Start of the processing logic
-      // Formatting of resources in json specification
+      // Start of the processing logic -> Formatting of resources in JSON specification
       DataItemGenerator dataItemGenerator =
           new DataItemGenerator(
               ukbConditions,
