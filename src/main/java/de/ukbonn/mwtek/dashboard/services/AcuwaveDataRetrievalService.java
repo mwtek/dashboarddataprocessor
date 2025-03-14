@@ -44,7 +44,7 @@ import static de.ukbonn.mwtek.utilities.generic.collections.ListTools.splitList;
 
 import de.ukbonn.mwtek.dashboard.DashboardApplication;
 import de.ukbonn.mwtek.dashboard.configuration.AcuwaveSearchConfiguration;
-import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
+import de.ukbonn.mwtek.dashboard.configuration.CustomGlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.enums.AcuwaveDataSourceType;
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
 import de.ukbonn.mwtek.dashboard.exceptions.SearchException;
@@ -107,7 +107,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   private final List<Integer> setMonths = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 
   @Getter private final AcuwaveSearchConfiguration acuwaveSearchConfiguration;
-  @Getter private final GlobalConfiguration globalConfiguration;
+  @Getter private final CustomGlobalConfiguration customGlobalConfiguration;
   @Getter @Setter private List<Integer> covidOrbisLabPcrCodes;
   @Getter @Setter private List<Integer> covidOrbisLabVariantCodes;
 
@@ -124,9 +124,9 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   public AcuwaveDataRetrievalService(
       SearchService searchService,
       AcuwaveSearchConfiguration acuwaveSearchConfiguration,
-      GlobalConfiguration globalConfiguration) {
+      CustomGlobalConfiguration customGlobalConfiguration) {
     this.acuwaveSearchConfiguration = acuwaveSearchConfiguration;
-    this.globalConfiguration = globalConfiguration;
+    this.customGlobalConfiguration = customGlobalConfiguration;
     initializeSearchService(searchService);
   }
 
@@ -139,27 +139,29 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
     this.setSearchService(searchService);
     this.setCovidOrbisLabPcrCodes(acuwaveSearchConfiguration.getCovidOrbisLabPcrCodes());
     this.setCovidOrbisLabVariantCodes(acuwaveSearchConfiguration.getCovidOrbisLabVariantCodes());
-    this.setCovidLabPcrCodes(extractInputCodes(globalConfiguration, COVID_OBSERVATIONS_PCR));
+    this.setCovidLabPcrCodes(extractInputCodes(customGlobalConfiguration, COVID_OBSERVATIONS_PCR));
     this.setCovidLabVariantCodes(
-        extractInputCodes(globalConfiguration, COVID_OBSERVATIONS_VARIANTS));
+        extractInputCodes(customGlobalConfiguration, COVID_OBSERVATIONS_VARIANTS));
     this.setProcedureVentilationCodes(
-        extractInputCodes(globalConfiguration, COVID_PROCEDURES_VENTILATION));
-    this.setProcedureEcmoCodes(extractInputCodes(globalConfiguration, COVID_PROCEDURES_ECMO));
+        extractInputCodes(customGlobalConfiguration, COVID_PROCEDURES_VENTILATION));
+    this.setProcedureEcmoCodes(extractInputCodes(customGlobalConfiguration, COVID_PROCEDURES_ECMO));
     // Reading of the icd codes from the configuration and transforming it into a list
-    this.setCovidIcdCodes(extractInputCodes(globalConfiguration, COVID_CONDITIONS));
+    this.setCovidIcdCodes(extractInputCodes(customGlobalConfiguration, COVID_CONDITIONS));
     // Prediction model setter
     this.setPredictionModelUkbObservationCodes(
-        extractInputCodes(globalConfiguration, PREDICTION_MODEL_UKB_OBS_CODES));
+        extractInputCodes(customGlobalConfiguration, PREDICTION_MODEL_UKB_OBS_CODES));
     this.setPredictionModelUkbObservationOrbisCodes(
         readUkbObservationOrbisCodes(
             acuwaveSearchConfiguration.getPredictionModelUkbObservationOrbisCodes()));
     // Influenza data setter
     this.setInfluenzaOrbisLabPcrCodes(acuwaveSearchConfiguration.getInfluenzaOrbisLabPcrCodes());
-    this.setInfluenzaIcdCodes(extractInputCodes(globalConfiguration, INFLUENZA_CONDITIONS));
+    this.setInfluenzaIcdCodes(extractInputCodes(customGlobalConfiguration, INFLUENZA_CONDITIONS));
     this.setInfluenzaLabPcrCodes(
-        extractInputCodes(globalConfiguration, INFLUENZA_OBSERVATIONS_PCR));
-    this.setKidsRadarKjpIcdCodes(extractKidsRadarDiagnosisConditions(globalConfiguration, KJP));
-    this.setKidsRadarRsvIcdCodes(extractKidsRadarDiagnosisConditions(globalConfiguration, RSV));
+        extractInputCodes(customGlobalConfiguration, INFLUENZA_OBSERVATIONS_PCR));
+    this.setKidsRadarKjpIcdCodes(
+        extractKidsRadarDiagnosisConditions(customGlobalConfiguration, KJP));
+    this.setKidsRadarRsvIcdCodes(
+        extractKidsRadarDiagnosisConditions(customGlobalConfiguration, RSV));
   }
 
   private Map<String, Set<Integer>> readUkbObservationOrbisCodes(
@@ -492,7 +494,12 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                       this.getSearchService()
                           .getBundleData(
                               new AcuwaveQuerySuffixBuilder()
-                                  .getProcedures(this, encounterIds, null, null),
+                                  .getProcedures(
+                                      this,
+                                      encounterIds,
+                                      null,
+                                      null,
+                                      acuwaveSearchConfiguration.getWardsCovidInfluenza()),
                               HttpMethod.GET,
                               null);
                   listTemp.forEach(
@@ -859,8 +866,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                     });
               } catch (Exception e) {
                 logger.error(
-                    "Error while getting and processing the body weight resources: "
-                        + e.getMessage());
+                    "Error while getting and processing the body weight resources: {}",
+                    e.getMessage());
               }
             });
 

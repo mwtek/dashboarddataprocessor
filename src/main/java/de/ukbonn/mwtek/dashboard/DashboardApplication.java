@@ -20,6 +20,7 @@ package de.ukbonn.mwtek.dashboard;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * The base class of the NUM Dashboard project with the main method.
@@ -27,6 +28,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
  */
 @SpringBootApplication
+@ComponentScan(basePackages = {"de.ukbonn.mwtek.dashboard", "de.ukbonn.mwtek.dashboardlogic"})
 public class DashboardApplication {
 
   public static void main(String[] args) {

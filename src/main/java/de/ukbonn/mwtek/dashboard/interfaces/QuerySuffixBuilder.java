@@ -93,7 +93,8 @@ public interface QuerySuffixBuilder {
       AbstractDataRetrievalService dataRetrievalService,
       List<String> encounterIdList,
       String systemUrl,
-      Boolean askTotal);
+      Boolean askTotal,
+      List<String> wards);
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure} resources.

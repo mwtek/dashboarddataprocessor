@@ -5,7 +5,7 @@
 - current.treatmentlevel
 - current.maxtreatmentlevel
 - current.age.maxtreatmentlevel.normal_ward
-- current.age.maxtreatmentlevel.icu
+- current.age.maxtreatmentlevel.icu / *.icu_undifferentiated
 - current.age.maxtreatmentlevel.icu_with_ventilation
 - current.age.maxtreatmentlevel.icu_with_ecmo
 - cumulative.results
@@ -26,7 +26,7 @@
 - cumulative.varianttestresults
 - cumulative.age.maxtreatmentlevel.outpatient
 - cumulative.age.maxtreatmentlevel.normal_ward
-- cumulative.age.maxtreatmentlevel.icu
+- cumulative.age.maxtreatmentlevel.icu / *.icu_undifferentiated
 - cumulative.age.maxtreatmentlevel.icu_with_ventilation
 - cumulative.age.maxtreatmentlevel.icu_with_ecmo
 - timeline.tests
@@ -37,7 +37,7 @@
 - infl.current.treatmentlevel
 - infl.current.maxtreatmentlevel
 - infl.current.age.maxtreatmentlevel.normal_ward
-- infl.current.age.maxtreatmentlevel.icu
+- infl.current.age.maxtreatmentlevel.icu / *.icu_undifferentiated
 - infl.current.age.maxtreatmentlevel.icu_with_ventilation
 - infl.current.age.maxtreatmentlevel.icu_with_ecmo
 - infl.cumulative.results
@@ -57,7 +57,7 @@
 - infl.cumulative.lengthofstay.hospital.dead
 - infl.cumulative.age.maxtreatmentlevel.outpatient
 - infl.cumulative.age.maxtreatmentlevel.normal_ward
-- infl.cumulative.age.maxtreatmentlevel.icu
+- infl.cumulative.age.maxtreatmentlevel.icu / *.icu_undifferentiated
 - infl.cumulative.age.maxtreatmentlevel.icu_with_ventilation
 - infl.cumulative.age.maxtreatmentlevel.icu_with_ecmo
 - infl.timeline.tests

@@ -19,11 +19,7 @@
 package de.ukbonn.mwtek.dashboard.configuration;
 
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import de.ukbonn.mwtek.dashboardlogic.settings.GlobalConfiguration;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -38,51 +34,11 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "global")
 @Getter
 @Setter
-public class GlobalConfiguration {
-
-  /** Comma-separated list with input codes for FHIR Search and processing logic. */
-  private Map<String, Object> inputCodes = new HashMap<>();
-
-  /** Flag to add debug information (e.g. case ids / resource ids) to the output. */
-  private Boolean debug = false;
+public class CustomGlobalConfiguration extends GlobalConfiguration {
 
   /**
    * The type of the server that is used for data retrieval whether its <i>FHIR</i> (any fhir
    * server) or <i>ACUWAVE</i>
    */
   private ServerTypeEnum serverType = ServerTypeEnum.FHIR;
-
-  private Map<String, Boolean> predictionModels = new HashMap<>();
-
-  private Boolean usePartOfInsteadOfIdentifier = false;
-
-  /** Use Patient.deceasedDateTime to classify encounters as deceased [default = false] */
-  private Boolean usePatientDeceased = false;
-
-  /** Should the covid-19 data item generation take place? */
-  private Boolean generateCovidData = true;
-
-  /** Should the influenza data item generation take place? */
-  private Boolean generateInfluenzaData = false;
-
-  /** Should the kids radar data item generation take place? */
-  private Boolean generateKidsRadarData = false;
-
-  /**
-   * Should the generation ukb-renal-replacement prediction model data item generation take place?
-   * Currently not supported via FHIR server usage.
-   */
-  private Boolean generateUkbRenalReplacementModelData = false;
-
-  /**
-   * Instead of Encounter.location references, Encounters can be marked as icu-encounter via service
-   * provider IDs
-   */
-  private Set<String> serviceProviderIdentifierOfIcuLocations = new HashSet<>();
-
-  /**
-   * Option to overwrite the assignment from the value set <a
-   * href="https://simplifier.net/medizininformatikinitiative-modullabor/valuesetqualitativelaborergebnisse">here</a>.
-   */
-  private Map<String, List<String>> qualitativeLabCodes = new HashMap<>();
 }

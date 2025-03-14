@@ -69,7 +69,7 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
   @SuppressWarnings("unchecked")
   protected List<Integer> getDataAsIntegerList(DataItemContext context, String dataType) {
     System.out.println(getTreatmentDataItem(context, dataType).getData().getClass());
-    log.error("" + getTreatmentDataItem(context, dataType).getData().getClass());
+    log.error("{}", getTreatmentDataItem(context, dataType).getData().getClass());
     return (List<Integer>) getTreatmentDataItem(context, dataType).getData();
   }
 

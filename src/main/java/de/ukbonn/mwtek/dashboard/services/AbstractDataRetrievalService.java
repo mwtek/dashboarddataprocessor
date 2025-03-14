@@ -22,7 +22,7 @@ import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.extractInp
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.extractQualitativeLabCodesSettings;
 import static de.ukbonn.mwtek.dashboardlogic.tools.KidsRadarTools.getIcdCodesAsString;
 
-import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
+import de.ukbonn.mwtek.dashboard.configuration.CustomGlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.SearchConfiguration;
 import de.ukbonn.mwtek.dashboard.interfaces.DataRetrievalService;
 import de.ukbonn.mwtek.dashboard.interfaces.DataSourceType;
@@ -106,7 +106,7 @@ public abstract class AbstractDataRetrievalService implements DataRetrievalServi
 
   @Getter @Setter private SearchConfiguration searchConfiguration;
 
-  @Getter @Setter private GlobalConfiguration globalConfiguration;
+  @Getter @Setter private CustomGlobalConfiguration customGlobalConfiguration;
 
   public Boolean getFilterEncounterByDate() {
     return searchConfiguration.getFilterEncounterByDate();

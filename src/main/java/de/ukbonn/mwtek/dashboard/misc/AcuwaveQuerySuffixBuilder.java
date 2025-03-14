@@ -130,8 +130,12 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
       AbstractDataRetrievalService abstractRestConfiguration,
       List<String> encounterIdList,
       String systemUrl,
-      Boolean askTotal) {
-    return "kdsicu?cases=" + String.join(DELIMITER, encounterIdList) + "&skipDuplicateCheck=true";
+      Boolean askTotal,
+      List<String> wards) {
+    return "kdsicu?cases="
+        + String.join(DELIMITER, encounterIdList)
+        + "&skipDuplicateCheck=true"
+        + (wards != null && !wards.isEmpty() ? "&wards=" + String.join(DELIMITER, wards) : "");
   }
 
   @Override

@@ -13,6 +13,10 @@ global:
   #service-provider-identifier-of-icu-locations: 123,234
   ## Use Patient.deceasedDateTime to classify encounters as deceased [default = false]
   #use-patient-deceased: true
+  ## Replacing all data (sub)items that separate between icu + icu_ventilation + icu_ecmo with icu_undifferentiated [default: false]
+  #use-icu-undifferentiated: true
+  ## Should procedures that don't have a linked encounter with at least one icu stay get filtered? [default: true]
+  #check-procedures-icu-stays: true
   ## Comma-separated list of codes used for Corona patient identification (icd = Condition resources; loinc = Observation resources).
   inputcodes:
     ## ICD codes SARS-CoV-2
@@ -112,10 +116,12 @@ data-items:
   excludes:
     current.treatmentlevel: false
     current.maxtreatmentlevel: false
-    current.age.maxtreatmentlevel.normal_ward: false
+    ## use-icu-undifferentiated needs to be "false" to allow parametrization of the following 3 items
     current.age.maxtreatmentlevel.icu: false
     current.age.maxtreatmentlevel.icu_with_ventilation: false
     current.age.maxtreatmentlevel.icu_with_ecmo: false
+    ## use-icu-undifferentiated needs to be "true" to allow parametrization of the following item
+    current.age.maxtreatmentlevel.icu_undifferentiated: true
     cumulative.results: false
     cumulative.gender: false
     cumulative.age: false
@@ -134,9 +140,12 @@ data-items:
     cumulative.varianttestresults: false
     cumulative.age.maxtreatmentlevel.outpatient: false
     cumulative.age.maxtreatmentlevel.normal_ward: false
+    ## use-icu-undifferentiated needs to be "false" to allow parametrization of the following 3 items
     cumulative.age.maxtreatmentlevel.icu: false
     cumulative.age.maxtreatmentlevel.icu_with_ventilation: false
     cumulative.age.maxtreatmentlevel.icu_with_ecmo: false
+    ## use-icu-undifferentiated needs to be "true" to allow parametrization of the following item
+    cumulative.age.maxtreatmentlevel.icu_undifferentiated: true
     timeline.tests: false
     timeline.test.positive: false
     timeline.maxtreatmentlevel: false
@@ -146,9 +155,12 @@ data-items:
     infl.current.treatmentlevel: false
     infl.current.maxtreatmentlevel: false
     infl.current.age.maxtreatmentlevel.normal_ward: false
+    ## use-icu-undifferentiated needs to be "false" to allow parametrization of the following 3 items
     infl.current.age.maxtreatmentlevel.icu: false
     infl.current.age.maxtreatmentlevel.icu_with_ventilation: false
     infl.current.age.maxtreatmentlevel.icu_with_ecmo: false
+    ## use-icu-undifferentiated needs to be "true" to allow parametrization of the following item
+    infl.current.age.maxtreatmentlevel.icu_undifferentiated: true
     infl.cumulative.results: false
     infl.cumulative.gender: false
     infl.cumulative.age: false
@@ -166,9 +178,12 @@ data-items:
     infl.cumulative.lengthofstay.hospital.dead: false
     infl.cumulative.age.maxtreatmentlevel.outpatient: false
     infl.cumulative.age.maxtreatmentlevel.normal_ward: false
+    ## use-icu-undifferentiated needs to be "false" to allow parametrization of the following 3 items
     infl.cumulative.age.maxtreatmentlevel.icu: false
     infl.cumulative.age.maxtreatmentlevel.icu_with_ventilation: false
     infl.cumulative.age.maxtreatmentlevel.icu_with_ecmo: false
+    ## use-icu-undifferentiated needs to be "true" to allow parametrization of the following item
+    infl.cumulative.age.maxtreatmentlevel.icu_undifferentiated: true
     infl.timeline.tests: false
     infl.timeline.test.positive: false
     infl.timeline.maxtreatmentlevel: false
@@ -226,6 +241,8 @@ spring:
 #   creatinine: 10143,131,132,17342,17360
 #   lactate: 189,6037,17197
 #   urea: 133,10142,17343,17361,17437
+## Reducing the procedure wards on certain wards
+#   wards: 01A,03A,03B,04A
 
 ## Logging
 #logging:

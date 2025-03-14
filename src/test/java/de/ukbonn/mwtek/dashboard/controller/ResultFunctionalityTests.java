@@ -31,8 +31,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.uhn.fhir.context.FhirContext;
+import de.ukbonn.mwtek.dashboard.examples.GlobalConfigurationExamples;
 import de.ukbonn.mwtek.dashboardlogic.DataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.KidsRadarDataItemGenerator;
+import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
@@ -87,49 +89,63 @@ public class ResultFunctionalityTests {
 
   @DisplayName("Getting data items for a run with at least one example patient.")
   static List<DiseaseDataItem> loadSampleData() throws IOException {
-
     List<DiseaseDataItem> output = new ArrayList<>();
 
-    // First load the data items from the covid-19 sample file.
-    parseSampleFile(SAMPLE_FILE_COVID);
-    List<DiseaseDataItem> resultDataCovid =
-        new DataItemGenerator(
+    Map<String, List<DiseaseDataItem>> diseaseDataMap = new HashMap<>();
+
+    // Parse all files and collect data
+    for (String sampleFile :
+        List.of(SAMPLE_FILE_COVID, SAMPLE_FILE_INFLUENZA, SAMPLE_FILE_KIDS_RADAR)) {
+      parseSampleFile(sampleFile);
+
+      // Determine the appropriate generator based on the file
+      DataItemGenerator generator;
+      if (sampleFile.equals(SAMPLE_FILE_KIDS_RADAR)) {
+        // Use the KidsRadarDataItemGenerator for KIDS_RADAR
+        generator =
+            new KidsRadarDataItemGenerator(
                 ukbConditions,
                 ukbObservations,
                 ukbPatients,
                 ukbEncounters,
                 ukbProcedures,
-                ukbLocations)
-            .getDataItems(null, true, null, getExampleData(), null, COVID, true);
-
-    // Then load the data items from the influenza sample file.
-    parseSampleFile(SAMPLE_FILE_INFLUENZA);
-    List<DiseaseDataItem> resultDataInfluenza =
-        new DataItemGenerator(
+                ukbLocations);
+      } else {
+        // Use the regular DataItemGenerator for COVID and INFLUENZA
+        generator =
+            new DataItemGenerator(
                 ukbConditions,
                 ukbObservations,
                 ukbPatients,
                 ukbEncounters,
                 ukbProcedures,
-                ukbLocations)
-            .getDataItems(null, true, null, getExampleData(), null, INFLUENZA, true);
+                ukbLocations);
+      }
 
-    // Then load the data items from the influenza sample file.
-    parseSampleFile(SAMPLE_FILE_KIDS_RADAR);
-    List<DiseaseDataItem> resultDataKiRadar =
-        new KidsRadarDataItemGenerator(
-                ukbConditions,
-                ukbObservations,
-                ukbPatients,
-                ukbEncounters,
-                ukbProcedures,
-                ukbLocations)
-            .getDataItems(null, true, null, getExampleData(), null, KIDS_RADAR, true);
+      // Generate and store data items in the map
+      diseaseDataMap.put(
+          sampleFile,
+          generator.getDataItems(
+              null,
+              null,
+              getExampleData(),
+              null,
+              determineContext(sampleFile),
+              GlobalConfigurationExamples.getExampleSettings()));
+    }
 
-    output.addAll(resultDataCovid);
-    output.addAll(resultDataInfluenza);
-    output.addAll(resultDataKiRadar);
+    // Merge all results into the final output list
+    diseaseDataMap.values().forEach(output::addAll);
     return output;
+  }
+
+  private static DataItemContext determineContext(String sampleFile) {
+    return switch (sampleFile) {
+      case SAMPLE_FILE_COVID -> COVID;
+      case SAMPLE_FILE_INFLUENZA -> INFLUENZA;
+      case SAMPLE_FILE_KIDS_RADAR -> KIDS_RADAR;
+      default -> throw new IllegalArgumentException("Unknown sample file: " + sampleFile);
+    };
   }
 
   private static void parseSampleFile(String sampleFileCovid) throws IOException {
@@ -197,7 +213,13 @@ public class ResultFunctionalityTests {
                 ukbEncounters,
                 ukbProcedures,
                 ukbLocations)
-            .getDataItems(mapExcludeDataItems, true, null, getExampleData(), null, COVID, false);
+            .getDataItems(
+                mapExcludeDataItems,
+                null,
+                getExampleData(),
+                null,
+                COVID,
+                GlobalConfigurationExamples.getExampleSettings());
 
     assertAll(
         "Data items should be excluded",

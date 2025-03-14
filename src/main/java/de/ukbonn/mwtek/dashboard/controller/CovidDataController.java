@@ -24,8 +24,8 @@ import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.addDummyIcuLocation
 import static de.ukbonn.mwtek.dashboard.misc.ThresholdCheck.filterDataItemsByThreshold;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import de.ukbonn.mwtek.dashboard.configuration.CustomGlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.DataItemsConfiguration;
-import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.ReportsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.VariantConfiguration;
 import de.ukbonn.mwtek.dashboard.exceptions.SearchException;
@@ -57,7 +57,7 @@ public class CovidDataController {
       AbstractDataRetrievalService dataRetrievalService,
       ReportsConfiguration reportConfiguration,
       ProcessTimer processTimer,
-      GlobalConfiguration globalConfiguration,
+      CustomGlobalConfiguration customGlobalConfiguration,
       VariantConfiguration variantConfiguration,
       InputCodeSettings inputCodeSettings,
       QualitativeLabCodesSettings qualitativeLabCodesSettings,
@@ -111,21 +111,27 @@ public class CovidDataController {
       addDummyIcuLocationIfNeeded(ukbEncounters, ukbLocations);
 
       // If activated; use Patient.deceasedDateTime for the detection of deceased cases.
-      if (globalConfiguration.getUsePatientDeceased())
+      if (customGlobalConfiguration.getUsePatientDeceased())
         addDeceasedStatusToEncounters(ukbPatients, ukbEncounters);
 
       // Retrieval of the Procedure resources
-      processTimer.startLoggingTime(ResourceType.Procedure);
-      List<UkbProcedure> ukbProcedures =
-          (List<UkbProcedure>)
-              ResourceConverter.convert(
-                  dataRetrievalService.getProcedures(
-                      ukbEncounters,
-                      ukbLocations,
-                      ukbObservations,
-                      ukbConditions,
-                      dataItemContext));
-      processTimer.stopLoggingTime(ukbProcedures);
+      List<UkbProcedure> ukbProcedures = new ArrayList<>();
+      if (!customGlobalConfiguration.getUseIcuUndifferentiated()) {
+        processTimer.startLoggingTime(ResourceType.Procedure);
+        ukbProcedures =
+            (List<UkbProcedure>)
+                ResourceConverter.convert(
+                    dataRetrievalService.getProcedures(
+                        ukbEncounters,
+                        ukbLocations,
+                        ukbObservations,
+                        ukbConditions,
+                        dataItemContext));
+        processTimer.stopLoggingTime(ukbProcedures);
+      } else
+        log.info(
+            "Skipping the retrieval of procedure resources, as the generation of"
+                + " icu_undifferentiated items is activated.");
 
       processTimer.startLoggingTime("Processing logic");
 
@@ -144,12 +150,11 @@ public class CovidDataController {
       dataItems.addAll(
           dataItemGenerator.getDataItems(
               dataItemsConfiguration.getExcludes(),
-              globalConfiguration.getDebug(),
               variantConfiguration,
               inputCodeSettings,
               qualitativeLabCodesSettings,
               dataItemContext,
-              globalConfiguration.getUsePartOfInsteadOfIdentifier()));
+              customGlobalConfiguration));
 
       // Generate an export with current case/encounter ids by treatment level on demand
       if (reportConfiguration.getCaseIdFileGeneration()) {
@@ -168,7 +173,7 @@ public class CovidDataController {
       }
 
       // Add resource sizes information to the output if needed
-      if (globalConfiguration.getDebug()) {
+      if (customGlobalConfiguration.getDebug()) {
         addResourceSizesToOutput(
             result,
             ukbConditions,

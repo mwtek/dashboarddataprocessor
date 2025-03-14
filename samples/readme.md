@@ -14,14 +14,16 @@ Feedback regarding import in FHIR servers of other types (e.g. IBM FHIR) is very
 Currently, the following sample bundles exist with the following content characteristics:
 
 * <a href="./SampleBundle_Covid.json" target="_blank">SampleBundle_Covid.json</a>
-    * Bundle of 4 patients.
-        * 4 patients with inpatient icu covid-19 cases
+    * Bundle of 5 patients.
+        * 5 patients with inpatient icu covid-19 cases
             * one with an in-progress encounter
             * one who got a finished case with discharge disposition 'dead' and who also got an
               alpha variant test result
             * one which an ecmo procedure that contains an additional ops code in addition to the
               snomed code
             * one with a positive lab result that also uses an internal lab codes.
+            * one with a positive lab result who was never on any icu but received short
+              ventilation, probably while having an operation.
         * 1 patient with an outpatient covid-19 encounter
 * <a href="./SampleBundle_Influenza.json" target="_blank">SampleBundle_Influenza.json</a>
     * Bundle of 4 patients.

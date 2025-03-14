@@ -22,8 +22,8 @@ import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.logAbortWorkflowMessa
 import static de.ukbonn.mwtek.dashboard.misc.ThresholdCheck.filterDataItemsByThreshold;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import de.ukbonn.mwtek.dashboard.configuration.CustomGlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.DataItemsConfiguration;
-import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.ReportsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.VariantConfiguration;
 import de.ukbonn.mwtek.dashboard.exceptions.SearchException;
@@ -52,7 +52,7 @@ public class KidsRadarDataController {
       AbstractDataRetrievalService dataRetrievalService,
       ReportsConfiguration reportConfiguration,
       ProcessTimer processTimer,
-      GlobalConfiguration globalConfiguration,
+      CustomGlobalConfiguration customGlobalConfiguration,
       VariantConfiguration variantConfiguration,
       InputCodeSettings inputCodeSettings,
       QualitativeLabCodesSettings qualitativeLabCodesSettings,
@@ -100,19 +100,18 @@ public class KidsRadarDataController {
       dataItems.addAll(
           dataItemGenerator.getDataItems(
               dataItemsConfiguration.getExcludes(),
-              globalConfiguration.getDebug(),
               variantConfiguration,
               inputCodeSettings,
               qualitativeLabCodesSettings,
               dataItemContext,
-              globalConfiguration.getUsePartOfInsteadOfIdentifier()));
+              customGlobalConfiguration));
 
       if (!dataItemsConfiguration.getThresholds().isEmpty()) {
         dataItems = filterDataItemsByThreshold(dataItems, dataItemsConfiguration.getThresholds());
       }
 
       // Add resource sizes information to the output if needed
-      if (globalConfiguration.getDebug()) {
+      if (customGlobalConfiguration.getDebug()) {
         addResourceSizesToOutput(
             result, ukbConditions, null, ukbPatients, ukbEncounters, null, null, dataItemContext);
       }

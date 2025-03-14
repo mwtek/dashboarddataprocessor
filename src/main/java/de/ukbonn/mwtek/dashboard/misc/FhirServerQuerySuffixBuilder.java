@@ -189,7 +189,8 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
       AbstractDataRetrievalService dataRetrievalService,
       List<String> patientIdList,
       String systemUrl,
-      Boolean askTotal) {
+      Boolean askTotal,
+      List<String> wards) {
 
     String procedureCodes = getProcedureCodesAsString(dataRetrievalService, systemUrl);
     String patients = getListAsString(patientIdList);

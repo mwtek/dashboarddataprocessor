@@ -1,10 +1,46 @@
+# Release Notes - Version V0.5.4+update.6
+
+14/March/25
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* Added support for all `ICU_undifferentiated` (sub)items.
+
+</div>
+
+## Improvements
+
+No improvements were part of this version.
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* Procedures that are linked to a case without a single encounter that was on icu at least once are
+  getting filtered now. This filter can be deactivated again via `application.yaml` configuration
+  and was implemented to filter short stay op ventilation's.
+* Added a new example patient to test the new behavior mentioned and updated the unit tests.
+
+</div>
+
+## Bugs
+
+No bug fixes were part of this version.
+
 # Release Notes - Version V0.5.4+update.5
 
 05/March/25
 
 ## New Features
 
-No features were part of this version.
+<div style='margin-left:30px;'>
+
+* Added a new option to use `Patient.deceasedDateTime` to flag encounters with deceased status if
+  `dischargeDisposition` is not used.
+
+</div>
 
 ## Improvements
 
@@ -18,6 +54,7 @@ No improvements were part of this version.
   processing logic from now on, mainly to filter out canceled / uncertain cases.
 * Observations and Procedures resources with status `entered-in-error` or `not-done` are getting
   ignored now as well.
+* Minor refactorings and updated javadocs.
 
 </div> 
 

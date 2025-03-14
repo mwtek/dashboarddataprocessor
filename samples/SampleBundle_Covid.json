@@ -2965,6 +2965,531 @@
         "method": "PUT",
         "url": "Observation/T-MULTIPLE-OBSERVATIONLAB-CODES"
       }
+    },
+    {
+      "fullUrl": "Patient/T-NO-ICU-BUT-VENT",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "T-NO-ICU-BUT-VENT",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "T-NO-ICU-BUT-VENT"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Covid-Testpatient with a positive lab observation and no icu stay but a ventilation procedure",
+            "given": [
+              "Deceased"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1980-01-01",
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "line": [
+              "Avenue 1"
+            ],
+            "city": "Test city #2",
+            "postalCode": "64756",
+            "country": "DE"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/T-NO-ICU-BUT-VENT"
+      }
+    },
+    {
+      "fullUrl": "Location/T-NON-ICU-WARD",
+      "resource": {
+        "resourceType": "Location",
+        "id": "T-NON-ICU-WARD",
+        "meta": {
+          "source": "http://hl7.org/fhir/StructureDefinition/Location"
+        },
+        "identifier": [
+          {
+            "system": "http://localIdentifier.de/identifiers/location",
+            "value": "T-NON-ICU-WARD"
+          }
+        ],
+        "name": "Station 2",
+        "alias": [
+          "S002X"
+        ],
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-RoleCode",
+                "code": "CCU",
+                "display": "Coronary care unit"
+              }
+            ]
+          }
+        ],
+        "physicalType": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+              "code": "wa",
+              "display": "Ward"
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Location/T-NON-ICU-WARD"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-NO-ICU-BUT-VENT-000000-EK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-NO-ICU-BUT-VENT-000000-EK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://fhir.de/StructureDefinition/Aufnahmegrund",
+            "extension": [
+              {
+                "url": "ErsteUndZweiteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundErsteUndZweiteStelle",
+                  "code": "01",
+                  "display": "KH-Behandlung, vollstat."
+                }
+              },
+              {
+                "url": "DritteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundDritteStelle",
+                  "code": "0",
+                  "display": "Anderes"
+                }
+              },
+              {
+                "url": "VierteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundVierteStelle",
+                  "code": "1",
+                  "display": "Normalfall"
+                }
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-NO-ICU-BUT-VENT"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "000000"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "EK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "einrichtungskontakt",
+                "display": "Einrichtungskontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-NO-ICU-BUT-VENT"
+        },
+        "period": {
+          "start": "2025-01-01T10:00:00+02:00",
+          "end": "2025-01-20T17:00:00+02:00"
+        },
+        "hospitalization": {
+          "admitSource": {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/dgkev/Aufnahmeanlass",
+                "code": "A",
+                "display": "Verlegung (mit Behandlungsdauer im verlegenden Krankenhaus bis zu 24 Stunden)"
+              }
+            ]
+          },
+          "dischargeDisposition": {
+            "extension": [
+              {
+                "url": "http://fhir.de/StructureDefinition/Entlassungsgrund",
+                "extension": [
+                  {
+                    "url": "ErsteUndZweiteStelle",
+                    "valueCoding": {
+                      "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundErsteUndZweiteStelle",
+                      "code": "07",
+                      "display": "Tod"
+                    }
+                  },
+                  {
+                    "url": "DritteStelle",
+                    "valueCoding": {
+                      "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundDritteStelle",
+                      "code": "9",
+                      "display": "keine Angabe"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-NO-ICU-BUT-VENT-000000-EK"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-NO-ICU-BUT-VENT-AK-0-0",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-NO-ICU-BUT-VENT-AK-0-0",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-NO-ICU-BUT-VENT"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "abteilungskontakt",
+                "display": "Abteilungskontakt"
+              }
+            ]
+          }
+        ],
+        "serviceType": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel",
+              "code": "0300",
+              "display": "Kardiologie"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-NO-ICU-BUT-VENT"
+        },
+        "period": {
+          "start": "2025-01-01T10:00:00+02:00",
+          "end": "2025-01-20T17:00:00+02:00"
+        },
+        "partOf": {
+          "reference": "Encounter/T-NO-ICU-BUT-VENT-000000-EK"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-NO-ICU-BUT-VENT-AK-0-0"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-NO-ICU-BUT-VENT-VK-0-0",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-NO-ICU-BUT-VENT-VK-0-0",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-NO-ICU-BUT-VENT"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "versorgungsstellenkontakt",
+                "display": "Versorgungsstellenkontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-NO-ICU-BUT-VENT"
+        },
+        "period": {
+          "start": "2025-01-01T10:00:00+02:00",
+          "end": "2025-01-20T17:00:00+02:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/T-NON-ICU-WARD"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "wa",
+                  "display": "Ward"
+                }
+              ]
+            },
+            "period": {
+              "start": "2025-01-01T10:00:00+02:00",
+              "end": "2025-01-20T17:00:00+02:00"
+            }
+          }
+        ],
+        "partOf": {
+          "reference": "Encounter/T-NO-ICU-BUT-VENT-AK-0-0"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-NO-ICU-BUT-VENT-VK-0-0"
+      }
+    },
+    {
+      "fullUrl": "Observation/T-NO-ICU-BUT-VENT",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "T-NO-ICU-BUT-VENT",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab"
+          ]
+        },
+        "identifier": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "OBI"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/observation",
+            "value": "T-MULTIPLE-OBSERVATIONLAB-CODES",
+            "assigner": {
+              "identifier": {
+                "system": "https://www.medizininformatik-initiative.de/fhir/core/CodeSystem/core-location-identifier",
+                "value": "DIZ-ID"
+              }
+            }
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "26436-6",
+                "display": "LABORATORY STUDIES"
+              },
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://localidentifier.com/labsystem",
+              "code": "COV_123",
+              "display": "SARS-CoV-2 RNA"
+            },
+            {
+              "system": "http://alternativelocalidentifier.com/labsystem",
+              "code": "COV_2",
+              "display": "SARS-CoV-2"
+            },
+            {
+              "system": "http://loinc.org",
+              "code": "94306-8"
+            }
+          ],
+          "text": "SARS-Coronavirus-2-RNA [RT-PCR]"
+        },
+        "subject": {
+          "reference": "Patient/T-NO-ICU-BUT-VENT"
+        },
+        "encounter": {
+          "reference": "Encounter/T-NO-ICU-BUT-VENT-000000-EK"
+        },
+        "effectiveDateTime": "2022-08-01T12:00:00+02:00",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "10828004",
+              "display": "Positive"
+            }
+          ],
+          "text": "positiv"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/T-NO-ICU-BUT-VENT"
+      }
+    },
+    {
+      "fullUrl": "Procedure/T-NO-ICU-BUT-VENT",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "T-NO-ICU-BUT-VENT",
+        "meta": {
+          "profile": [
+            "https://medizininformatik-initiative.de/fhir/ext/modul-icu/StructureDefinition/Beatmung"
+          ]
+        },
+        "status": "completed",
+        "category": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "40617009",
+              "display": "Artificial respiration (procedure)"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "243147009",
+              "display": "Controlled ventilation (procedure)"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-NO-ICU-BUT-VENT"
+        },
+        "encounter": {
+          "reference": "Encounter/T-NO-ICU-BUT-VENT-000000-EK"
+        },
+        "performedPeriod": {
+          "start": "2025-01-06T10:00:00+02:00",
+          "end": "2025-01-06T10:15:00+02:00"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Procedure/T-NO-ICU-BUT-VENT"
+      }
     }
   ]
 }

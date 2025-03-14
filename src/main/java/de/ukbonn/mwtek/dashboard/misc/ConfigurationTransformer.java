@@ -23,7 +23,7 @@ import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.RSV;
 import static de.ukbonn.mwtek.utilities.enums.TerminologySystems.SNOMED;
 import static de.ukbonn.mwtek.utilities.generic.collections.ListTools.commaSeparatedStringIntoList;
 
-import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
+import de.ukbonn.mwtek.dashboard.configuration.CustomGlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
@@ -124,8 +124,8 @@ public class ConfigurationTransformer {
   private static final Map<String, Object> EMPTY_MAP = Collections.emptyMap();
 
   public static List<String> extractInputCodes(
-      GlobalConfiguration globalConfiguration, ConfigurationContext context) {
-    final Map<String, Object> inputCodes = globalConfiguration.getInputCodes();
+      CustomGlobalConfiguration customGlobalConfiguration, ConfigurationContext context) {
+    final Map<String, Object> inputCodes = customGlobalConfiguration.getInputCodes();
 
     Map<String, Object> influenzaData =
         (Map<String, Object>) inputCodes.getOrDefault("influenza", EMPTY_MAP);
@@ -222,22 +222,27 @@ public class ConfigurationTransformer {
         dataRetrievalService.getProcedureEcmoCodes(),
         dataRetrievalService.getInfluenzaLabPcrCodes(),
         dataRetrievalService.getInfluenzaIcdCodes(),
-        extractKidsRadarDiagnosisConditions(dataRetrievalService.getGlobalConfiguration(), KJP),
-        extractKidsRadarDiagnosisConditions(dataRetrievalService.getGlobalConfiguration(), RSV));
+        extractKidsRadarDiagnosisConditions(
+            dataRetrievalService.getCustomGlobalConfiguration(), KJP),
+        extractKidsRadarDiagnosisConditions(
+            dataRetrievalService.getCustomGlobalConfiguration(), RSV));
   }
 
   public static QualitativeLabCodesSettings extractQualitativeLabCodesSettings(
       AbstractDataRetrievalService dataRetrievalService) {
     return new QualitativeLabCodesSettings(
         extractLabCodes(
-            dataRetrievalService.getGlobalConfiguration().getQualitativeLabCodes(), "positive"),
+            dataRetrievalService.getCustomGlobalConfiguration().getQualitativeLabCodes(),
+            "positive"),
         extractLabCodes(
-            dataRetrievalService.getGlobalConfiguration().getQualitativeLabCodes(), "borderline"),
+            dataRetrievalService.getCustomGlobalConfiguration().getQualitativeLabCodes(),
+            "borderline"),
         extractLabCodes(
-            dataRetrievalService.getGlobalConfiguration().getQualitativeLabCodes(), "negative"),
+            dataRetrievalService.getCustomGlobalConfiguration().getQualitativeLabCodes(),
+            "negative"),
         // The code system is snomed by default
         dataRetrievalService
-            .getGlobalConfiguration()
+            .getCustomGlobalConfiguration()
             .getQualitativeLabCodes()
             .getOrDefault("systems", List.of(SNOMED)));
   }
@@ -251,16 +256,17 @@ public class ConfigurationTransformer {
    * Extracts either the {@link KidsRadarDataItemContext#KJP} or the {@link
    * KidsRadarDataItemContext#RSV} conditions dynamically from the provided global configuration.
    *
-   * @param globalConfiguration the global configuration containing input codes
+   * @param customGlobalConfiguration the global configuration containing input codes
    * @param kidsRadarDataItemContext the context for which the diagnosis conditions should be
    *     extracted (KJP or RSV)
    * @return A map where all the icd codes are assigned to a diagnosis group key.
    * @throws NullPointerException if globalConfiguration or kidsRadarDataItemContext is null.
    */
   public static Map<String, List<String>> extractKidsRadarDiagnosisConditions(
-      GlobalConfiguration globalConfiguration, KidsRadarDataItemContext kidsRadarDataItemContext) {
+      CustomGlobalConfiguration customGlobalConfiguration,
+      KidsRadarDataItemContext kidsRadarDataItemContext) {
     Map<String, List<String>> result = new LinkedHashMap<>();
-    final Map<String, Object> inputCodes = globalConfiguration.getInputCodes();
+    final Map<String, Object> inputCodes = customGlobalConfiguration.getInputCodes();
     String kidsRadarContext =
         switch (kidsRadarDataItemContext) {
           case KJP -> "kjp";

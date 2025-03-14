@@ -101,13 +101,13 @@ public class CovidDataItemTests extends CovidInfluenzaDataItemTests {
   @Test
   @DisplayName("Testing cumulative.results")
   void testCumulativeResults() {
-    assertCumulativeResults(COVID, CUMULATIVE_RESULTS, 4, 0, 1);
+    assertCumulativeResults(COVID, CUMULATIVE_RESULTS, 5, 0, 1);
   }
 
   @Test
   @DisplayName("Testing cumulative.gender")
   void testCumulativeGender() {
-    assertCumulativeGender(COVID, CUMULATIVE_GENDER, 4, 1, 0);
+    assertCumulativeGender(COVID, CUMULATIVE_GENDER, 5, 1, 0);
   }
 
   @Test
@@ -120,7 +120,7 @@ public class CovidDataItemTests extends CovidInfluenzaDataItemTests {
   @Test
   @DisplayName("Testing cumulative.maxtreatmentlevel")
   void testCumulativeMaxTreatmentlevel() {
-    assertTreatmentLevel(COVID, CUMULATIVE_MAXTREATMENTLEVEL, 1, 1, 0, 1, 2);
+    assertTreatmentLevel(COVID, CUMULATIVE_MAXTREATMENTLEVEL, 1, 2, 0, 1, 2);
   }
 
   @Test
@@ -172,7 +172,7 @@ public class CovidDataItemTests extends CovidInfluenzaDataItemTests {
   void testTimelineDeaths() {
     assertTimelineValueByDay(COVID, TIMELINE_DEATHS, 1661817600L, 0);
     assertTimelineValueByDay(COVID, TIMELINE_DEATHS, 1661904000L, 0);
-    assertTimelineValueByDay(COVID, TIMELINE_DEATHS, 1737331200L, 1);
+    assertTimelineValueByDay(COVID, TIMELINE_DEATHS, 1737331200L, 2);
     assertTimelineValueByDay(COVID, TIMELINE_DEATHS, 1737417600L, 0);
   }
 }

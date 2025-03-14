@@ -21,6 +21,7 @@ import static de.ukbonn.mwtek.dashboard.controller.UkbModelController.generateUk
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.COVID;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.INFLUENZA;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.UKB_MODEL;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -28,10 +29,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.ukbonn.mwtek.dashboard.DashboardApplication;
 import de.ukbonn.mwtek.dashboard.configuration.AcuwaveSearchConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.AcuwaveServerRestConfiguration;
+import de.ukbonn.mwtek.dashboard.configuration.CustomGlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.DataItemsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.FhirServerRestConfiguration;
-import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.ReportsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.VariantConfiguration;
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
@@ -92,7 +93,7 @@ public class DataRetrievalController {
 
   public static final String WORKFLOW_ABORTED = "Workflow aborted: ";
   public static final String CURRENT_DATASET_VERSION = "0.5.4";
-  public static final String CURRENT_DDP_VERSION = "0.5.4+update.5";
+  public static final String CURRENT_DDP_VERSION = "0.5.4+update.6";
   public static final String FILE_GENERATOR = "ddp";
   Logger logger = LoggerFactory.getLogger(DashboardApplication.class);
 
@@ -100,7 +101,7 @@ public class DataRetrievalController {
   private final FhirSearchService fhirSearchService;
 
   private final ProviderService providerService;
-  @Autowired private GlobalConfiguration globalConfiguration;
+  @Autowired private CustomGlobalConfiguration customGlobalConfiguration;
   @Autowired private DataItemsConfiguration exclDataItems;
   @Autowired private FhirSearchConfiguration fhirSearchConfiguration;
   @Autowired private FhirServerRestConfiguration fhirServerRestConfiguration;
@@ -151,19 +152,22 @@ public class DataRetrievalController {
     AbstractDataRetrievalService dataRetrievalService = determineDataRetrievalService();
 
     boolean generateCovidData =
-        dataRetrievalService.getGlobalConfiguration().getGenerateCovidData()
+        dataRetrievalService.getCustomGlobalConfiguration().getGenerateCovidData()
             || isScopeActivatedViaParameters(scopes, COVID);
 
     boolean generateInfluenzaData =
-        dataRetrievalService.getGlobalConfiguration().getGenerateInfluenzaData()
+        dataRetrievalService.getCustomGlobalConfiguration().getGenerateInfluenzaData()
             || isScopeActivatedViaParameters(scopes, INFLUENZA);
 
     boolean generateKidsRadarData =
-        dataRetrievalService.getGlobalConfiguration().getGenerateKidsRadarData()
+        dataRetrievalService.getCustomGlobalConfiguration().getGenerateKidsRadarData()
             || isScopeActivatedViaParameters(scopes, KIDS_RADAR);
 
     boolean generateUkbRenalReplacementModelData =
-        dataRetrievalService.getGlobalConfiguration().getGenerateUkbRenalReplacementModelData();
+        dataRetrievalService
+                .getCustomGlobalConfiguration()
+                .getGenerateUkbRenalReplacementModelData()
+            || isScopeActivatedViaParameters(scopes, UKB_MODEL);
 
     // If custom codes are set in the yaml file -> update the default values.
     InputCodeSettings inputCodeSettings =
@@ -181,7 +185,7 @@ public class DataRetrievalController {
                     benchMarkRun,
                     dataRetrievalService,
                     processTimer,
-                    globalConfiguration.getServerType());
+                    customGlobalConfiguration.getServerType());
 
         // Postprocessing
         if (renalReplacementModelParameterSetMap != null) {
@@ -198,7 +202,7 @@ public class DataRetrievalController {
                 dataRetrievalService,
                 reportConfiguration,
                 processTimer,
-                globalConfiguration,
+                customGlobalConfiguration,
                 variantConfiguration,
                 inputCodeSettings,
                 qualitativeLabCodesSettings,
@@ -218,7 +222,7 @@ public class DataRetrievalController {
                 dataRetrievalService,
                 reportConfiguration,
                 processTimer,
-                globalConfiguration,
+                customGlobalConfiguration,
                 variantConfiguration,
                 inputCodeSettings,
                 qualitativeLabCodesSettings,
@@ -238,7 +242,7 @@ public class DataRetrievalController {
                 dataRetrievalService,
                 reportConfiguration,
                 processTimer,
-                globalConfiguration,
+                customGlobalConfiguration,
                 variantConfiguration,
                 inputCodeSettings,
                 qualitativeLabCodesSettings,
@@ -322,21 +326,24 @@ public class DataRetrievalController {
       // May be used in the future to split the kidsradar-context up
       case KIDS_RADAR_KJP -> lowerCaseScopes.contains("kjp");
       case KIDS_RADAR_RSV -> lowerCaseScopes.contains("rsv");
+      case UKB_MODEL -> lowerCaseScopes.contains("ukbmodel");
     };
   }
 
   private AbstractDataRetrievalService determineDataRetrievalService() {
     AbstractDataRetrievalService dataRetrievalService;
-    if (globalConfiguration.getServerType() == ServerTypeEnum.ACUWAVE) {
+    if (customGlobalConfiguration.getServerType() == ServerTypeEnum.ACUWAVE) {
       dataRetrievalService =
           new AcuwaveDataRetrievalService(
-              acuwaveSearchService, this.acuwaveSearchConfiguration, this.globalConfiguration);
+              acuwaveSearchService,
+              this.acuwaveSearchConfiguration,
+              this.customGlobalConfiguration);
     } else {
       dataRetrievalService =
           new FhirDataRetrievalService(
               fhirSearchService,
               this.fhirSearchConfiguration,
-              this.globalConfiguration,
+              this.customGlobalConfiguration,
               this.fhirServerRestConfiguration);
     }
     return dataRetrievalService;

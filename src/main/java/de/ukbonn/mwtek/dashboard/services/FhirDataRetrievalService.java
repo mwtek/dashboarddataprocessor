@@ -40,9 +40,9 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 import de.ukbonn.mwtek.dashboard.DashboardApplication;
+import de.ukbonn.mwtek.dashboard.configuration.CustomGlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.FhirServerRestConfiguration;
-import de.ukbonn.mwtek.dashboard.configuration.GlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
 import de.ukbonn.mwtek.dashboard.exceptions.SearchException;
 import de.ukbonn.mwtek.dashboard.interfaces.DataSourceType;
@@ -98,11 +98,11 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
   public FhirDataRetrievalService(
       SearchService searchService,
       FhirSearchConfiguration fhirSearchConfiguration,
-      GlobalConfiguration globalConfiguration,
+      CustomGlobalConfiguration customGlobalConfiguration,
       FhirServerRestConfiguration fhirServerRestConfiguration) {
     this.fhirSearchConfiguration = fhirSearchConfiguration;
     this.fhirServerRestConfiguration = fhirServerRestConfiguration;
-    initializeSearchService(searchService, fhirSearchConfiguration, globalConfiguration);
+    initializeSearchService(searchService, fhirSearchConfiguration, customGlobalConfiguration);
   }
 
   /**
@@ -115,27 +115,29 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
   private void initializeSearchService(
       SearchService searchService,
       FhirSearchConfiguration fhirSearchConfiguration,
-      GlobalConfiguration globalConfiguration) {
+      CustomGlobalConfiguration customGlobalConfiguration) {
     this.setSearchService(searchService);
     this.setSearchConfiguration(fhirSearchConfiguration);
-    this.setGlobalConfiguration(globalConfiguration);
+    this.setCustomGlobalConfiguration(customGlobalConfiguration);
     // Read the Sars-Cov2 PCR codes from the configuration and persist them in a list analogous
     // to the Acuwave parameterization (FHIR servers expect a comma separated list of strings
     // while the Acuwave needs an integer list)
-    this.setCovidLabPcrCodes(extractInputCodes(globalConfiguration, COVID_OBSERVATIONS_PCR));
+    this.setCovidLabPcrCodes(extractInputCodes(customGlobalConfiguration, COVID_OBSERVATIONS_PCR));
     this.setCovidLabVariantCodes(
-        extractInputCodes(globalConfiguration, COVID_OBSERVATIONS_VARIANTS));
+        extractInputCodes(customGlobalConfiguration, COVID_OBSERVATIONS_VARIANTS));
     this.setProcedureVentilationCodes(
-        extractInputCodes(globalConfiguration, COVID_PROCEDURES_VENTILATION));
-    this.setProcedureEcmoCodes(extractInputCodes(globalConfiguration, COVID_PROCEDURES_ECMO));
+        extractInputCodes(customGlobalConfiguration, COVID_PROCEDURES_VENTILATION));
+    this.setProcedureEcmoCodes(extractInputCodes(customGlobalConfiguration, COVID_PROCEDURES_ECMO));
     // Reading of the icd codes from the configuration and transforming it into a list
-    this.setCovidIcdCodes(extractInputCodes(globalConfiguration, COVID_CONDITIONS));
+    this.setCovidIcdCodes(extractInputCodes(customGlobalConfiguration, COVID_CONDITIONS));
     // Influenza data setter
-    this.setInfluenzaIcdCodes(extractInputCodes(globalConfiguration, INFLUENZA_CONDITIONS));
+    this.setInfluenzaIcdCodes(extractInputCodes(customGlobalConfiguration, INFLUENZA_CONDITIONS));
     this.setInfluenzaLabPcrCodes(
-        extractInputCodes(globalConfiguration, INFLUENZA_OBSERVATIONS_PCR));
-    this.setKidsRadarKjpIcdCodes(extractKidsRadarDiagnosisConditions(globalConfiguration, KJP));
-    this.setKidsRadarRsvIcdCodes(extractKidsRadarDiagnosisConditions(globalConfiguration, RSV));
+        extractInputCodes(customGlobalConfiguration, INFLUENZA_OBSERVATIONS_PCR));
+    this.setKidsRadarKjpIcdCodes(
+        extractKidsRadarDiagnosisConditions(customGlobalConfiguration, KJP));
+    this.setKidsRadarRsvIcdCodes(
+        extractKidsRadarDiagnosisConditions(customGlobalConfiguration, RSV));
   }
 
   @Override
@@ -341,7 +343,7 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
 
     // Retrieve ICU-specific configuration for identifying ICU locations via service providers
     Set<String> icuLocationIdsServiceProvider =
-        getGlobalConfiguration().getServiceProviderIdentifierOfIcuLocations();
+        getCustomGlobalConfiguration().getServiceProviderIdentifierOfIcuLocations();
     boolean serviceProviderIdentifierFound = !icuLocationIdsServiceProvider.isEmpty();
 
     // Split the patient IDs into manageable sublists based on the configured batch size
@@ -541,7 +543,8 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
                                   this,
                                   patientIdSublist,
                                   fhirSearchConfiguration.getProcedureCodesSystemUrl(),
-                                  true),
+                                  true,
+                                  null),
                               GET,
                               null);
                   initialBundle =
@@ -551,7 +554,8 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
                                   this,
                                   patientIdSublist,
                                   fhirSearchConfiguration.getProcedureCodesSystemUrl(),
-                                  false),
+                                  false,
+                                  null),
                               GET,
                               null);
                   log.debug("Procedures found for this part bundle: {}", totalBundle.getTotal());
