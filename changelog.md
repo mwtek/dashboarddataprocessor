@@ -1,3 +1,27 @@
+# Release Notes - Version V0.5.4+update.7
+
+03/April/25
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* Added debug items for `cumulative.gender` and `cumulative.inpatient.gender`
+
+</div>
+
+## Improvements
+
+No improvements were part of this version.
+
+## Tasks
+
+No tasks were part of this version.
+
+## Bugs
+
+No bug fixes were part of this version.
+
 # Release Notes - Version V0.5.4+update.6
 
 14/March/25
