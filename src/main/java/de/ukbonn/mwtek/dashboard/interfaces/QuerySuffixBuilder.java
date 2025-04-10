@@ -21,6 +21,7 @@ import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboard.services.AcuwaveDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.Covid;
+import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.Influenza;
 import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.KidsRadar;
 import java.util.List;
 import java.util.Set;
@@ -156,11 +157,11 @@ public interface QuerySuffixBuilder {
             + addLeadingZeroIfNeeded(Covid.QUALIFYING_DAY);
       }
       case INFLUENZA -> {
-        return Covid.QUALIFYING_YEAR
+        return Influenza.QUALIFYING_YEAR
             + "-"
-            + addLeadingZeroIfNeeded(Covid.QUALIFYING_MONTH)
+            + addLeadingZeroIfNeeded(Influenza.QUALIFYING_MONTH)
             + "-"
-            + addLeadingZeroIfNeeded(Covid.QUALIFYING_DAY);
+            + addLeadingZeroIfNeeded(Influenza.QUALIFYING_DAY);
       }
       case KIDS_RADAR -> {
         return KidsRadar.QUALIFYING_YEAR

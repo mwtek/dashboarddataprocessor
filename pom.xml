@@ -30,7 +30,7 @@
   </parent>
   <groupId>de.ukbonn.mwtek</groupId>
   <artifactId>dashboarddataprocessor</artifactId>
-  <version>0.5.4+update.7</version>
+  <version>0.5.4+update.8</version>
   <name>dashboard-data-processor</name>
   <description>MII-FHIR-to-NUM-Dashboard-Processor</description>
   <properties>

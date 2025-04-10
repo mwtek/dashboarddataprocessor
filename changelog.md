@@ -1,3 +1,27 @@
+# Release Notes - Version V0.5.4+update.8
+
+10/April/25
+
+## New Features
+
+No features were part of this version.
+
+## Improvements
+
+No improvements were part of this version.
+
+## Tasks
+
+No tasks were part of this version.
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* The influenza encounter data retrieval uses the right cut-off-date (01.09.2022) now.
+
+</div> 
+
 # Release Notes - Version V0.5.4+update.7
 
 03/April/25

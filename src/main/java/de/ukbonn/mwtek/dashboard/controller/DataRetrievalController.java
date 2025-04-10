@@ -93,7 +93,7 @@ public class DataRetrievalController {
 
   public static final String WORKFLOW_ABORTED = "Workflow aborted: ";
   public static final String CURRENT_DATASET_VERSION = "0.5.4";
-  public static final String CURRENT_DDP_VERSION = "0.5.4+update.7";
+  public static final String CURRENT_DDP_VERSION = "0.5.4+update.8";
   public static final String FILE_GENERATOR = "ddp";
   Logger logger = LoggerFactory.getLogger(DashboardApplication.class);
 
