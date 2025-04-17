@@ -18,6 +18,8 @@
 
 package de.ukbonn.mwtek.dashboard.configuration;
 
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -54,10 +56,12 @@ public abstract class SearchConfiguration {
 
   /**
    * Should the Encounter FHIR search query be filtered by admission date (All cases by
-   * disease-positive-encounter start reference date)? Must be disabled if outpatient cases do not
-   * have an end date.
+   * disease-positive-encounter start reference date) / {@link UkbCondition#getRecordedDate()} /
+   * {@link UkbObservation#getEffective()}?
+   *
+   * <p>Must be disabled if outpatient cases do not have an end date.
    */
-  private Boolean filterEncounterByDate = true;
+  private Boolean filterResourcesByDate = true;
 
   /** batch size of the parallelized partial searches */
   private int batchSize = 500;

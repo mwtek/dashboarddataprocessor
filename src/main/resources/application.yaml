@@ -102,7 +102,7 @@ fhir:
     ## Filter the patient (and thus also the encounter) retrieval to disease-positive-patients only
     # filter-patient-retrieval: false
     ## Should the encounter fhir search query be filtered by admission date (all cases by disease related start reference date)? Must be disabled if outpatient cases do not have an end date.
-    # filter-encounter-by-date: false
+    # filter-resources-by-date: false
     ## Does a Reference exist from Condition to Case or only the reverse way from Encounter to Condition? This results in differences in the FHIR search queries.
     # use-encounter-condition-reference: true 
     ## Filter the patient (and thus also the encounter) retrieval to influenza positive patients only which will reduce the data load

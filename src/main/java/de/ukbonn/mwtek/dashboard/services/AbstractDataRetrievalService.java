@@ -108,8 +108,8 @@ public abstract class AbstractDataRetrievalService implements DataRetrievalServi
 
   @Getter @Setter private CustomGlobalConfiguration customGlobalConfiguration;
 
-  public Boolean getFilterEncounterByDate() {
-    return searchConfiguration.getFilterEncounterByDate();
+  public Boolean getFilterResourcesByDate() {
+    return searchConfiguration.getFilterResourcesByDate();
   }
 
   /** The loinc codes that are used in the ukb prediction model calculation. */

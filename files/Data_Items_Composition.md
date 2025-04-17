@@ -6,13 +6,13 @@ The following queries are used at the beginning of a run to determine the patien
 
 ### Retrieval input criteria
 
- 	1) [base]/Condition?code=U07.1&_pretty=false&_count=500 
-    2) [base]/Observation?code=94640-0,94306-8,96763-8,94500-6,96895-8,96741-4
+ 	1) [base]/Condition?code=U07.1&_pretty=false&date=ge2020-01-27&_count=500
+    2) [base]/Observation?code=94640-0,94306-8,96763-8,94500-6,96895-8,96741-4&date=ge2020-01-27
 
 ### Further data retrieval
 
     3) [base]/Patient?_id=[ids_from_1_and_2]
-    4) [base]/Encounter?subject=[ids_from_3]&date=gt2020-01-27
+    4) [base]/Encounter?subject=[ids_from_3]&date=ge2020-01-27
     5) [base]/Location?_id=[ids_from_4]
     6) [base]/Procedure?code=26763009,243147009,[...],19647005&subject=[ids_from_1_and_2]
 
@@ -113,13 +113,13 @@ The following queries are used at the beginning of a run to determine the patien
 
 ### Retrieval input criteria
 
- 	1) [base]/Condition?code=J10.0,J10.1,J10.8,J09&_pretty=false&_count=500 
-    2) [base]/Observation?code=34487-9,60416-5,49521-8,49531-7,61365-3,48509-4,29909-9,40982-1
+ 	1) [base]/Condition?code=J10.0,J10.1,J10.8,J09&_pretty=false&date=ge2022-09-01&_count=500 
+    2) [base]/Observation?code=34487-9,60416-5,49521-8,49531-7,61365-3,48509-4,29909-9,40982-1&date=ge2022-09-01
 
 ### Further data retrieval
 
     3) [base]/Patient?_id=[ids_from_1_and_2]
-    4) [base]/Encounter?subject=[ids_from_3]&date=gt2023-11-01
+    4) [base]/Encounter?subject=[ids_from_3]&date=ge2022-09-01
     5) [base]/Location?_id=[ids_from_4]
     6) [base]/Procedure?code=26763009,243147009,[...],19647005&subject=[ids_from_1_and_2]
 

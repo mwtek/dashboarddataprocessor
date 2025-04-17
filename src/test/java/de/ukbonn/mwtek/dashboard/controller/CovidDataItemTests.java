@@ -25,8 +25,10 @@ import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_AGE_MAXT
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_AGE_MAXTREATMENTLEVEL_NORMAL_WARD;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_AGE_MAXTREATMENTLEVEL_OUTPATIENT;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_GENDER;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_INPATIENT_GENDER;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_LENGTHOFSTAY_ICU_DEAD;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_MAXTREATMENTLEVEL;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_OUTPATIENT_GENDER;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_RESULTS;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_ZIPCODE;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CURRENT_AGE_MAXTREATMENTLEVEL_ICU;
@@ -108,6 +110,18 @@ public class CovidDataItemTests extends CovidInfluenzaDataItemTests {
   @DisplayName("Testing cumulative.gender")
   void testCumulativeGender() {
     assertCumulativeGender(COVID, CUMULATIVE_GENDER, 5, 1, 0);
+  }
+
+  @Test
+  @DisplayName("Testing cumulative.inpatient.gender")
+  void testCumulativeInpatientGender() {
+    assertCumulativeGender(COVID, CUMULATIVE_INPATIENT_GENDER, 4, 1, 0);
+  }
+
+  @Test
+  @DisplayName("Testing cumulative.outpatient.gender")
+  void testCumulativeOutpatientGender() {
+    assertCumulativeGender(COVID, CUMULATIVE_OUTPATIENT_GENDER, 1, 0, 0);
   }
 
   @Test

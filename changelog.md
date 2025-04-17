@@ -1,3 +1,39 @@
+# Release Notes - Version V0.5.4+update.9
+
+17/April/25
+
+## New Features
+
+No features were part of this version.
+
+## Improvements
+
+<div style='margin-left:30px;'>
+
+* Added unit tests for data-items `cumulative.outpatient.gender` and `cumulative.inpatient.gender`.
+* The `Observation` and `Condition` data retrieval will now use the kickoff date filter by default,
+  and there is also an additional date filter in the processing logic implemented now.
+
+</div> 
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* Renaming of the new `filter-encounter-by-date` to `filter-resources-by-date`.
+
+</div> 
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* Since V0.5.4+update.7, the `cumulative.gender` and `cumulative.inpatient.gender` showed the same
+  numbers.
+* Some influenza charts erroneously included data before the kick-off date.
+
+</div> 
+
 # Release Notes - Version V0.5.4+update.8
 
 10/April/25

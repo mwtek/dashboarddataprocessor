@@ -39,30 +39,61 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
   private static final String COUNT_EQUALS = "&_count=";
   private static final String DELIMITER = ",";
   public static final String SUMMARY_COUNT = "&_summary=count";
+  public static final String DATE_GE = "&date=ge";
+  public static final String CODE_PARAM = "code=";
+  public static final String PRETTY_FALSE_PARAM = "&_pretty=false";
+  public static final String CLASS_IMP = "&_class=IMP";
 
   public String getObservations(
       AbstractDataRetrievalService dataRetrievalService,
       Integer month,
       boolean summary,
       DataItemContext dataItemContext) {
-    String labPcrCodes = "";
-    String labVariantCodes = "";
+
+    // Start building the query string for the Observation resource
+    StringBuilder suffixBuilder = new StringBuilder("Observation?");
+
+    // Build query parameters based on the dataItemContext
     switch (dataItemContext) {
       case COVID -> {
-        labPcrCodes = String.join(DELIMITER, dataRetrievalService.getCovidLabPcrCodes());
-        labVariantCodes = String.join(DELIMITER, dataRetrievalService.getCovidLabVariantCodes());
+        // Join COVID PCR and Variant codes
+        String labPcrCodes = String.join(DELIMITER, dataRetrievalService.getCovidLabPcrCodes());
+        String labVariantCodes =
+            String.join(DELIMITER, dataRetrievalService.getCovidLabVariantCodes());
+
+        // Append the codes as a query parameter
+        suffixBuilder.append(CODE_PARAM).append(labPcrCodes);
+        if (!labVariantCodes.isBlank()) {
+          suffixBuilder.append(DELIMITER).append(labVariantCodes);
+        }
+
+        // Append the starting date filter for COVID observations
+        if (dataRetrievalService.getFilterResourcesByDate())
+          suffixBuilder.append(DATE_GE).append(getStartingDate(COVID));
       }
       case INFLUENZA -> {
-        labPcrCodes = String.join(DELIMITER, dataRetrievalService.getInfluenzaLabPcrCodes());
+        // Join Influenza PCR codes
+        String labPcrCodes = String.join(DELIMITER, dataRetrievalService.getInfluenzaLabPcrCodes());
+
+        // Append the codes as a query parameter
+        suffixBuilder.append(CODE_PARAM).append(labPcrCodes);
+
+        // Append the starting date filter for Influenza observations
+        if (dataRetrievalService.getFilterResourcesByDate())
+          suffixBuilder.append(DATE_GE).append(getStartingDate(INFLUENZA));
       }
     }
-    return "Observation?code="
-        + labPcrCodes
-        + (!labVariantCodes.isBlank() ? (DELIMITER + labVariantCodes) : "")
-        + "&_pretty=false"
-        + COUNT_EQUALS
-        + dataRetrievalService.getBatchSize()
-        + (summary ? SUMMARY_COUNT : "");
+    // Append additional fixed parameters
+    suffixBuilder
+        .append(PRETTY_FALSE_PARAM)
+        .append(COUNT_EQUALS)
+        .append(dataRetrievalService.getBatchSize());
+    // Optionally append the summary parameter
+    if (summary) {
+      suffixBuilder.append(SUMMARY_COUNT);
+    }
+    // Return the final constructed query string
+    return suffixBuilder.toString();
   }
 
   public String getConditions(
@@ -70,20 +101,49 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
       Integer month,
       boolean summary,
       DataItemContext dataItemContext) {
-    String icdCodes = "";
+
+    // Start building the query string for the Condition resource
+    StringBuilder suffixBuilder = new StringBuilder("Condition?");
+
+    // Build the ICD code list and add date filter depending on the dataItemContext
     switch (dataItemContext) {
-      case COVID -> icdCodes = String.join(DELIMITER, dataRetrievalService.getCovidIcdCodes());
-      case INFLUENZA ->
-          icdCodes = String.join(DELIMITER, dataRetrievalService.getInfluenzaIcdCodes());
-      case KIDS_RADAR ->
-          icdCodes = String.join(DELIMITER, dataRetrievalService.getKidsRadarIcdCodesAll());
+      case COVID -> {
+        // Join COVID ICD codes
+        String icdCodes = String.join(DELIMITER, dataRetrievalService.getCovidIcdCodes());
+        suffixBuilder.append(CODE_PARAM).append(icdCodes);
+
+        // Append the starting date filter for COVID conditions
+        if (dataRetrievalService.getFilterResourcesByDate())
+          suffixBuilder.append(DATE_GE).append(getStartingDate(COVID));
+      }
+      case INFLUENZA -> {
+        // Join Influenza ICD codes
+        String icdCodes = String.join(DELIMITER, dataRetrievalService.getInfluenzaIcdCodes());
+        suffixBuilder.append(CODE_PARAM).append(icdCodes);
+
+        // Append the starting date filter for Influenza conditions
+        if (dataRetrievalService.getFilterResourcesByDate())
+          suffixBuilder.append(DATE_GE).append(getStartingDate(INFLUENZA));
+      }
+      case KIDS_RADAR -> {
+        // Join KidsRadar ICD codes
+        String icdCodes = String.join(DELIMITER, dataRetrievalService.getKidsRadarIcdCodesAll());
+        suffixBuilder.append(CODE_PARAM).append(icdCodes);
+      }
     }
-    return "Condition?code="
-        + icdCodes
-        + "&_pretty=false"
-        + COUNT_EQUALS
-        + dataRetrievalService.getBatchSize()
-        + (summary ? SUMMARY_COUNT : "");
+    // Append additional fixed parameters
+    suffixBuilder
+        .append(PRETTY_FALSE_PARAM)
+        .append(COUNT_EQUALS)
+        .append(dataRetrievalService.getBatchSize());
+
+    // Optionally append the summary parameter
+    if (summary) {
+      suffixBuilder.append(SUMMARY_COUNT);
+    }
+
+    // Return the final constructed query string
+    return suffixBuilder.toString();
   }
 
   /**
@@ -138,15 +198,12 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
      streamlined, a "&location-period=gt2020-27-01" is added on demand to the fhir search, as
      we cannot assume that every location stores the transfer history in the Encounter
      resource.*/
-    if (dataRetrievalService.getFilterEncounterByDate()) {
+    if (dataRetrievalService.getFilterResourcesByDate()) {
       switch (dataItemContext) {
-        case COVID -> suffixBuilder.append("&date=gt").append(getStartingDate(COVID));
-        case INFLUENZA -> suffixBuilder.append("&date=gt").append(getStartingDate(INFLUENZA));
+        case COVID -> suffixBuilder.append(DATE_GE).append(getStartingDate(COVID));
+        case INFLUENZA -> suffixBuilder.append(DATE_GE).append(getStartingDate(INFLUENZA));
         case KIDS_RADAR ->
-            suffixBuilder
-                .append("&date=gt")
-                .append(getStartingDate(KIDS_RADAR))
-                .append("&_class=IMP");
+            suffixBuilder.append(DATE_GE).append(getStartingDate(KIDS_RADAR)).append(CLASS_IMP);
       }
     }
     suffixBuilder.append(COUNT_EQUALS).append(dataRetrievalService.getBatchSize());
@@ -169,15 +226,12 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
      streamlined, a "&location-period=gt2020-27-01" is added on demand to the fhir search, as
      we cannot assume that every location stores the transfer history in the Encounter
      resource.*/
-    if (dataRetrievalService.getFilterEncounterByDate()) {
+    if (dataRetrievalService.getFilterResourcesByDate()) {
       switch (dataItemContext) {
-        case COVID -> suffixBuilder.append("&date=gt").append(getStartingDate(COVID));
-        case INFLUENZA -> suffixBuilder.append("&date=gt").append(getStartingDate(INFLUENZA));
+        case COVID -> suffixBuilder.append(DATE_GE).append(getStartingDate(COVID));
+        case INFLUENZA -> suffixBuilder.append(DATE_GE).append(getStartingDate(INFLUENZA));
         case KIDS_RADAR ->
-            suffixBuilder
-                .append("&date=gt")
-                .append(getStartingDate(KIDS_RADAR))
-                .append("&_class=IMP");
+            suffixBuilder.append(DATE_GE).append(getStartingDate(KIDS_RADAR)).append(CLASS_IMP);
       }
     }
     suffixBuilder.append(COUNT_EQUALS).append(dataRetrievalService.getBatchSize());
