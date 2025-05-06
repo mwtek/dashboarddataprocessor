@@ -1,3 +1,28 @@
+# Release Notes - Version V0.5.4+update.10
+
+06/May/25
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* The support for the `Acribis` project just started. To activate the generation of the first two
+  data items, `global.generate-acribis-data` must be set to `true` in the `application.yaml`.
+
+</div> 
+
+## Improvements
+
+No improvements were part of this version.
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* Updated the data set description PDF.
+
+</div> 
+
 # Release Notes - Version V0.5.4+update.9
 
 17/April/25

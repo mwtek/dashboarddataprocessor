@@ -155,6 +155,11 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
   }
 
   @Override
+  public String getConsents(AbstractDataRetrievalService dataRetrievalService) {
+    return "kdsconsent?versions=1.6,1.7.2,acribis&hideResourceTypes=Encounter";
+  }
+
+  @Override
   public String getLocationsPost(
       AbstractDataRetrievalService dataRetrievalService, List<?> locationIdList) {
     return "";

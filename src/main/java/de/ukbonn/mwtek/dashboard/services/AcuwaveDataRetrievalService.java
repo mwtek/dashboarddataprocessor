@@ -34,6 +34,7 @@ import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.logWarningForUnexpect
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.encounterIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.locationIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.patientIdsCouldBeFound;
+import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.addValidConsentEntries;
 import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.removeNotNeededAttributes;
 import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.KJP;
 import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.RSV;
@@ -60,6 +61,7 @@ import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models
 import de.ukbonn.mwtek.utilities.fhir.mapping.kdscase.valuesets.KdsEncounterFixedValues;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbConsent;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation;
@@ -246,9 +248,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                       }
                     });
               } catch (Exception e) {
-                logger.error(
-                    "Retrieval condition resources: Unable to build a json module chain: {}",
-                    e.getMessage());
+                logErrorRetrieval("Condition", e);
               }
             });
     return new ArrayList<>(setConditions);
@@ -308,9 +308,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                     });
 
               } catch (Exception e) {
-                logger.error(
-                    "Retrieval patient resources: Unable to build a json module chain: {}",
-                    e.getMessage());
+                logErrorRetrieval("Patient", e);
               }
             });
     return new ArrayList<>(patientsOutput);
@@ -360,9 +358,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                         + " of a location resource is null): {}",
                     e.getMessage());
               } catch (Exception e) {
-                logger.error(
-                    "Retrieval encounter resources: Unable to build a json module chain: {}",
-                    e.getMessage());
+                logErrorRetrieval("Encounter", e);
               }
             });
 
@@ -510,9 +506,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                         }
                       });
                 } catch (Exception e) {
-                  logger.error(
-                      "Retrieval procedure resources: Unable to build a json module chain: {}",
-                      e.getMessage());
+                  logErrorRetrieval("Procedure", e);
                 }
               });
     } else {
@@ -556,12 +550,34 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                       }
                     });
               } catch (Exception e) {
-                logger.error(
-                    "Retrieval location resources: Unable to build a json module chain: {}",
-                    e.getMessage());
+                logErrorRetrieval("Location", e);
               }
             });
     return new ArrayList<>(setLocations);
+  }
+
+  private void logErrorRetrieval(String resourceType, Exception e) {
+    logger.error(
+        "Retrieval {} resources: Unable to build a json module chain: {}",
+        resourceType,
+        e.getMessage());
+  }
+
+  @Override
+  public List<UkbConsent> getConsents() {
+    Set<UkbConsent> consents = ConcurrentHashMap.newKeySet();
+    try {
+      List<Bundle.BundleEntryComponent> listTemp =
+          this.getSearchService()
+              .getBundleData(
+                  new AcuwaveQuerySuffixBuilder().getConsents(this), HttpMethod.GET, null);
+      listTemp.forEach(
+          bundleEntry ->
+              addValidConsentEntries(consents, patientIds, ServerTypeEnum.ACUWAVE, bundleEntry));
+    } catch (Exception e) {
+      logErrorRetrieval("Retrieval location resources: Unable to build a json module chain: {}", e);
+    }
+    return new ArrayList<>(consents);
   }
 
   public final ServerTypeEnum getServerType() {
@@ -865,9 +881,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                       }
                     });
               } catch (Exception e) {
-                logger.error(
-                    "Error while getting and processing the body weight resources: {}",
-                    e.getMessage());
+                logErrorRetrieval(
+                    "Error while getting and processing the body weight resources: {}", e);
               }
             });
 
@@ -974,9 +989,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                       }
                     });
               } catch (Exception e) {
-                logger.error(
-                    "Error while getting and processing the urine output resources: {}",
-                    e.getMessage());
+                logErrorRetrieval(
+                    "Error while getting and processing the urine output resources: {}", e);
               }
             });
 

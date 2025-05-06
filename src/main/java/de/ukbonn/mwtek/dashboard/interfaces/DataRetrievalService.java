@@ -23,6 +23,7 @@ import de.ukbonn.mwtek.dashboard.exceptions.SearchException;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbConsent;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation;
@@ -120,6 +121,13 @@ public interface DataRetrievalService {
    * @return A list of all requested FHIR location resources.
    */
   List<Location> getLocations();
+
+  /**
+   * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbConsent} resources.
+   *
+   * @return A list of all requested FHIR location resources.
+   */
+  List<UkbConsent> getConsents();
 
   /**
    * Retrieval of the used {@link ServerTypeEnum server type}.

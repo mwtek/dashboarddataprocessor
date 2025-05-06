@@ -52,6 +52,7 @@ import de.ukbonn.mwtek.dashboard.misc.ResourceHandler;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbConsent;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation;
@@ -69,6 +70,7 @@ import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Encounter.EncounterStatus;
 import org.hl7.fhir.r4.model.Enumerations;
+import org.hl7.fhir.r4.model.Enumerations.FHIRAllTypes;
 import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
@@ -681,6 +683,43 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
               });
         });
     return new ArrayList<>(setLocations);
+  }
+
+  @Override
+  public List<UkbConsent> getConsents() {
+    Bundle initialBundle =
+        this.getSearchService()
+            .getInitialBundle(fhirServerQuerySuffixBuilder.getConsents(this), GET, null);
+    List<UkbConsent> consents = new ArrayList<>();
+    int counter = 0;
+    int resourcesTotal = initialBundle.getTotal();
+
+    // Servers like the Blaze do not support the bundle.total, so we retrieve it with an
+    // additional fhir search query
+    if (!initialBundle.hasTotal()) {
+      resourcesTotal =
+          this.getSearchService()
+              .getInitialBundle(fhirServerQuerySuffixBuilder.getConsents(this), GET, null)
+              .getTotal();
+    }
+
+    while (initialBundle.hasLink() && initialBundle.getLink(NEXT) != null) {
+      // The handling differs, whether the output is condition resources only or the encounter
+      // data needs to be retrieved aswell.
+      // -> Then we need to gather all resources first and make encounter id processing afterwards.
+      // Parsing the retrieved resources and reading out the patients and Encounter Ids for later
+      // data queries.
+      ResourceHandler.handleConsentEntries(
+          initialBundle, consents, patientIds, this.getServerType());
+      initialBundle =
+          this.getSearchService()
+              .getBundlePart(getNextUrl(fhirServerRestConfiguration, initialBundle), GET);
+      logStatusDataRetrievalSequential(
+          resourcesTotal, counter++, FHIRAllTypes.CONSENT.getDisplay());
+    }
+    // no next link existent? -> just add the results to the lists and go further on
+    ResourceHandler.handleConsentEntries(initialBundle, consents, patientIds, this.getServerType());
+    return consents;
   }
 
   /**

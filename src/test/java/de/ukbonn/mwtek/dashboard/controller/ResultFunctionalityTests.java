@@ -19,6 +19,7 @@
 package de.ukbonn.mwtek.dashboard.controller;
 
 import static de.ukbonn.mwtek.dashboard.examples.InputCodeSettingsExampleData.getExampleData;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.ACRIBIS;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.COVID;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.INFLUENZA;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR;
@@ -32,12 +33,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.uhn.fhir.context.FhirContext;
 import de.ukbonn.mwtek.dashboard.examples.GlobalConfigurationExamples;
+import de.ukbonn.mwtek.dashboardlogic.AcribisDataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.DataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.KidsRadarDataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbConsent;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation;
@@ -52,6 +55,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Condition;
+import org.hl7.fhir.r4.model.Consent;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Observation;
@@ -71,8 +75,10 @@ public class ResultFunctionalityTests {
   private static final List<UkbObservation> ukbObservations = new ArrayList<>();
   private static final List<UkbProcedure> ukbProcedures = new ArrayList<>();
   private static final List<UkbLocation> ukbLocations = new ArrayList<>();
+  private static final List<UkbConsent> ukbConsents = new ArrayList<>();
   public static final String SAMPLE_FILE_COVID = "./samples/SampleBundle_Covid.json";
   public static final String SAMPLE_FILE_KIDS_RADAR = "./samples/SampleBundle_KiRadar.json";
+  public static final String SAMPLE_FILE_ACRIBIS = "./samples/SampleBundle_Acribis.json";
   static List<DiseaseDataItem> sampleData;
 
   @BeforeAll
@@ -95,7 +101,11 @@ public class ResultFunctionalityTests {
 
     // Parse all files and collect data
     for (String sampleFile :
-        List.of(SAMPLE_FILE_COVID, SAMPLE_FILE_INFLUENZA, SAMPLE_FILE_KIDS_RADAR)) {
+        List.of(
+            SAMPLE_FILE_COVID,
+            SAMPLE_FILE_INFLUENZA,
+            SAMPLE_FILE_KIDS_RADAR,
+            SAMPLE_FILE_ACRIBIS)) {
       parseSampleFile(sampleFile);
 
       // Determine the appropriate generator based on the file
@@ -110,6 +120,9 @@ public class ResultFunctionalityTests {
                 ukbEncounters,
                 ukbProcedures,
                 ukbLocations);
+      } else if (sampleFile.equals(SAMPLE_FILE_ACRIBIS)) {
+        // Use the KidsRadarDataItemGenerator for KIDS_RADAR
+        generator = new AcribisDataItemGenerator(ukbConsents);
       } else {
         // Use the regular DataItemGenerator for COVID and INFLUENZA
         generator =
@@ -144,6 +157,7 @@ public class ResultFunctionalityTests {
       case SAMPLE_FILE_COVID -> COVID;
       case SAMPLE_FILE_INFLUENZA -> INFLUENZA;
       case SAMPLE_FILE_KIDS_RADAR -> KIDS_RADAR;
+      case SAMPLE_FILE_ACRIBIS -> ACRIBIS;
       default -> throw new IllegalArgumentException("Unknown sample file: " + sampleFile);
     };
   }
@@ -179,6 +193,8 @@ public class ResultFunctionalityTests {
           ukbProcedures.add((UkbProcedure) ResourceConverter.convert(procedure));
         } else if (resource instanceof Location location) {
           ukbLocations.add((UkbLocation) ResourceConverter.convert(location));
+        } else if (resource instanceof Consent consent) {
+          ukbConsents.add((UkbConsent) ResourceConverter.convert(consent));
         }
       }
     } catch (IOException e) {
@@ -193,6 +209,7 @@ public class ResultFunctionalityTests {
     ukbObservations.clear();
     ukbProcedures.clear();
     ukbConditions.clear();
+    ukbConsents.clear();
   }
 
   @Test

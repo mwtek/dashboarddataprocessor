@@ -33,6 +33,7 @@ import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
 import de.ukbonn.mwtek.utilities.fhir.misc.LocationTools;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbConsent;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient;
@@ -47,9 +48,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Condition;
+import org.hl7.fhir.r4.model.Consent;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.Element;
 import org.hl7.fhir.r4.model.Encounter;
@@ -403,6 +406,68 @@ public class ResourceHandler {
               }
             });
     return new ArrayList<>(coreBaseDataItems);
+  }
+
+  public static void handleConsentEntries(
+      Bundle currentBundle,
+      List<UkbConsent> consents,
+      Set<String> outputPatientIds,
+      ServerTypeEnum serverType) {
+    currentBundle
+        .getEntry()
+        .forEach(
+            entry -> {
+              addValidConsentEntries(consents, outputPatientIds, serverType, entry);
+            });
+  }
+
+  public static void addValidConsentEntries(
+      Collection<UkbConsent> consents,
+      Set<String> outputPatientIds,
+      ServerTypeEnum serverType,
+      BundleEntryComponent entry) {
+    if (entry.getResource() instanceof Consent consent) {
+      try {
+        UkbConsent ukbConsent = (UkbConsent) ResourceConverter.convert(consent, true);
+        if (isConsentValid(ukbConsent)) {
+          storeConsentPatientKeys(ukbConsent, outputPatientIds, serverType);
+          consents.add(ukbConsent);
+        } else {
+          log.debug("Consent usage not allowed for consent id: {}", ukbConsent.getId());
+        }
+      } catch (Exception ex) {
+        logMissingCoreAttribute(consent, ex);
+      }
+    }
+  }
+
+  private static void logMissingCoreAttribute(Consent consent, Exception ex) {
+    log.warn(
+        "Resource {} not usable since {} attribute is missing.", consent.getId(), ex.getMessage());
+  }
+
+  private static boolean isConsentValid(UkbConsent ukbConsent) {
+    // Prefiltering to consents that gave permission to use data
+    return ukbConsent.isPatDataUsageAllowed() || ukbConsent.isAcribisConsentAllowed();
+  }
+
+  public static void storeConsentPatientKeys(
+      Consent consent, Set<String> outputPatientIds, ServerTypeEnum serverType) {
+    try {
+      // fhir server usually store the references in the "resourceType/1234" format during import
+      // Until this referencing process (which may never occur), the acuwave server stores its
+      // business identifier in the tag 'identifier'
+      switch (serverType) {
+        case FHIR -> {
+          outputPatientIds.add(extractReferenceId(consent.getPatient()));
+        }
+        case ACUWAVE -> {
+          outputPatientIds.add(consent.getPatient().getIdentifier().getValue());
+        }
+      }
+    } catch (Exception ex) {
+      logger.warn("Unable to retrieve the patient ID for the consent ID: {}", consent.getId());
+    }
   }
 
   /**

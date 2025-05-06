@@ -55,6 +55,11 @@ Currently, the following sample bundles exist with the following content charact
           other-psychological-disorders')
         * A patient with a J21.0 (acute-rsv-bronchiolitis) and J12.1 (rsv-pneumonia) condition
         * A patient who got a rsv diagnosis (J21.0) and also a KJP diagnosis (F94.1).
+* <a href="./SampleBundle_Acribis.json" target="_blank">SampleBundle_Acribis.json</a>
+    * Bundle of 3 patients with 6 consent formulars in total.
+        * 2 Patients with 2 consents forms each (valid main + valid acribis form with data usage
+          permission).
+        * One patient with a declined main consent form.
 
 More bundles with sample data will surely follow in the future.
 

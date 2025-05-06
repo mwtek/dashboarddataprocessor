@@ -17,9 +17,12 @@
  */
 package de.ukbonn.mwtek.dashboard.misc;
 
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.ACRIBIS;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.COVID;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.INFLUENZA;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR;
+import static de.ukbonn.mwtek.utilities.enums.ConsentFixedValues.CONSENT_CATEGORY_CODE;
+import static de.ukbonn.mwtek.utilities.enums.ConsentFixedValues.CONSENT_CATEGORY_SYSTEM;
 
 import de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration;
 import de.ukbonn.mwtek.dashboard.interfaces.DataSourceType;
@@ -43,6 +46,7 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
   public static final String CODE_PARAM = "code=";
   public static final String PRETTY_FALSE_PARAM = "&_pretty=false";
   public static final String CLASS_IMP = "&_class=IMP";
+  public static final String PIPE = "|";
 
   public String getObservations(
       AbstractDataRetrievalService dataRetrievalService,
@@ -296,7 +300,7 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
    */
   private static String getProcedureCodesAsString(
       AbstractDataRetrievalService dataRetrievalService, String systemUrl) {
-    Function<String, String> addSystemUrlPrefix = code -> systemUrl + "|" + code;
+    Function<String, String> addSystemUrlPrefix = code -> systemUrl + PIPE + code;
 
     String ventilationCodes =
         dataRetrievalService.getProcedureVentilationCodes().stream()
@@ -318,6 +322,16 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
         + StringUtils.join(locationIdList, ',')
         + COUNT_EQUALS
         + dataRetrievalService.getBatchSize();
+  }
+
+  @Override
+  public String getConsents(AbstractDataRetrievalService dataRetrievalService) {
+    return "Consent?category="
+        + CONSENT_CATEGORY_SYSTEM
+        + PIPE
+        + CONSENT_CATEGORY_CODE
+        + DATE_GE
+        + getStartingDate(ACRIBIS);
   }
 
   @Override

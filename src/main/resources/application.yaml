@@ -61,6 +61,7 @@ global:
   generate-influenza-data: false
   generate-kids-radar-data: false
   generate-ukb-renal-replacement-model-data: false
+  generate-acribis-data: false
   ## Option to overwrite the assignment from the value set here: https://simplifier.net/medizininformatikinitiative-modullabor/valuesetqualitativelaborergebnisse
   qualitative-lab-codes:
     positive: 10828004,260373001,52101004
@@ -198,6 +199,9 @@ data-items:
     kira.rsv.cumulative.diags.gender: false
     kira.rsv.cumulative.diags.lengthofstay: false
     kira.rsv.timeline.diags.occurrence: false
+    ## Acribis related items
+    acr.current.recruitment: false
+    acr.timeline.recruitment: false
     ## internal items of the ukb
     current.treatmentlevel.crosstab: true
   ## Configure individual thresholds for specific data elements.

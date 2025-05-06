@@ -25,7 +25,7 @@ number (`Encounter.identifier.value` while `Encounter.identifier.type.coding.cod
 in all encounters, or alternatively can be navigated through the hierarchy via
 `Encounter.partOf` (not recommended due to inefficiency).
 
-| Itemname                             | FHIR attributes                                                                         | Forced Condition                             | Separation criterium                                                                                                                                                                                                                                                              |
+| Item name                            | FHIR attributes                                                                         | Forced Condition                             | Separation criterium                                                                                                                                                                                                                                                              |
 |--------------------------------------|-----------------------------------------------------------------------------------------|----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `current.treatmentlevel`             | Encounter.location                                                                      |                                              | referenced `Location.type` = `ICU`                                                                                                                                                                                                                                                |
 |                                      | Encounter.status                                                                        | `IN-PROGRESS`                                |                                                                                                                                                                                                                                                                                   |
@@ -127,7 +127,7 @@ The following queries are used at the beginning of a run to determine the patien
 
 Most of the items just rely on data with at least one positive influenza lab finding or diagnosis.
 
-| Itemname                                  | FHIR attributes                                                                         | Forced Condition                                                                         | Separation criterium                                                                                                                                                                                                                                                              |
+| Item name                                 | FHIR attributes                                                                         | Forced Condition                                                                         | Separation criterium                                                                                                                                                                                                                                                              |
 |-------------------------------------------|-----------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `infl.current.treatmentlevel`             | Encounter.location                                                                      |                                                                                          | referenced `Location.type` = `ICU`                                                                                                                                                                                                                                                |
 |                                           | Encounter.status                                                                        | `IN-PROGRESS`                                                                            |                                                                                                                                                                                                                                                                                   |
@@ -234,7 +234,7 @@ checks, which are also carried out again in the items due to clustering, the ana
 condition diagnosis resources is mandatory. The necessary attributes are `Condition.recordedDate`
 and `Condition.code.coding.code`.
 
-| Itemname                                 | FHIR attributes            | Forced Condition      | Separation criterium |
+| Item name                                | FHIR attributes            | Forced Condition      | Separation criterium |
 |------------------------------------------|----------------------------|-----------------------|----------------------|
 | `kira.kjp.cumulative.diags.zipcode`      | Patient.address.postalCode |                       |                      |
 |                                          | Patient.address.country    |                       | `DE` or not          |
@@ -256,3 +256,45 @@ and `Condition.code.coding.code`.
 | `kira.rsv.cumulative.diags.lengthofstay` | Encounter.type             | `Einrichtungskontakt` |                      |
 |                                          | Encounter.period           |                       |                      |
 | `kira.rsv.timeline.diags.occurrence`     | Encounter.period.start     |                       |                      |
+
+# Acribis
+
+## General queries
+
+The acribis patient pool is determined on the basis of the consent resources.
+
+### Retrieval input criteria
+
+The codes are read dynamically from the `application.yaml`, all entries
+under `global.inputcodes.kids-radar.kjp` and `global.inputcodes.kids-radar.rsv` are read.
+The default list can be seen in the data set description.
+
+    1) [base]/Consent?category=https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category|2.16.840.1.113883.3.1937.777.24.2.184&date=ge2024-10-01
+
+### Further data retrieval
+
+    Not implemented yet.
+
+## Data items composition
+
+The following attributes are checked to detect valid (acribis) consent resources:
+
+| Resource.attribute                         | Forced Condition                                                                                                           | Separation criterium |
+|--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|----------------------|
+| `Consent.category[0].system`               | `http://loinc.org`                                                                                                         |                      |
+| `Consent.category[0].code`                 | `57016-8`                                                                                                                  |                      |
+| `Consent.category[1].system`               | `https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category`                |                      |
+| `Consent.category[1].code`                 | `2.16.840.1.113883.3.1937.777.24.2.184`                                                                                    |                      |
+| `Consent.patient`                          |                                                                                                                            |                      |
+| `Consent.policy`                           | `urn:oid:2.16.840.1.113883.3.1937.777.24.2.1790` (main form) or `urn:oid:2.16.840.1.113883.3.1937.777.24.2.4031` (acribis) |                      |
+| `Consent.provision.provision.type`         | `PERMIT`                                                                                                                   |                      |
+| `Consent.provision.provision.period.start` | `>= 01.10.2024`                                                                                                            |                      |
+| `Consent.provision.provision.code.system`  | `urn:oid:2.16.840.1.113883.3.1937.777.24.5.3`                                                                              |                      |
+| `Consent.provision.provision.code.code`    | `2.16.840.1.113883.3.1937.777.24.5.3.57`                                                                                   |                      |
+
+If additional special checks exist within the data items, these are listed here:
+
+| Item name                  | FHIR attributes                          | Forced Condition | Separation criterium |
+|----------------------------|------------------------------------------|------------------|----------------------|
+| `acr.current.recruitment`  |                                          |                  |                      |
+| `acr.timeline.recruitment` | Consent.provision.provision.period.start |                  |                      |

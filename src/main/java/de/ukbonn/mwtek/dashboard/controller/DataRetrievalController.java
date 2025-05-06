@@ -18,6 +18,7 @@
 package de.ukbonn.mwtek.dashboard.controller;
 
 import static de.ukbonn.mwtek.dashboard.controller.UkbModelController.generateUkbModelData;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.ACRIBIS;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.COVID;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.INFLUENZA;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR;
@@ -93,7 +94,7 @@ public class DataRetrievalController {
 
   public static final String WORKFLOW_ABORTED = "Workflow aborted: ";
   public static final String CURRENT_DATASET_VERSION = "0.5.4";
-  public static final String CURRENT_DDP_VERSION = "0.5.4+update.9";
+  public static final String CURRENT_DDP_VERSION = "0.5.4+update.10";
   public static final String FILE_GENERATOR = "ddp";
   Logger logger = LoggerFactory.getLogger(DashboardApplication.class);
 
@@ -168,6 +169,10 @@ public class DataRetrievalController {
                 .getCustomGlobalConfiguration()
                 .getGenerateUkbRenalReplacementModelData()
             || isScopeActivatedViaParameters(scopes, UKB_MODEL);
+
+    boolean generateAcribisData =
+        dataRetrievalService.getCustomGlobalConfiguration().getGenerateAcribisData()
+            || isScopeActivatedViaParameters(scopes, ACRIBIS);
 
     // If custom codes are set in the yaml file -> update the default values.
     InputCodeSettings inputCodeSettings =
@@ -255,6 +260,26 @@ public class DataRetrievalController {
         }
       }
 
+      if (generateAcribisData) {
+        dataItems.addAll(
+            AcribisDataController.generateData(
+                ACRIBIS,
+                dataRetrievalService,
+                reportConfiguration,
+                processTimer,
+                customGlobalConfiguration,
+                variantConfiguration,
+                inputCodeSettings,
+                qualitativeLabCodesSettings,
+                exclDataItems,
+                result));
+        // End workflow if no resources were found
+        if (LoggingHelper.gotWorkflowAborted(ACRIBIS)) {
+          return new ResponseEntity<>(
+              LoggingHelper.getAbortMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+      }
+
       ArrayNode dataItemsArrayNode = mapper.valueToTree(dataItems);
       result.putArray("dataitems").addAll(dataItemsArrayNode);
       result.put("provider", this.providerService.provConf.getName());
@@ -327,6 +352,7 @@ public class DataRetrievalController {
       case KIDS_RADAR_KJP -> lowerCaseScopes.contains("kjp");
       case KIDS_RADAR_RSV -> lowerCaseScopes.contains("rsv");
       case UKB_MODEL -> lowerCaseScopes.contains("ukbmodel");
+      case ACRIBIS -> lowerCaseScopes.contains("acribis");
     };
   }
 

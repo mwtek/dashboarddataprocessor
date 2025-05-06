@@ -20,6 +20,7 @@ package de.ukbonn.mwtek.dashboard.interfaces;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboard.services.AcuwaveDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
+import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.Acribis;
 import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.Covid;
 import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.Influenza;
 import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.KidsRadar;
@@ -119,6 +120,8 @@ public interface QuerySuffixBuilder {
    */
   String getLocations(AbstractDataRetrievalService dataRetrievalService, List<?> locationIdList);
 
+  String getConsents(AbstractDataRetrievalService dataRetrievalService);
+
   String getLocationsPost(
       AbstractDataRetrievalService dataRetrievalService, List<?> locationIdList);
 
@@ -169,6 +172,13 @@ public interface QuerySuffixBuilder {
             + addLeadingZeroIfNeeded(KidsRadar.QUALIFYING_MONTH)
             + "-"
             + addLeadingZeroIfNeeded(KidsRadar.QUALIFYING_DAY);
+      }
+      case ACRIBIS -> {
+        return Acribis.QUALIFYING_YEAR
+            + "-"
+            + addLeadingZeroIfNeeded(Acribis.QUALIFYING_MONTH)
+            + "-"
+            + addLeadingZeroIfNeeded(Acribis.QUALIFYING_DAY);
       }
     }
     // Default
