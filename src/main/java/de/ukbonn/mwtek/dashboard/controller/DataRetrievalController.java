@@ -94,8 +94,15 @@ public class DataRetrievalController {
 
   public static final String WORKFLOW_ABORTED = "Workflow aborted: ";
   public static final String CURRENT_DATASET_VERSION = "0.5.4";
-  public static final String CURRENT_DDP_VERSION = "0.5.4+update.10";
+  public static final String CURRENT_DDP_VERSION = "0.5.4+update.11";
   public static final String FILE_GENERATOR = "ddp";
+  public static final String EXPORT_TIMESTAMP = "exporttimestamp";
+  public static final String DDP_VERSION = "ddp_version";
+  public static final String FILE_GENERATED_BY = "file_generated_by";
+  public static final String AUTHOR = "author";
+  public static final String DASHBOARD_DATASET_VERSION = "dashboard_dataset_version";
+  public static final String PROVIDER = "provider";
+  public static final String DATA_ITEMS = "dataitems";
   Logger logger = LoggerFactory.getLogger(DashboardApplication.class);
 
   private final AcuwaveSearchService acuwaveSearchService;
@@ -281,13 +288,13 @@ public class DataRetrievalController {
       }
 
       ArrayNode dataItemsArrayNode = mapper.valueToTree(dataItems);
-      result.putArray("dataitems").addAll(dataItemsArrayNode);
-      result.put("provider", this.providerService.provConf.getName());
-      result.put("dashboard_dataset_version", CURRENT_DATASET_VERSION);
-      result.put("author", this.providerService.provConf.getAuthor());
-      result.put("file_generated_by", FILE_GENERATOR);
-      result.put("ddp_version", CURRENT_DDP_VERSION);
-      result.put("exporttimestamp", DateTools.getCurrentUnixTime());
+      result.putArray(DATA_ITEMS).addAll(dataItemsArrayNode);
+      result.put(PROVIDER, this.providerService.provConf.getName());
+      result.put(DASHBOARD_DATASET_VERSION, CURRENT_DATASET_VERSION);
+      result.put(AUTHOR, this.providerService.provConf.getAuthor());
+      result.put(FILE_GENERATED_BY, FILE_GENERATOR);
+      result.put(DDP_VERSION, CURRENT_DDP_VERSION);
+      result.put(EXPORT_TIMESTAMP, DateTools.getCurrentUnixTime());
 
       byte[] resultBuffer = result.toString().getBytes(StandardCharsets.UTF_8);
       this.resultSize = resultBuffer.length;
@@ -295,30 +302,22 @@ public class DataRetrievalController {
 
       return new ResponseEntity<>(result.toString(), HttpStatus.OK);
     } catch (SearchException ex) {
-      // Log the error message with more information
-      logger.error(WORKFLOW_ABORTED + ex.getMessage());
-      return new ResponseEntity<>(
-          "Error occurred while requesting data:\n\n " + ex.getMessage(),
-          HttpStatus.INTERNAL_SERVER_ERROR);
+      return handleError(
+          ex, "Error occurred while requesting data:", HttpStatus.INTERNAL_SERVER_ERROR);
     } catch (HttpClientErrorException ex) {
       // Wrong credentials
-      logger.error(WORKFLOW_ABORTED + ex.getMessage());
-      return new ResponseEntity<>(
-          "Connection to the FHIR server failed:\n\n " + ex.getMessage(), ex.getStatusCode());
+      return handleError(ex, "Connection to the FHIR server failed:", ex.getStatusCode());
     } catch (HttpServerErrorException ex) {
       // Server unavailable
-      logger.error(WORKFLOW_ABORTED + ex.getMessage());
-      return new ResponseEntity<>(
-          "Error in the data retrieval from the FHIR server:\n\n " + ex.getMessage(),
+      return handleError(
+          ex,
+          "Error in the data retrieval from the FHIR server:",
           HttpStatus.valueOf(ex.getRawStatusCode()));
     } catch (ResourceAccessException ex) {
-      logger.error(WORKFLOW_ABORTED + ex.getMessage());
-      return new ResponseEntity<>(
-          "Connection to the FHIR/Acuwave server failed:\n\n " + ex.getMessage(),
-          HttpStatus.SERVICE_UNAVAILABLE);
+      return handleError(
+          ex, "Connection to the FHIR/Acuwave server failed:", HttpStatus.SERVICE_UNAVAILABLE);
     } catch (Exception ex) {
-      logger.error(WORKFLOW_ABORTED + ex.getMessage());
-      return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+      return handleError(ex, "An unexpected error occurred:", HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -373,5 +372,10 @@ public class DataRetrievalController {
               this.fhirServerRestConfiguration);
     }
     return dataRetrievalService;
+  }
+
+  private ResponseEntity<String> handleError(Exception ex, String errorMessage, HttpStatus status) {
+    logger.error(WORKFLOW_ABORTED, ex); // Log the exception stack trace
+    return new ResponseEntity<>(errorMessage + "\n\n" + ex.getMessage(), status);
   }
 }

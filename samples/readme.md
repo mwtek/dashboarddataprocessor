@@ -56,10 +56,16 @@ Currently, the following sample bundles exist with the following content charact
         * A patient with a J21.0 (acute-rsv-bronchiolitis) and J12.1 (rsv-pneumonia) condition
         * A patient who got a rsv diagnosis (J21.0) and also a KJP diagnosis (F94.1).
 * <a href="./SampleBundle_Acribis.json" target="_blank">SampleBundle_Acribis.json</a>
-    * Bundle of 3 patients with 6 consent formulars in total.
+    * Bundle of 5 patients with 8 consent formulars in total.
         * 2 Patients with 2 consents forms each (valid main + valid acribis form with data usage
           permission).
         * One patient with a declined main consent form.
+        * One patient who got main and acribis consent in one single resource and got 2 discharge
+          diagnosis (I50.* + Q20.*) that assigns him to cohort 3 but includes an exclusion criteria
+          for cohort 1.
+        * One patient who got main and acribis consent in one single resource, belongs to
+          cohort 1 (I50.*) and 2 (I48.*) and who got an encounter (with linked condition I63.0) that
+          is older than the consent approval and should get ignored.
 
 More bundles with sample data will surely follow in the future.
 

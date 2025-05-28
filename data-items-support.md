@@ -76,6 +76,8 @@
 - kira.rsv.timeline.diags.occurrence
 - acr.current.recruitment (without the follow-up subitem)
 - acr.timeline.recruitment (without the follow-up subitem)
+- acr.current.dischargediags.cohorts
+- acr.timeline.dischargediags.cohorts
 
 #### The processor currently doesn't generate the following data items (and sub items):
 
@@ -85,8 +87,6 @@
 - current.nosocomialcases.*
 - infl.cumulative.subtypetestresults
 - infl.timeline.subtypetestresults
-- acr.current.dischargediags.kohorts
-- acr.timeline.dischargediags.kohorts
 
 As well as all prediction model related items:
 

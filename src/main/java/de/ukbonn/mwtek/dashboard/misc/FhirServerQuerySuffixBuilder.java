@@ -17,6 +17,7 @@
  */
 package de.ukbonn.mwtek.dashboard.misc;
 
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.getListAsString;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.ACRIBIS;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.COVID;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.INFLUENZA;
@@ -30,6 +31,7 @@ import de.ukbonn.mwtek.dashboard.interfaces.QuerySuffixBuilder;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboard.services.AcuwaveDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -45,8 +47,19 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
   public static final String DATE_GE = "&date=ge";
   public static final String CODE_PARAM = "code=";
   public static final String PRETTY_FALSE_PARAM = "&_pretty=false";
-  public static final String CLASS_IMP = "&_class=IMP";
+  // public static final String CLASS_IMP = "&class=IMP";
   public static final String PIPE = "|";
+  public static final String DELIMITER_AND = "&";
+
+  /** Ensures the date starts at 00:00:00 to include all events occurring on the specified day. */
+  public static final String MIDNIGHT_TS = "T00:00:00";
+
+  public static final String OBSERVATION_CALL = "Observation?";
+  public static final String CONDITION_CALL = "Condition?";
+  public static final String PATIENT_PARAM = "patient=";
+  public static final String ENCOUNTER_PARAM = "encounter=";
+  public static final String SUBJECT_PARAM = "subject=";
+  public static final String ENCOUNTER_CALL = "Encounter?";
 
   public String getObservations(
       AbstractDataRetrievalService dataRetrievalService,
@@ -55,7 +68,7 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
       DataItemContext dataItemContext) {
 
     // Start building the query string for the Observation resource
-    StringBuilder suffixBuilder = new StringBuilder("Observation?");
+    StringBuilder suffixBuilder = new StringBuilder(OBSERVATION_CALL);
 
     // Build query parameters based on the dataItemContext
     switch (dataItemContext) {
@@ -107,7 +120,7 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
       DataItemContext dataItemContext) {
 
     // Start building the query string for the Condition resource
-    StringBuilder suffixBuilder = new StringBuilder("Condition?");
+    StringBuilder suffixBuilder = new StringBuilder(CONDITION_CALL);
 
     // Build the ICD code list and add date filter depending on the dataItemContext
     switch (dataItemContext) {
@@ -147,6 +160,27 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
     }
 
     // Return the final constructed query string
+    return suffixBuilder.toString();
+  }
+
+  @Override
+  public String getConditions(
+      AbstractDataRetrievalService fhirDataRetrievalService, List<String> encounterIds) {
+
+    // Start building the query string for the Condition resource
+    StringBuilder suffixBuilder = new StringBuilder(CONDITION_CALL);
+    suffixBuilder.append(ENCOUNTER_PARAM).append(getListAsString(encounterIds));
+
+    return suffixBuilder.toString();
+  }
+
+  public String getConditionsPost(
+      AbstractDataRetrievalService fhirDataRetrievalService, List<String> encounterIds) {
+
+    // Start building the query string for the Condition resource
+    StringBuilder suffixBuilder = new StringBuilder();
+    suffixBuilder.append(ENCOUNTER_PARAM).append(getListAsString(encounterIds));
+
     return suffixBuilder.toString();
   }
 
@@ -193,52 +227,61 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
       AbstractDataRetrievalService dataRetrievalService,
       List<String> patientIdList,
       DataItemContext dataItemContext,
-      Boolean askTotal) {
-    StringBuilder suffixBuilder = new StringBuilder();
-    suffixBuilder.append("Encounter?subject=").append(String.join(DELIMITER, patientIdList));
-
-    /* For this project, theoretically only cases with an intake date after a cut-off date
-    (27/01/2020) are needed. To reduce the resource results and make the queries more
-     streamlined, a "&location-period=gt2020-27-01" is added on demand to the fhir search, as
-     we cannot assume that every location stores the transfer history in the Encounter
-     resource.*/
-    if (dataRetrievalService.getFilterResourcesByDate()) {
-      switch (dataItemContext) {
-        case COVID -> suffixBuilder.append(DATE_GE).append(getStartingDate(COVID));
-        case INFLUENZA -> suffixBuilder.append(DATE_GE).append(getStartingDate(INFLUENZA));
-        case KIDS_RADAR ->
-            suffixBuilder.append(DATE_GE).append(getStartingDate(KIDS_RADAR)).append(CLASS_IMP);
-      }
-    }
-    suffixBuilder.append(COUNT_EQUALS).append(dataRetrievalService.getBatchSize());
-
-    if (askTotal) {
-      suffixBuilder.append(SUMMARY_COUNT);
-    }
-    return suffixBuilder.toString();
+      Boolean askTotal,
+      String individualDateString) {
+    return buildEncounterQuery(
+        dataRetrievalService, patientIdList, dataItemContext, individualDateString, true, askTotal);
   }
 
   public String getEncountersPost(
       AbstractDataRetrievalService dataRetrievalService,
       List<String> patientIdList,
-      DataItemContext dataItemContext) {
-    StringBuilder suffixBuilder = new StringBuilder();
-    suffixBuilder.append("subject=").append(getListAsString(patientIdList));
+      DataItemContext dataItemContext,
+      String individualDateString) {
+    return buildEncounterQuery(
+        dataRetrievalService, patientIdList, dataItemContext, individualDateString, false, false);
+  }
 
-    /* For this project, theoretically only cases with an intake date after a cut-off date
-    (27/01/2020) are needed. To reduce the resource results and make the queries more
-     streamlined, a "&location-period=gt2020-27-01" is added on demand to the fhir search, as
-     we cannot assume that every location stores the transfer history in the Encounter
-     resource.*/
+  private String buildEncounterQuery(
+      AbstractDataRetrievalService dataRetrievalService,
+      List<String> patientIdList,
+      DataItemContext dataItemContext,
+      String individualDateString,
+      boolean includePrefix,
+      boolean askTotal) {
+
+    StringBuilder suffixBuilder = new StringBuilder();
+
+    if (includePrefix) {
+      suffixBuilder.append(ENCOUNTER_CALL);
+      suffixBuilder.append(SUBJECT_PARAM).append(String.join(DELIMITER, patientIdList));
+    } else {
+      suffixBuilder.append(SUBJECT_PARAM).append(getListAsString(patientIdList));
+    }
+
     if (dataRetrievalService.getFilterResourcesByDate()) {
       switch (dataItemContext) {
-        case COVID -> suffixBuilder.append(DATE_GE).append(getStartingDate(COVID));
-        case INFLUENZA -> suffixBuilder.append(DATE_GE).append(getStartingDate(INFLUENZA));
+        case COVID ->
+            suffixBuilder.append(DATE_GE).append(getStartingDate(COVID)).append(MIDNIGHT_TS);
+        case INFLUENZA ->
+            suffixBuilder.append(DATE_GE).append(getStartingDate(INFLUENZA)).append(MIDNIGHT_TS);
         case KIDS_RADAR ->
-            suffixBuilder.append(DATE_GE).append(getStartingDate(KIDS_RADAR)).append(CLASS_IMP);
+            suffixBuilder.append(DATE_GE).append(getStartingDate(KIDS_RADAR)).append(MIDNIGHT_TS);
+        case ACRIBIS ->
+            suffixBuilder.append(DATE_GE).append(individualDateString).append(MIDNIGHT_TS);
       }
     }
+    // Filtering of case class will be done in post-processing since it's way faster
+    //    if (dataItemContext == ACRIBIS || dataItemContext == KIDS_RADAR) {
+    //      suffixBuilder.append(CLASS_IMP);
+    //    }
+
     suffixBuilder.append(COUNT_EQUALS).append(dataRetrievalService.getBatchSize());
+
+    if (includePrefix && askTotal) {
+      suffixBuilder.append(SUMMARY_COUNT);
+    }
+
     return suffixBuilder.toString();
   }
 
@@ -246,43 +289,75 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
   public String getProcedures(
       AbstractDataRetrievalService dataRetrievalService,
       List<String> patientIdList,
+      List<String> encounterIdList,
       String systemUrl,
       Boolean askTotal,
-      List<String> wards) {
+      List<String> wards,
+      DataItemContext dataItemContext) {
 
-    String procedureCodes = getProcedureCodesAsString(dataRetrievalService, systemUrl);
-    String patients = getListAsString(patientIdList);
+    List<String> params =
+        buildProcedureQueryParams(
+            dataRetrievalService,
+            patientIdList,
+            encounterIdList,
+            systemUrl,
+            dataItemContext,
+            askTotal);
 
-    StringBuilder sb = new StringBuilder("Procedure?code=");
-    sb.append(procedureCodes)
-        .append("&patient=")
-        .append(patients)
-        .append(COUNT_EQUALS)
-        .append(dataRetrievalService.getBatchSize());
-
-    if (askTotal) {
-      sb.append(SUMMARY_COUNT);
-    }
-
-    return sb.toString();
+    return "Procedure?" + String.join(DELIMITER_AND, params);
   }
 
   public String getProceduresPost(
       AbstractDataRetrievalService dataRetrievalService,
       List<String> patientIdList,
-      String systemUrl) {
-    String procedureCodes = getProcedureCodesAsString(dataRetrievalService, systemUrl);
-    String patients = getListAsString(patientIdList);
-    return "patient="
-        + patients
-        + "&code="
-        + procedureCodes
-        + COUNT_EQUALS
-        + dataRetrievalService.getBatchSize();
+      List<String> encounterIdList,
+      String systemUrl,
+      DataItemContext dataItemContext) {
+
+    List<String> params =
+        buildProcedureQueryParams(
+            dataRetrievalService,
+            patientIdList,
+            encounterIdList,
+            systemUrl,
+            dataItemContext,
+            false); // askTotal not relevant for post queries
+
+    return String.join(DELIMITER_AND, params);
   }
 
-  private static String getListAsString(List<?> idList) {
-    return StringUtils.join(idList, DELIMITER);
+  private List<String> buildProcedureQueryParams(
+      AbstractDataRetrievalService dataRetrievalService,
+      List<String> patientIdList,
+      List<String> encounterIdList,
+      String systemUrl,
+      DataItemContext dataItemContext,
+      Boolean askTotal) {
+
+    List<String> params = new ArrayList<>();
+
+    String procedureCodes;
+    switch (dataItemContext) {
+      case COVID, INFLUENZA:
+        procedureCodes = getProcedureCodesAsString(dataRetrievalService, systemUrl);
+        if (!procedureCodes.isEmpty()) {
+          params.add(CODE_PARAM + procedureCodes);
+        }
+    }
+
+    if (patientIdList != null && !patientIdList.isEmpty()) {
+      params.add(0, PATIENT_PARAM + getListAsString(patientIdList));
+    } else if (encounterIdList != null && !encounterIdList.isEmpty()) {
+      params.add(0, ENCOUNTER_PARAM + getListAsString(encounterIdList));
+    }
+
+    params.add(COUNT_EQUALS + dataRetrievalService.getBatchSize());
+
+    if (Boolean.TRUE.equals(askTotal)) {
+      params.add(SUMMARY_COUNT);
+    }
+
+    return params;
   }
 
   /**
@@ -325,7 +400,8 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
   }
 
   @Override
-  public String getConsents(AbstractDataRetrievalService dataRetrievalService) {
+  public String getConsents(
+      AbstractDataRetrievalService dataRetrievalService, DataItemContext dataItemContext) {
     return "Consent?category="
         + CONSENT_CATEGORY_SYSTEM
         + PIPE

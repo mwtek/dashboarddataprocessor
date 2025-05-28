@@ -77,24 +77,6 @@
                 {
                   "coding": [
                     {
-                      "system": "http://art-decor.org/decor/services/ValueSetIndex?prefix=mide-&language=de-DE",
-                      "code": "2.16.840.1.113883.3.1937.777.24.11.9",
-                      "display": "MI-I Einwilligung Frage 2a"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "permit",
-              "period": {
-                "start": "2025-04-03T00:00:00+02:00",
-                "end": "2030-04-03T00:00:00+02:00"
-              },
-              "code": [
-                {
-                  "coding": [
-                    {
                       "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
                       "code": "2.16.840.1.113883.3.1937.777.24.5.3.11",
                       "display": "KKDAT_5J_retro_uebertragen"
@@ -203,24 +185,6 @@
                 {
                   "coding": [
                     {
-                      "system": "http://art-decor.org/decor/services/ValueSetIndex?prefix=mide-&language=de-DE",
-                      "code": "2.16.840.1.113883.3.1937.777.24.11.14",
-                      "display": "MI-I Einwilligung Frage 4b"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "permit",
-              "period": {
-                "start": "2025-04-03T00:00:00+02:00",
-                "end": "2030-04-03T00:00:00+02:00"
-              },
-              "code": [
-                {
-                  "coding": [
-                    {
                       "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
                       "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
                       "display": "Rekontaktierung_Zusatzbefund"
@@ -242,42 +206,6 @@
                       "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
                       "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
                       "display": "Rekontaktierung_Zusatzbefund"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "permit",
-              "period": {
-                "start": "2025-04-03T00:00:00+02:00",
-                "end": "2030-04-03T00:00:00+02:00"
-              },
-              "code": [
-                {
-                  "coding": [
-                    {
-                      "system": "http://art-decor.org/decor/services/ValueSetIndex?prefix=mide-&language=de-DE",
-                      "code": "2.16.840.1.113883.3.1937.777.24.11.7",
-                      "display": "MI-I Einwilligung Frage 1a"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "permit",
-              "period": {
-                "start": "2025-04-03T00:00:00+02:00",
-                "end": "2030-04-03T00:00:00+02:00"
-              },
-              "code": [
-                {
-                  "coding": [
-                    {
-                      "system": "http://art-decor.org/decor/services/ValueSetIndex?prefix=mide-&language=de-DE",
-                      "code": "2.16.840.1.113883.3.1937.777.24.11.8",
-                      "display": "MI-I Einwilligung Frage 1b"
                     }
                   ]
                 }
@@ -527,24 +455,6 @@
                 {
                   "coding": [
                     {
-                      "system": "http://art-decor.org/decor/services/ValueSetIndex?prefix=mide-&language=de-DE",
-                      "code": "2.16.840.1.113883.3.1937.777.24.11.10",
-                      "display": "MI-I Einwilligung Frage 2b"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "permit",
-              "period": {
-                "start": "2025-04-03T00:00:00+02:00",
-                "end": "2030-04-03T00:00:00+02:00"
-              },
-              "code": [
-                {
-                  "coding": [
-                    {
                       "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
                       "code": "2.16.840.1.113883.3.1937.777.24.5.3.14",
                       "display": "KKDAT_prospektiv_uebertragen_speichern_nutzen"
@@ -656,24 +566,6 @@
                       "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
                       "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
                       "display": "Rekontaktierung_Zusatzbefund"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "permit",
-              "period": {
-                "start": "2025-04-03T00:00:00+02:00",
-                "end": "2030-04-03T00:00:00+02:00"
-              },
-              "code": [
-                {
-                  "coding": [
-                    {
-                      "system": "http://art-decor.org/decor/services/ValueSetIndex?prefix=mide-&language=de-DE",
-                      "code": "2.16.840.1.113883.3.1937.777.24.11.13",
-                      "display": "MI-I Einwilligung Frage 4a"
                     }
                   ]
                 }
@@ -1069,24 +961,6 @@
                 {
                   "coding": [
                     {
-                      "system": "http://art-decor.org/decor/services/ValueSetIndex?prefix=mide-&language=de-DE",
-                      "code": "2.16.840.1.113883.3.1937.777.24.11.9",
-                      "display": "MI-I Einwilligung Frage 2a"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "permit",
-              "period": {
-                "start": "2025-04-03T00:00:00+02:00",
-                "end": "2030-04-03T00:00:00+02:00"
-              },
-              "code": [
-                {
-                  "coding": [
-                    {
                       "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
                       "code": "2.16.840.1.113883.3.1937.777.24.5.3.11",
                       "display": "KKDAT_5J_retro_uebertragen"
@@ -1195,24 +1069,6 @@
                 {
                   "coding": [
                     {
-                      "system": "http://art-decor.org/decor/services/ValueSetIndex?prefix=mide-&language=de-DE",
-                      "code": "2.16.840.1.113883.3.1937.777.24.11.14",
-                      "display": "MI-I Einwilligung Frage 4b"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "permit",
-              "period": {
-                "start": "2025-04-03T00:00:00+02:00",
-                "end": "2030-04-03T00:00:00+02:00"
-              },
-              "code": [
-                {
-                  "coding": [
-                    {
                       "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
                       "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
                       "display": "Rekontaktierung_Zusatzbefund"
@@ -1234,42 +1090,6 @@
                       "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
                       "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
                       "display": "Rekontaktierung_Zusatzbefund"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "permit",
-              "period": {
-                "start": "2025-04-03T00:00:00+02:00",
-                "end": "2030-04-03T00:00:00+02:00"
-              },
-              "code": [
-                {
-                  "coding": [
-                    {
-                      "system": "http://art-decor.org/decor/services/ValueSetIndex?prefix=mide-&language=de-DE",
-                      "code": "2.16.840.1.113883.3.1937.777.24.11.7",
-                      "display": "MI-I Einwilligung Frage 1a"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "permit",
-              "period": {
-                "start": "2025-04-03T00:00:00+02:00",
-                "end": "2030-04-03T00:00:00+02:00"
-              },
-              "code": [
-                {
-                  "coding": [
-                    {
-                      "system": "http://art-decor.org/decor/services/ValueSetIndex?prefix=mide-&language=de-DE",
-                      "code": "2.16.840.1.113883.3.1937.777.24.11.8",
-                      "display": "MI-I Einwilligung Frage 1b"
                     }
                   ]
                 }
@@ -1519,24 +1339,6 @@
                 {
                   "coding": [
                     {
-                      "system": "http://art-decor.org/decor/services/ValueSetIndex?prefix=mide-&language=de-DE",
-                      "code": "2.16.840.1.113883.3.1937.777.24.11.10",
-                      "display": "MI-I Einwilligung Frage 2b"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "permit",
-              "period": {
-                "start": "2025-04-03T00:00:00+02:00",
-                "end": "2030-04-03T00:00:00+02:00"
-              },
-              "code": [
-                {
-                  "coding": [
-                    {
                       "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
                       "code": "2.16.840.1.113883.3.1937.777.24.5.3.14",
                       "display": "KKDAT_prospektiv_uebertragen_speichern_nutzen"
@@ -1648,24 +1450,6 @@
                       "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
                       "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
                       "display": "Rekontaktierung_Zusatzbefund"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "permit",
-              "period": {
-                "start": "2025-04-03T00:00:00+02:00",
-                "end": "2030-04-03T00:00:00+02:00"
-              },
-              "code": [
-                {
-                  "coding": [
-                    {
-                      "system": "http://art-decor.org/decor/services/ValueSetIndex?prefix=mide-&language=de-DE",
-                      "code": "2.16.840.1.113883.3.1937.777.24.11.13",
-                      "display": "MI-I Einwilligung Frage 4a"
                     }
                   ]
                 }
@@ -2061,9 +1845,9 @@
                 {
                   "coding": [
                     {
-                      "system": "http://art-decor.org/decor/services/ValueSetIndex?prefix=mide-&language=de-DE",
-                      "code": "2.16.840.1.113883.3.1937.777.24.11.7",
-                      "display": "MI-I Einwilligung Frage 1a"
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.6",
+                      "display": "MDAT_erheben"
                     }
                   ]
                 }
@@ -2256,6 +2040,2359 @@
       "request": {
         "method": "PUT",
         "url": "Patient/PAT-WITH-DECLINED-CONSENT"
+      }
+    },
+    {
+      "fullUrl": "Consent/TEST-AGGREGATED-CONSENT",
+      "resource": {
+        "resourceType": "Consent",
+        "id": "TEST-AGGREGATED-CONSENT",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+          ]
+        },
+        "status": "active",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "research",
+              "display": "Research"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "57016-8",
+                "display": "Privacy policy acknowledgement Document"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category",
+                "code": "2.16.840.1.113883.3.1937.777.24.2.184"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/PAT-WITH-AGGREGATED-CONSENT",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "PAT-WITH-AGGREGATED-CONSENT"
+          }
+        },
+        "dateTime": "2025-01-27T00:00:00+01:00",
+        "organization": [
+          {
+            "display": "Universitätsklinikum Bonn"
+          }
+        ],
+        "policy": [
+          {
+            "uri": "urn:oid:2.16.840.1.113883.3.1937.777.24.2.1790"
+          },
+          {
+            "uri": "urn:oid:2.16.840.1.113883.3.1937.777.24.2.4031"
+          }
+        ],
+        "provision": {
+          "type": "deny",
+          "period": {
+            "start": "2025-01-27T00:00:00+01:00",
+            "end": "2030-01-27T00:00:00+01:00"
+          },
+          "provision": [
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.38",
+                      "display": "KKDAT_5J_retro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.1",
+                      "display": "PATDAT_erheben_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.2",
+                      "display": "IDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.3",
+                      "display": "IDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.4",
+                      "display": "IDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.5",
+                      "display": "IDAT_bereitstellen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.6",
+                      "display": "MDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.7",
+                      "display": "MDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.8",
+                      "display": "MDAT_wissenschaftlich_nutzen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.9",
+                      "display": "MDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.14",
+                      "display": "KKDAT_prospektiv_uebertragen_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.15",
+                      "display": "KKDAT_5J_pro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.16",
+                      "display": "KKDAT_5J_pro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.17",
+                      "display": "KKDAT_5J_pro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.39",
+                      "display": "KKDAT_5J_pro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.26",
+                      "display": "Rekontaktierung_Ergaenzungen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.27",
+                      "display": "Rekontaktierung_Verknuepfung_Datenbanken"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.28",
+                      "display": "Rekontaktierung_weitere_Erhebung"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.29",
+                      "display": "Rekontaktierung_weitere_Studien"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.37",
+                      "display": "Rekontaktierung_Ergebnisse_erheblicher_Bedeutung"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-27T00:00:00+01:00",
+                "end": "2030-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.59",
+                      "display": "Z2 IDAT Melderegister abfragen, speichern, verarbeiten im acribis-Projekt"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-27T00:00:00+01:00",
+                "end": "2030-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.57",
+                      "display": "Z2 Patientendaten erheben, nutzen, Kontaktierung im acribis-Projekt"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-27T00:00:00+01:00",
+                "end": "2030-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.61",
+                      "display": "Z2 MDAT Hausarzt erheben, speichern, verarbeiten, nutzen im acribis-Projekt"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Consent/TEST-AGGREGATED-CONSENT"
+      }
+    },
+    {
+      "fullUrl": "Patient/PAT-WITH-AGGREGATED-CONSENT",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "PAT-WITH-AGGREGATED-CONSENT",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "PAT-WITH-AGGREGATED-CONSENT"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "ACRIBIS-PATIENT-WITH-BASE-FORM-AND-ACRIBIS-IN-ONE-CONSENT-RESSOURCE",
+            "given": [
+              "Deceased"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1960-01-01",
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "line": [
+              "Test avenue 33"
+            ],
+            "city": "Test city",
+            "postalCode": "12345",
+            "country": "EN"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/PAT-WITH-AGGREGATED-CONSENT"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-PAT-WITH-AGGREGATED-CONSENT-000000-EK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-PAT-WITH-AGGREGATED-CONSENT-000000-EK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://fhir.de/StructureDefinition/Aufnahmegrund",
+            "extension": [
+              {
+                "url": "ErsteUndZweiteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundErsteUndZweiteStelle",
+                  "code": "01",
+                  "display": "KH-Behandlung, vollstat."
+                }
+              },
+              {
+                "url": "DritteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundDritteStelle",
+                  "code": "0",
+                  "display": "Anderes"
+                }
+              },
+              {
+                "url": "VierteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundVierteStelle",
+                  "code": "1",
+                  "display": "Normalfall"
+                }
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-PAT-WITH-AGGREGATED-CONSENT"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "000000"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "EK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "einrichtungskontakt",
+                "display": "Einrichtungskontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/PAT-WITH-AGGREGATED-CONSENT"
+        },
+        "period": {
+          "start": "2025-01-26T01:00:00+02:00",
+          "end": "2025-01-29T17:00:00+02:00"
+        },
+        "hospitalization": {
+          "admitSource": {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/dgkev/Aufnahmeanlass",
+                "code": "A",
+                "display": "Verlegung (mit Behandlungsdauer im verlegenden Krankenhaus bis zu 24 Stunden)"
+              }
+            ]
+          },
+          "dischargeDisposition": {
+            "extension": [
+              {
+                "url": "http://fhir.de/StructureDefinition/Entlassungsgrund",
+                "extension": [
+                  {
+                    "url": "ErsteUndZweiteStelle",
+                    "valueCoding": {
+                      "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundErsteUndZweiteStelle",
+                      "code": "07",
+                      "display": "Tod"
+                    }
+                  },
+                  {
+                    "url": "DritteStelle",
+                    "valueCoding": {
+                      "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundDritteStelle",
+                      "code": "9",
+                      "display": "keine Angabe"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "diagnosis": [
+          {
+            "use": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/diagnosis-role",
+                  "code": "DD",
+                  "display": "Discharge diagnosis"
+                }
+              ]
+            },
+            "condition": {
+              "reference": "Condition/T-PAT-WITH-AGGREGATED-CONSENT-1"
+            }
+          },
+          {
+            "use": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/diagnosis-role",
+                  "code": "DD",
+                  "display": "Discharge diagnosis"
+                }
+              ]
+            },
+            "condition": {
+              "reference": "Condition/T-PAT-WITH-AGGREGATED-CONSENT-2"
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-PAT-WITH-AGGREGATED-CONSENT-000000-EK"
+      }
+    },
+    {
+      "fullUrl": "Condition/T-PAT-WITH-AGGREGATED-CONSENT-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-PAT-WITH-AGGREGATED-CONSENT-1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://localIdentifier.de/identifiers/condition",
+            "value": "T-PAT-WITH-AGGREGATED-CONSENT-1"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2022",
+              "code": "I50.13",
+              "display": "Linksherzinsuffizienz: Mit Beschwerden bei leichter Belastung"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/PAT-WITH-AGGREGATED-CONSENT"
+        },
+        "encounter": {
+          "reference": "Encounter/T-PAT-WITH-AGGREGATED-CONSENT-000000-EK"
+        },
+        "onsetDateTime": "2025-01-27T09:00:00+02:00",
+        "recordedDate": "2025-01-27T09:00:00+02:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-PAT-WITH-AGGREGATED-CONSENT-1"
+      }
+    },
+    {
+      "fullUrl": "Condition/T-PAT-WITH-AGGREGATED-CONSENT-2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-PAT-WITH-AGGREGATED-CONSENT-2",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://localIdentifier.de/identifiers/condition",
+            "value": "T-PAT-WITH-AGGREGATED-CONSENT-2"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2022",
+              "code": "Q20.4",
+              "display": "Doppeleinstromventrikel [Double inlet ventricle]"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/PAT-WITH-AGGREGATED-CONSENT"
+        },
+        "encounter": {
+          "reference": "Encounter/T-PAT-WITH-AGGREGATED-CONSENT-000000-EK"
+        },
+        "onsetDateTime": "2025-01-27T09:00:00+02:00",
+        "recordedDate": "2025-01-27T09:00:00+02:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-PAT-WITH-AGGREGATED-CONSENT-2"
+      }
+    },
+    {
+      "fullUrl": "Procedure/T-PROC-PAT-WITH-AGGREGATED-CONSENT-1",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "T-PROC-PAT-WITH-AGGREGATED-CONSENT-1",
+        "meta": {
+          "profile": [
+            "https://medizininformatik-initiative.de/fhir/ext/modul-icu/StructureDefinition/Beatmung"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum",
+            "valueDateTime": "2025-01-27T11:36:33+02:00"
+          }
+        ],
+        "status": "completed",
+        "category": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "277132007",
+              "display": "Therapeutic procedure"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/ops",
+              "version": "2024",
+              "code": "8-836.03",
+              "display": "Therapeutische Katheterisierung und Kanüleneinlage in Gefäße: (Perkutan-)transluminale Gefäßintervention: Ballon-Angioplastie: Gefäße Unterarm"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/PAT-WITH-AGGREGATED-CONSENT"
+        },
+        "encounter": {
+          "reference": "Encounter/T-PAT-WITH-AGGREGATED-CONSENT-000000-EK"
+        },
+        "performedPeriod": {
+          "start": "2025-01-27T10:00:00+02:00",
+          "end": "2025-01-27T17:00:00+02:00"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Procedure/T-PROC-PAT-WITH-AGGREGATED-CONSENT-1"
+      }
+    },
+    {
+      "fullUrl": "Consent/TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER",
+      "resource": {
+        "resourceType": "Consent",
+        "id": "TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+          ]
+        },
+        "status": "active",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "research",
+              "display": "Research"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "57016-8",
+                "display": "Privacy policy acknowledgement Document"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category",
+                "code": "2.16.840.1.113883.3.1937.777.24.2.184"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER"
+          }
+        },
+        "dateTime": "2025-01-01T00:00:00+01:00",
+        "organization": [
+          {
+            "display": "Universitätsklinikum Bonn"
+          }
+        ],
+        "policy": [
+          {
+            "uri": "urn:oid:2.16.840.1.113883.3.1937.777.24.2.1790"
+          },
+          {
+            "uri": "urn:oid:2.16.840.1.113883.3.1937.777.24.2.4031"
+          }
+        ],
+        "provision": {
+          "type": "deny",
+          "period": {
+            "start": "2025-01-01T00:00:00+01:00",
+            "end": "2030-01-01T00:00:00+01:00"
+          },
+          "provision": [
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.38",
+                      "display": "KKDAT_5J_retro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.1",
+                      "display": "PATDAT_erheben_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.2",
+                      "display": "IDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.3",
+                      "display": "IDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.4",
+                      "display": "IDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.5",
+                      "display": "IDAT_bereitstellen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.6",
+                      "display": "MDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.7",
+                      "display": "MDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.8",
+                      "display": "MDAT_wissenschaftlich_nutzen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.9",
+                      "display": "MDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.14",
+                      "display": "KKDAT_prospektiv_uebertragen_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.15",
+                      "display": "KKDAT_5J_pro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.16",
+                      "display": "KKDAT_5J_pro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.17",
+                      "display": "KKDAT_5J_pro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.39",
+                      "display": "KKDAT_5J_pro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.26",
+                      "display": "Rekontaktierung_Ergaenzungen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.27",
+                      "display": "Rekontaktierung_Verknuepfung_Datenbanken"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.28",
+                      "display": "Rekontaktierung_weitere_Erhebung"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.29",
+                      "display": "Rekontaktierung_weitere_Studien"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+02:00",
+                "end": "2030-01-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.37",
+                      "display": "Rekontaktierung_Ergebnisse_erheblicher_Bedeutung"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-21T00:00:00+01:00",
+                "end": "2030-01-21T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.59",
+                      "display": "Z2 IDAT Melderegister abfragen, speichern, verarbeiten im acribis-Projekt"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+01:00",
+                "end": "2030-01-01T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.57",
+                      "display": "Z2 Patientendaten erheben, nutzen, Kontaktierung im acribis-Projekt"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-01-01T00:00:00+01:00",
+                "end": "2030-01-01T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.61",
+                      "display": "Z2 MDAT Hausarzt erheben, speichern, verarbeiten, nutzen im acribis-Projekt"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Consent/TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER"
+      }
+    },
+    {
+      "fullUrl": "Patient/TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "ACRIBIS-PATIENT-WITH-BASE-FORM-AND-ACRIBIS-IN-ONE-CONSENT-RESSOURCE-AND-AN-IGNORED-ENCOUNTER",
+            "given": [
+              "Deceased"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1980-01-01",
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "line": [
+              "Test avenue 33"
+            ],
+            "city": "Test city",
+            "postalCode": "12345",
+            "country": "EN"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-000000-EK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-000000-EK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://fhir.de/StructureDefinition/Aufnahmegrund",
+            "extension": [
+              {
+                "url": "ErsteUndZweiteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundErsteUndZweiteStelle",
+                  "code": "01",
+                  "display": "KH-Behandlung, vollstat."
+                }
+              },
+              {
+                "url": "DritteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundDritteStelle",
+                  "code": "0",
+                  "display": "Anderes"
+                }
+              },
+              {
+                "url": "VierteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundVierteStelle",
+                  "code": "1",
+                  "display": "Normalfall"
+                }
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "000000"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "EK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "einrichtungskontakt",
+                "display": "Einrichtungskontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER"
+        },
+        "period": {
+          "start": "2025-01-01T01:00:00+02:00",
+          "end": "2025-01-29T17:00:00+02:00"
+        },
+        "hospitalization": {
+          "admitSource": {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/dgkev/Aufnahmeanlass",
+                "code": "A",
+                "display": "Verlegung (mit Behandlungsdauer im verlegenden Krankenhaus bis zu 24 Stunden)"
+              }
+            ]
+          },
+          "dischargeDisposition": {
+            "extension": [
+              {
+                "url": "http://fhir.de/StructureDefinition/Entlassungsgrund",
+                "extension": [
+                  {
+                    "url": "ErsteUndZweiteStelle",
+                    "valueCoding": {
+                      "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundErsteUndZweiteStelle",
+                      "code": "07",
+                      "display": "Tod"
+                    }
+                  },
+                  {
+                    "url": "DritteStelle",
+                    "valueCoding": {
+                      "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundDritteStelle",
+                      "code": "9",
+                      "display": "keine Angabe"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "diagnosis": [
+          {
+            "use": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/diagnosis-role",
+                  "code": "DD",
+                  "display": "Discharge diagnosis"
+                }
+              ]
+            },
+            "condition": {
+              "reference": "Condition/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-1"
+            }
+          },
+          {
+            "use": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/diagnosis-role",
+                  "code": "DD",
+                  "display": "Discharge diagnosis"
+                }
+              ]
+            },
+            "condition": {
+              "reference": "Condition/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-2"
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-000000-EK"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-IGNORED-000000-EK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-IGNORED-000000-EK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://fhir.de/StructureDefinition/Aufnahmegrund",
+            "extension": [
+              {
+                "url": "ErsteUndZweiteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundErsteUndZweiteStelle",
+                  "code": "01",
+                  "display": "KH-Behandlung, vollstat."
+                }
+              },
+              {
+                "url": "DritteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundDritteStelle",
+                  "code": "0",
+                  "display": "Anderes"
+                }
+              },
+              {
+                "url": "VierteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundVierteStelle",
+                  "code": "1",
+                  "display": "Normalfall"
+                }
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-IGNORED"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "000000"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "EK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "einrichtungskontakt",
+                "display": "Einrichtungskontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER"
+        },
+        "period": {
+          "start": "2024-12-01T01:00:00+02:00",
+          "end": "2024-12-29T17:00:00+02:00"
+        },
+        "hospitalization": {
+          "admitSource": {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/dgkev/Aufnahmeanlass",
+                "code": "A",
+                "display": "Verlegung (mit Behandlungsdauer im verlegenden Krankenhaus bis zu 24 Stunden)"
+              }
+            ]
+          },
+          "dischargeDisposition": {
+            "extension": [
+              {
+                "url": "http://fhir.de/StructureDefinition/Entlassungsgrund",
+                "extension": [
+                  {
+                    "url": "ErsteUndZweiteStelle",
+                    "valueCoding": {
+                      "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundErsteUndZweiteStelle",
+                      "code": "07",
+                      "display": "Tod"
+                    }
+                  },
+                  {
+                    "url": "DritteStelle",
+                    "valueCoding": {
+                      "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundDritteStelle",
+                      "code": "9",
+                      "display": "keine Angabe"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "diagnosis": [
+          {
+            "use": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/diagnosis-role",
+                  "code": "DD",
+                  "display": "Discharge diagnosis"
+                }
+              ]
+            },
+            "condition": {
+              "reference": "Condition/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-3"
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-IGNORED-000000-EK"
+      }
+    },
+    {
+      "fullUrl": "Condition/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://localIdentifier.de/identifiers/condition",
+            "value": "T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-1"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2022",
+              "code": "I50.13",
+              "display": "Linksherzinsuffizienz: Mit Beschwerden bei leichter Belastung"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER"
+        },
+        "encounter": {
+          "reference": "Encounter/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-000000-EK"
+        },
+        "onsetDateTime": "2025-01-01T09:00:00+02:00",
+        "recordedDate": "2025-01-01T09:00:00+02:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-1"
+      }
+    },
+    {
+      "fullUrl": "Condition/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-2",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://localIdentifier.de/identifiers/condition",
+            "value": "T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-2"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2022",
+              "code": "I48.0",
+              "display": "Vorhofflimmern, paroxysmal"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER"
+        },
+        "encounter": {
+          "reference": "Encounter/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-000000-EK"
+        },
+        "onsetDateTime": "2025-01-01T09:00:00+02:00",
+        "recordedDate": "2025-01-01T09:00:00+02:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-2"
+      }
+    },
+    {
+      "fullUrl": "Condition/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-3",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-3",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://localIdentifier.de/identifiers/condition",
+            "value": "T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-3"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2022",
+              "code": "I63.0",
+              "display": "Hirninfarkt durch Thrombose zerebraler Arterien"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER"
+        },
+        "encounter": {
+          "reference": "Encounter/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-IGNORED-000000-EK"
+        },
+        "onsetDateTime": "2024-12-01T09:00:00+02:00",
+        "recordedDate": "2024-12-01T09:00:00+02:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-3"
+      }
+    },
+    {
+      "fullUrl": "Procedure/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-1",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-1",
+        "meta": {
+          "profile": [
+            "https://medizininformatik-initiative.de/fhir/ext/modul-icu/StructureDefinition/Beatmung"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://fhir.de/StructureDefinition/ProzedurDokumentationsdatum",
+            "valueDateTime": "2025-01-01T11:36:33+02:00"
+          }
+        ],
+        "status": "completed",
+        "category": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "277132007",
+              "display": "Therapeutic procedure"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/ops",
+              "version": "2024",
+              "code": "8-836.03",
+              "display": "Therapeutische Katheterisierung und Kanüleneinlage in Gefäße: (Perkutan-)transluminale Gefäßintervention: Ballon-Angioplastie: Gefäße Unterarm"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER"
+        },
+        "encounter": {
+          "reference": "Encounter/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-000000-EK"
+        },
+        "performedPeriod": {
+          "start": "2025-01-01T10:00:00+02:00",
+          "end": "2025-01-01T17:00:00+02:00"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Procedure/T-TEST-AGGREGATED-CONSENT-IGNORED-ENCOUNTER-1"
       }
     }
   ]

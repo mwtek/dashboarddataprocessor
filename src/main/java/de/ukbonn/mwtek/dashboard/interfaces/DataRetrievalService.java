@@ -21,12 +21,14 @@ package de.ukbonn.mwtek.dashboard.interfaces;
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
 import de.ukbonn.mwtek.dashboard.exceptions.SearchException;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
+import de.ukbonn.mwtek.dashboardlogic.models.PidTimestampCohortMap;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbConsent;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation;
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +37,6 @@ import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Procedure;
 import org.springframework.web.client.RestClientException;
 
 /**
@@ -64,18 +65,36 @@ public interface DataRetrievalService {
       throws RestClientException, OutOfMemoryError;
 
   /**
+   * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition} resources
+   * via encounter resources.
+   *
+   * @return A list of all FHIR condition resources that include a covid diagnosis.
+   */
+  List<UkbCondition> getConditions(Collection<UkbEncounter> encounters)
+      throws RestClientException, OutOfMemoryError;
+
+  /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient} resources.
    *
-   * @param listUkbObservations A list of all FHIR observation resources that include a covid
-   *     finding.
-   * @param listUkbConditions A list of all FHIR condition resources that include a covid diagnosis.
+   * @param ukbObservations A list of all FHIR observation resources that include a covid finding.
+   * @param ukbConditions A list of all FHIR condition resources that include a covid diagnosis.
    * @return A list of all patient resources that have at least one covid observation and/or covid
    *     diagnosis.
    */
   List<Patient> getPatients(
-      List<UkbObservation> listUkbObservations,
-      List<UkbCondition> listUkbConditions,
+      List<UkbObservation> ukbObservations,
+      List<UkbCondition> ukbConditions,
       DataItemContext dataItemContext);
+
+  /**
+   * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient} resources.
+   *
+   * @param ukbProcedures A list of all FHIR procedure resources that are concerned within the given
+   *     context
+   * @param ukbConditions A list of all FHIR condition resources.
+   * @return A list of all patient resources that have at least one positive inclusion criteria.
+   */
+  List<Patient> getPatients(List<UkbProcedure> ukbProcedures, List<UkbCondition> ukbConditions);
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter} resources.
@@ -83,7 +102,15 @@ public interface DataRetrievalService {
    * @return A list of all FHIR encounter resources of the detected patients after a specified
    *     cut-off date.
    */
-  List<Encounter> getEncounters(DataItemContext dataItemContext);
+  List<UkbEncounter> getEncounters(DataItemContext dataItemContext);
+
+  /**
+   * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter} resources.
+   *
+   * @return A list of all FHIR encounter resources of the detected patients after a specified
+   *     cut-off date.
+   */
+  List<UkbEncounter> getEncounters(PidTimestampCohortMap pidTimestampMap);
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure} resources.
@@ -91,7 +118,16 @@ public interface DataRetrievalService {
    * @return A list of all requested FHIR procedure resources that contain artificial ventilation
    *     data for patients with at least one covid observation and/or covid diagnosis.
    */
-  List<Procedure> getProcedures();
+  List<UkbProcedure> getProcedures(DataItemContext dataItemContext);
+
+  /**
+   * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure} resources.
+   *
+   * @return A list of all requested FHIR procedure resources that contain artificial ventilation
+   *     data for patients with at least one covid observation and/or covid diagnosis.
+   */
+  List<UkbProcedure> getProcedures(
+      Collection<UkbEncounter> encounters, DataItemContext dataItemContext);
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure} resources.
@@ -108,7 +144,7 @@ public interface DataRetrievalService {
    * @return A list of all requested FHIR procedure resources that contain artificial ventilation
    *     data for patients with at least one covid observation and/or covid diagnosis.
    */
-  List<Procedure> getProcedures(
+  List<UkbProcedure> getProcedures(
       List<UkbEncounter> listUkbEncounters,
       List<UkbLocation> listUkbLocations,
       List<UkbObservation> listUkbObservations,
@@ -127,7 +163,7 @@ public interface DataRetrievalService {
    *
    * @return A list of all requested FHIR location resources.
    */
-  List<UkbConsent> getConsents();
+  List<UkbConsent> getConsents(Collection<UkbEncounter> encountersOutput);
 
   /**
    * Retrieval of the used {@link ServerTypeEnum server type}.

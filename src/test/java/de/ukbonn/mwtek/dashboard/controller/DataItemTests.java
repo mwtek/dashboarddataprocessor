@@ -26,6 +26,7 @@ import static de.ukbonn.mwtek.dashboardlogic.enums.DashboardLogicFixedValues.FEM
 import static de.ukbonn.mwtek.dashboardlogic.enums.DashboardLogicFixedValues.MALE_SPECIFICATION;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DashboardLogicFixedValues.NEGATIVE;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DashboardLogicFixedValues.POSITIVE;
+import static de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.DAY_IN_SECONDS;
 import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.ICU;
 import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.ICU_ECMO;
 import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.ICU_VENTILATION;
@@ -223,6 +224,36 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
     DiseaseDataItem dataItem = getTreatmentDataItem(context, selectedDataItem);
     List<?> dataItemType = (ArrayList<?>) dataItem.getData();
     assertEquals(expectedSize, dataItemType.size());
+  }
+
+  void assertValueByTimestampEquals(
+      long timestamp, Map<String, List<Long>> data, String seriesKey, long expected) {
+    long actual = getValueByTimestamp(timestamp, data, seriesKey);
+    assertEquals(expected, actual);
+  }
+
+  protected long getValueByTimestamp(
+      long timestamp, Map<String, List<Long>> timelineData, String seriesKey) {
+
+    if (timelineData == null) {
+      throw new IllegalArgumentException("Timeline data map is null.");
+    }
+
+    List<Long> timestamps = timelineData.get(DATE.getValue());
+    List<Long> series = timelineData.get(seriesKey);
+
+    if (timestamps == null || series == null) {
+      throw new IllegalArgumentException("Missing timestamp or series data for key: " + seriesKey);
+    }
+
+    long dayStart = timestamp - (timestamp % DAY_IN_SECONDS);
+    int index = timestamps.indexOf(dayStart);
+
+    if (index == -1 || index >= series.size()) {
+      return 0L; // oder OptionalLong.empty() / Fehler werfen, je nach gewünschtem Verhalten
+    }
+
+    return series.get(index);
   }
 
   @Test

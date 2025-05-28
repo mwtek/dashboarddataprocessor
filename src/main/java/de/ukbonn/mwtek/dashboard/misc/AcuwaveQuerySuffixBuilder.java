@@ -17,6 +17,7 @@
  */
 package de.ukbonn.mwtek.dashboard.misc;
 
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.getListAsString;
 import static de.ukbonn.mwtek.dashboardlogic.logic.DiseaseResultFunctionality.getKickOffDateStringFormat;
 
 import de.ukbonn.mwtek.dashboard.enums.AcuwaveDataSourceType;
@@ -25,6 +26,7 @@ import de.ukbonn.mwtek.dashboard.interfaces.QuerySuffixBuilder;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboard.services.AcuwaveDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,8 @@ import java.util.stream.Collectors;
 public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
 
   public static final String DELIMITER = ",";
+  public static final String CASE_MODULE_PATIENTS = "kdsfall?patients=";
+  public static final String ADMISSION_DATE_FROM = "&admissionDateFrom=";
 
   public String getObservations(
       AbstractDataRetrievalService acuwaveDataRetrievalService,
@@ -93,6 +97,12 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
         + getKickOffDateStringFormat(dataItemContext);
   }
 
+  public String getConditions(
+      AbstractDataRetrievalService acuwaveDataRetrievalService, List<String> encounterIds) {
+    String encounterIdsString = getListAsString(encounterIds);
+    return "kdsdiagnose?cases=" + encounterIdsString;
+  }
+
   @Override
   public String getPatients(
       AbstractDataRetrievalService abstractRestConfiguration, List<String> patientIdList) {
@@ -106,43 +116,49 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
       AbstractDataRetrievalService abstractRestConfiguration,
       List<String> patientIdList,
       DataItemContext dataItemContext,
-      Boolean askTotal) {
-    switch (dataItemContext) {
-      case COVID, INFLUENZA -> {
-        return "kdsfall?patients="
-            + String.join(DELIMITER, patientIdList)
-            + "&admissionDateFrom="
-            + getStartingDate(dataItemContext);
-      }
-      case KIDS_RADAR -> {
-        return "kdsfall?patients="
-            + String.join(DELIMITER, patientIdList)
-            + "&admissionDateFrom="
-            + getStartingDate(dataItemContext)
-            + "&classes=ST";
-      }
-    }
-    return null;
+      Boolean askTotal,
+      String individualDateString) {
+    String base = CASE_MODULE_PATIENTS + String.join(DELIMITER, patientIdList);
+
+    return switch (dataItemContext) {
+      case COVID, INFLUENZA -> base + ADMISSION_DATE_FROM + getStartingDate(dataItemContext);
+
+      case KIDS_RADAR ->
+          base + ADMISSION_DATE_FROM + getStartingDate(dataItemContext) + "&classes=ST";
+
+      case ACRIBIS -> base;
+      default -> throw new IllegalStateException("Unexpected value: " + dataItemContext);
+    };
   }
 
   @Override
   public String getProcedures(
       AbstractDataRetrievalService abstractRestConfiguration,
+      List<String> patientIdList,
       List<String> encounterIdList,
       String systemUrl,
       Boolean askTotal,
-      List<String> wards) {
+      List<String> wards,
+      DataItemContext dataItemContext) {
     return "kdsicu?cases="
         + String.join(DELIMITER, encounterIdList)
         + "&skipDuplicateCheck=true"
         + (wards != null && !wards.isEmpty() ? "&wards=" + String.join(DELIMITER, wards) : "");
   }
 
+  public String getProcedures(
+      AbstractDataRetrievalService acuwaveDataRetrievalService, Collection<String> encounterIds) {
+    String encounterIdsString = String.join(DELIMITER, encounterIds);
+    return "kdsprozedur?cases=" + encounterIdsString;
+  }
+
   @Override
   public String getProceduresPost(
       AbstractDataRetrievalService dataRetrievalService,
+      List<String> patientIdList,
       List<String> encounterIdList,
-      String systemUrl) {
+      String systemUrl,
+      DataItemContext dataItemContext) {
     // Not used
     return null;
   }
@@ -155,8 +171,9 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
   }
 
   @Override
-  public String getConsents(AbstractDataRetrievalService dataRetrievalService) {
-    return "kdsconsent?versions=1.6,1.7.2,acribis&hideResourceTypes=Encounter";
+  public String getConsents(
+      AbstractDataRetrievalService dataRetrievalService, DataItemContext dataItemContext) {
+    return "kdsconsent?versions=1.6,1.7.2,acribis&dateFrom=" + getStartingDate(dataItemContext);
   }
 
   @Override

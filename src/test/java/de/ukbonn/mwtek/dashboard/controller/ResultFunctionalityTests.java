@@ -122,7 +122,9 @@ public class ResultFunctionalityTests {
                 ukbLocations);
       } else if (sampleFile.equals(SAMPLE_FILE_ACRIBIS)) {
         // Use the KidsRadarDataItemGenerator for KIDS_RADAR
-        generator = new AcribisDataItemGenerator(ukbConsents);
+        generator =
+            new AcribisDataItemGenerator(
+                ukbConsents, ukbConditions, ukbPatients, ukbEncounters, ukbProcedures);
       } else {
         // Use the regular DataItemGenerator for COVID and INFLUENZA
         generator =

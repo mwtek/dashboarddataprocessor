@@ -265,36 +265,43 @@ The acribis patient pool is determined on the basis of the consent resources.
 
 ### Retrieval input criteria
 
-The codes are read dynamically from the `application.yaml`, all entries
-under `global.inputcodes.kids-radar.kjp` and `global.inputcodes.kids-radar.rsv` are read.
-The default list can be seen in the data set description.
+The following fhir search queries are used:
 
     1) [base]/Consent?category=https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category|2.16.840.1.113883.3.1937.777.24.2.184&date=ge2024-10-01
 
 ### Further data retrieval
 
-    Not implemented yet.
+    2) [base]/Encounter?subject=[ids_from_1]&date=ge2025-05-17T00:00:00&_class=IMP
+    3) [base]/Condition?encounter=[ids_from_2]
+    4) [base]/Procedure?encounter=[ids_from_2]
+    5) [base]/Patient?encounter=[ids_from_3_or_4]
 
 ## Data items composition
 
 The following attributes are checked to detect valid (acribis) consent resources:
 
-| Resource.attribute                         | Forced Condition                                                                                                           | Separation criterium |
-|--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------|----------------------|
-| `Consent.category[0].system`               | `http://loinc.org`                                                                                                         |                      |
-| `Consent.category[0].code`                 | `57016-8`                                                                                                                  |                      |
-| `Consent.category[1].system`               | `https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category`                |                      |
-| `Consent.category[1].code`                 | `2.16.840.1.113883.3.1937.777.24.2.184`                                                                                    |                      |
-| `Consent.patient`                          |                                                                                                                            |                      |
-| `Consent.policy`                           | `urn:oid:2.16.840.1.113883.3.1937.777.24.2.1790` (main form) or `urn:oid:2.16.840.1.113883.3.1937.777.24.2.4031` (acribis) |                      |
-| `Consent.provision.provision.type`         | `PERMIT`                                                                                                                   |                      |
-| `Consent.provision.provision.period.start` | `>= 01.10.2024`                                                                                                            |                      |
-| `Consent.provision.provision.code.system`  | `urn:oid:2.16.840.1.113883.3.1937.777.24.5.3`                                                                              |                      |
-| `Consent.provision.provision.code.code`    | `2.16.840.1.113883.3.1937.777.24.5.3.57`                                                                                   |                      |
+| Resource.attribute                         | Forced Condition                                                                                                                                               | Separation criterium |
+|--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------|
+| `Consent.category[0].system`               | `http://loinc.org`                                                                                                                                             |                      |
+| `Consent.category[0].code`                 | `57016-8`                                                                                                                                                      |                      |
+| `Consent.category[1].system`               | `https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category`                                                    |                      |
+| `Consent.category[1].code`                 | `2.16.840.1.113883.3.1937.777.24.2.184`                                                                                                                        |                      |
+| `Consent.patient`                          |                                                                                                                                                                |                      |
+| `Consent.policy`                           | `urn:oid:2.16.840.1.113883.3.1937.777.24.2.1790` (any main form uri as 1.6d; 1.6f; 1.7.2...) or/and `urn:oid:2.16.840.1.113883.3.1937.777.24.2.4031` (acribis) |                      |
+| `Consent.provision.provision.type`         | `PERMIT`                                                                                                                                                       |                      |
+| `Consent.provision.provision.period.start` | `>= 01.10.2024`                                                                                                                                                |                      |
+| `Consent.provision.provision.code.system`  | `urn:oid:2.16.840.1.113883.3.1937.777.24.5.3`                                                                                                                  |                      |
+| `Consent.provision.provision.code.code`    | `2.16.840.1.113883.3.1937.777.24.5.3.57`                                                                                                                       |                      |
 
 If additional special checks exist within the data items, these are listed here:
 
-| Item name                  | FHIR attributes                          | Forced Condition | Separation criterium |
-|----------------------------|------------------------------------------|------------------|----------------------|
-| `acr.current.recruitment`  |                                          |                  |                      |
-| `acr.timeline.recruitment` | Consent.provision.provision.period.start |                  |                      |
+| Item name                             | FHIR attributes                          | Forced Condition          | Separation criterium        |
+|---------------------------------------|------------------------------------------|---------------------------|-----------------------------|
+| `acr.current.recruitment`             |                                          |                           |                             |
+| `acr.timeline.recruitment`            | Consent.provision.provision.period.start |                           |                             |
+| `acr.current.dischargediags.cohorts`  | Condition.code                           |                           | ICD codes from cohort logic |
+|                                       | Procedure.code                           |                           | OPS codes from cohort logic |
+|                                       | Encounter.diagnosis                      | `.use.coding.code` = `DD` |                             |
+| `acr.timeline.dischargediags.cohorts` | Condition.code                           |                           | ICD codes from cohort logic |
+|                                       | Procedure.code                           |                           | OPS codes from cohort logic |
+|                                       | Encounter.diagnosis                      | `.use.coding.code` = `DD` |                             |

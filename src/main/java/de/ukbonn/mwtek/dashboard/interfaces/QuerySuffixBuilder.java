@@ -61,6 +61,9 @@ public interface QuerySuffixBuilder {
       boolean summary,
       DataItemContext dataItemContext);
 
+  String getConditions(
+      AbstractDataRetrievalService acuwaveDataRetrievalService, List<String> encounterIds);
+
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient} resources.
    *
@@ -81,7 +84,8 @@ public interface QuerySuffixBuilder {
       AbstractDataRetrievalService dataRetrievalService,
       List<String> patientIdList,
       DataItemContext dataItemContext,
-      Boolean askTotal);
+      Boolean askTotal,
+      String individualDateString);
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure} resources.
@@ -93,10 +97,12 @@ public interface QuerySuffixBuilder {
    */
   String getProcedures(
       AbstractDataRetrievalService dataRetrievalService,
+      List<String> patientIdList,
       List<String> encounterIdList,
       String systemUrl,
       Boolean askTotal,
-      List<String> wards);
+      List<String> wards,
+      DataItemContext dataItemContext);
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure} resources.
@@ -108,8 +114,10 @@ public interface QuerySuffixBuilder {
    */
   String getProceduresPost(
       AbstractDataRetrievalService dataRetrievalService,
+      List<String> patientIdList,
       List<String> encounterIdList,
-      String systemUrl);
+      String systemUrl,
+      DataItemContext dataItemContext);
 
   /**
    * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation} resources.
@@ -120,7 +128,8 @@ public interface QuerySuffixBuilder {
    */
   String getLocations(AbstractDataRetrievalService dataRetrievalService, List<?> locationIdList);
 
-  String getConsents(AbstractDataRetrievalService dataRetrievalService);
+  String getConsents(
+      AbstractDataRetrievalService dataRetrievalService, DataItemContext dataItemContext);
 
   String getLocationsPost(
       AbstractDataRetrievalService dataRetrievalService, List<?> locationIdList);

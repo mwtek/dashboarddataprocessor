@@ -18,6 +18,7 @@
 
 package de.ukbonn.mwtek.dashboard.misc;
 
+import static de.ukbonn.mwtek.dashboard.misc.AcuwaveQuerySuffixBuilder.DELIMITER;
 import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.KJP;
 import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.RSV;
 import static de.ukbonn.mwtek.utilities.enums.TerminologySystems.SNOMED;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Class that reads individually configurable terminology codes from YAML and converts them into
@@ -287,5 +289,9 @@ public class ConfigurationTransformer {
       }
     }
     return result;
+  }
+
+  public static String getListAsString(List<?> idList) {
+    return StringUtils.join(idList, DELIMITER);
   }
 }

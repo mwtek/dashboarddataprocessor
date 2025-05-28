@@ -1,3 +1,40 @@
+# Release Notes - Version V0.5.4+update.11
+
+XX/May/25
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* Added debug data items for (influenza.)`cumulative.outpatient.gender`.
+* Added support for `acr.current.dischargediags.cohorts` and `acr.timeline.dischargediags.cohorts`.
+
+</div> 
+
+## Improvements
+
+No improvements were part of this version.
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* If acribis and main consent are handled in a single consent ressource this is also supported now.
+* `PED_ICU` and `PED_NICU` will now also flag encounters as icu positive.
+* Resolved a potential `IndexOutOfBoundsException` when splitting large patient lists by replacing
+  the original `splitList` implementation with a more robust version.
+
+</div> 
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* Added the time (`T00:00:00`) to the fhir search `date=ge` parameter calls (when activated) so that
+  the `period.end` date is now including instead of excluding.
+
+</div> 
+
 # Release Notes - Version V0.5.4+update.10
 
 06/May/25
@@ -22,6 +59,10 @@ No improvements were part of this version.
 * Updated the data set description PDF.
 
 </div> 
+
+## Bugs
+
+No bug fixes were part of this version.
 
 # Release Notes - Version V0.5.4+update.9
 

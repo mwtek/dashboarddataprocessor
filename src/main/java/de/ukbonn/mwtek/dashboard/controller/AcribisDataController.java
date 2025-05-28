@@ -17,14 +17,15 @@
  */
 package de.ukbonn.mwtek.dashboard.controller;
 
+import static de.ukbonn.mwtek.dashboard.misc.AcribisChecks.calculateValidTimestampsByPid;
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.logAbortWorkflowMessage;
-import static de.ukbonn.mwtek.dashboard.misc.ThresholdCheck.filterDataItemsByThreshold;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.ukbonn.mwtek.dashboard.configuration.CustomGlobalConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.DataItemsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.ReportsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.VariantConfiguration;
+import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
 import de.ukbonn.mwtek.dashboard.exceptions.SearchException;
 import de.ukbonn.mwtek.dashboard.misc.ProcessTimer;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
@@ -32,9 +33,15 @@ import de.ukbonn.mwtek.dashboardlogic.AcribisDataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.DataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
+import de.ukbonn.mwtek.dashboardlogic.models.PidTimestampCohortMap;
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
 import de.ukbonn.mwtek.dashboardlogic.settings.QualitativeLabCodesSettings;
+import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbConsent;
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient;
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +55,7 @@ public class AcribisDataController {
       AbstractDataRetrievalService dataRetrievalService,
       ReportsConfiguration reportConfiguration,
       ProcessTimer processTimer,
-      CustomGlobalConfiguration customGlobalConfiguration,
+      CustomGlobalConfiguration globalConfiguration,
       VariantConfiguration variantConfiguration,
       InputCodeSettings inputCodeSettings,
       QualitativeLabCodesSettings qualitativeLabCodesSettings,
@@ -56,11 +63,48 @@ public class AcribisDataController {
       ObjectNode result)
       throws SearchException {
 
-    // Retrieval of the Condition resources
+    // Retrieval of the Consent resources
     processTimer.startLoggingTime(ResourceType.Consent);
     // map fhir resources into ukb resources
-    List<UkbConsent> ukbConsents = dataRetrievalService.getConsents();
+    // Unusual in the acuwave workflow is
+    // that the consent call also gives the valid encounter resources back.
+    List<UkbEncounter> ukbEncounters = new ArrayList<>();
+    // Retrieve consent data and also the valid encounters if acuwave server used
+    List<UkbConsent> ukbConsents = dataRetrievalService.getConsents(ukbEncounters);
+    List<UkbCondition> ukbConditions = new ArrayList<>();
+    List<UkbProcedure> ukbProcedures = new ArrayList<>();
+    List<UkbPatient> ukbPatients = new ArrayList<>();
+
     processTimer.stopLoggingTime(ukbConsents);
+
+    if (!ukbConsents.isEmpty()) {
+      // The FHIR search is a combination of encounter id and validity date
+      if (globalConfiguration.getServerType() == ServerTypeEnum.FHIR) {
+        PidTimestampCohortMap pidTimestampMap = calculateValidTimestampsByPid(ukbConsents);
+        ukbEncounters = dataRetrievalService.getEncounters(pidTimestampMap);
+      }
+    }
+
+    if (!ukbEncounters.isEmpty()) {
+      // Retrieval of condition resources
+      processTimer.startLoggingTime(ResourceType.Condition);
+      ukbConditions =
+          (List<UkbCondition>)
+              ResourceConverter.convert(dataRetrievalService.getConditions(ukbEncounters));
+      processTimer.stopLoggingTime(ukbConditions);
+
+      // Retrieval of procedure resources
+      ukbProcedures = dataRetrievalService.getProcedures(ukbEncounters, dataItemContext);
+      processTimer.stopLoggingTime(ukbProcedures);
+
+      // Retrieval of the Patient resources
+      processTimer.startLoggingTime(ResourceType.Patient);
+      ukbPatients =
+          (List<UkbPatient>)
+              ResourceConverter.convert(
+                  dataRetrievalService.getPatients(ukbProcedures, ukbConditions));
+      processTimer.stopLoggingTime(ukbPatients);
+    }
 
     if (ukbConsents.isEmpty()) {
       logAbortWorkflowMessage(null, DataItemContext.ACRIBIS);
@@ -70,7 +114,9 @@ public class AcribisDataController {
 
     // Start of the processing logic
     // Formatting of resources in json specification
-    DataItemGenerator dataItemGenerator = new AcribisDataItemGenerator(ukbConsents);
+    DataItemGenerator dataItemGenerator =
+        new AcribisDataItemGenerator(
+            ukbConsents, ukbConditions, ukbPatients, ukbEncounters, ukbProcedures);
 
     // Creation of the data items of the dataset specification
     List<DiseaseDataItem> dataItems =
@@ -81,15 +127,15 @@ public class AcribisDataController {
                 inputCodeSettings,
                 qualitativeLabCodesSettings,
                 dataItemContext,
-                customGlobalConfiguration));
-
-    if (!dataItemsConfiguration.getThresholds().isEmpty()) {
-      dataItems = filterDataItemsByThreshold(dataItems, dataItemsConfiguration.getThresholds());
-    }
+                globalConfiguration));
 
     // Add resource sizes information to the output if needed
-    if (customGlobalConfiguration.getDebug()) {
-      result.put("consentsSize", ukbConsents.size());
+    if (globalConfiguration.getDebug()) {
+      result.put("acribisConsentsSize", ukbConsents.size());
+      result.put("acribisEncountersSize", ukbEncounters.size());
+      result.put("acribisPatientsSize", ukbPatients.size());
+      result.put("acribisConditionsSize", ukbConditions.size());
+      result.put("acribisProceduresSize", ukbProcedures.size());
     }
     processTimer.stopLoggingTime();
 

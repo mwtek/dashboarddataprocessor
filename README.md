@@ -222,9 +222,9 @@ cd dashboardprocessor
 * Clone the repos in there via:
 
 ```
-git clone --branch v0.5.4+update.10 https://www.github.com/mwtek/utilities.git
-git clone --branch v0.5.4+update.10 https://www.github.com/mwtek/dashboardlogic.git
-git clone --branch v0.5.4+update.10 https://www.github.com/mwtek/dashboarddataprocessor.git
+git clone --branch v0.5.4+update.11 https://www.github.com/mwtek/utilities.git
+git clone --branch v0.5.4+update.11 https://www.github.com/mwtek/dashboardlogic.git
+git clone --branch v0.5.4+update.11 https://www.github.com/mwtek/dashboarddataprocessor.git
 ```
 
 * Go into "dashboarddataprocessor"
@@ -278,7 +278,7 @@ mvn spring-boot:run
 base folder and configured with the local settings. When the .JAR file is executed,
 the `application.yaml` is taken from the base directory by default at runtime.
 
-A precompiled file named `dashboarddataprocessor-0.5.4+update.10.jar` can be found in the project
+A precompiled file named `dashboarddataprocessor-0.5.4+update.11.jar` can be found in the project
 target directory. Be aware that before you can access the .jar file, you have to successfully build
 the project following one of the before mentioned approaches of 'Install and run via script' or '
 Install and run manually'.
@@ -286,7 +286,7 @@ Install and run manually'.
 Execute this file (or the precompiled file accordingly):
 
 ```
-java -jar target/dashboarddataprocessor-0.5.4+update.10.jar
+java -jar target/dashboarddataprocessor-0.5.4+update.11.jar
 ```
 
 Note that the settings must be adjusted in the .yaml file inside the packed .jar archive. This can
@@ -299,7 +299,7 @@ We provided files for **creating DDP-Image** and using it with docker. There is 
 -script in `docker-image`-folder you can execute to
 build DDP-Image on local Server.
 The script will use the file `Dockerfile` in same directory to create the docker container. It is
-necessary to have the `dashboarddataprocessor-0.5.4+update.10.jar` and the `application.yaml` you
+necessary to have the `dashboarddataprocessor-0.5.4+update.11.jar` and the `application.yaml` you
 want to use
 on
 the right place. By default, the created jar by `build.sh`-script in the target-folder is used and a
@@ -307,12 +307,12 @@ copy of the `application.yaml` in the dashboarddataprocessor-folder. You can ada
 editing following lines in `Dockerfile`.
 
 ```
-COPY dashboarddataprocessor/target/dashboarddataprocessor-0.5.4+update.10.jar /dashboarddataprocessor/dashboard-data-processor.jar
+COPY dashboarddataprocessor/target/dashboarddataprocessor-0.5.4+update.11.jar /dashboarddataprocessor/dashboard-data-processor.jar
 COPY dashboarddataprocessor/application.yaml /dashboarddataprocessor
 ```
 
 After the script has been finished, you can use the created container locally. Besides this the
-file `DDP-v0.5.4+update.10.tar` is created, which contains the whole software. You can put it to any
+file `DDP-v0.5.4+update.11.tar` is created, which contains the whole software. You can put it to any
 server
 you want to use for DDP. To deploy it you can use ansible-script `deploy-docker.yaml` which also
 handles whole serversetup.
@@ -421,11 +421,10 @@ local FHIR resources have special characteristics). If there should be wishes in
 send mail to one of the developers or alternatively create an issue.
 
 In addition, the <a href="./files/Documentation_Dashboard_Backend_v0_3_0a.pdf" target="_blank">
-documentation of the FHIR implementation</a> still needs to be updated to version 0.5.4+update.10.
+documentation of the FHIR implementation</a> still needs to be updated to version 0.5.4+update.11.
 
-Not all acribis data items have been realized yet, more will follow soon. In addition, there is
-still no support for the follow-up classification of some items, as it has not yet been officially
-defined what the FHIR representation should look like.
+There is no support for the follow-up classification of some acribis items atm., as it has not yet
+been officially defined what the FHIR representation should look like.
 
 # Troubleshooting / Logging
 
@@ -458,7 +457,7 @@ If you discover that the Java VM has too little RAM available (OutOfMemoryError:
 you can try increasing the maximum heap size. For example, in this way:
 
 ```
-java -jar -xMx 8G  target/dashboarddataprocessor-0.5.4+update.10.jar
+java -jar -xMx 8G  target/dashboarddataprocessor-0.5.4+update.11.jar
 ```
 
 **Connection to the FHIR server failed: 431 Request Header Fields Too Large**

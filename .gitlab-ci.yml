@@ -5,15 +5,15 @@ stages:
   - deploy
 
 include:
-  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/common-base@v0.10.1
-  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/pmd-lint@v0.10.1
+  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/common-base@v0.11.0
+  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/pmd-lint@v0.11.0
     inputs:
       allow_failure: true
-  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/format-check@v0.10.1
+  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/format-check@v0.11.0
     inputs:
       allow_failure: true
-  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/compile@v0.10.1
-  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/test@v0.10.1
+  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/compile@v0.11.0
+  - component: $CI_SERVER_FQDN/mwtek/infrastructure/ci-components/java/test@v0.11.0
 
 push-to-registry:
   extends:

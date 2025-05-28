@@ -202,6 +202,8 @@ data-items:
     ## Acribis related items
     acr.current.recruitment: false
     acr.timeline.recruitment: false
+    acr.current.dischargediags.cohorts: false
+    acr.timeline.dischargediags.cohorts: false
     ## internal items of the ukb
     current.treatmentlevel.crosstab: true
   ## Configure individual thresholds for specific data elements.

@@ -33,10 +33,12 @@ import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
 import de.ukbonn.mwtek.utilities.fhir.misc.LocationTools;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbConsent;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
 import de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient;
+import de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure;
 import de.ukbonn.mwtek.utilities.generic.time.DateTools;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,6 +48,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
@@ -411,18 +414,21 @@ public class ResourceHandler {
   public static void handleConsentEntries(
       Bundle currentBundle,
       List<UkbConsent> consents,
+      Collection<UkbEncounter> encountersOutput,
       Set<String> outputPatientIds,
       ServerTypeEnum serverType) {
     currentBundle
         .getEntry()
         .forEach(
             entry -> {
-              addValidConsentEntries(consents, outputPatientIds, serverType, entry);
+              addValidConsentEntries(
+                  consents, encountersOutput, outputPatientIds, serverType, entry);
             });
   }
 
   public static void addValidConsentEntries(
       Collection<UkbConsent> consents,
+      Collection<UkbEncounter> encountersOutput,
       Set<String> outputPatientIds,
       ServerTypeEnum serverType,
       BundleEntryComponent entry) {
@@ -438,6 +444,17 @@ public class ResourceHandler {
       } catch (Exception ex) {
         logMissingCoreAttribute(consent, ex);
       }
+    } else if (entry.getResource() instanceof Encounter encounter) {
+      // We just need the facility contacts
+      try {
+        UkbEncounter ukbEncounter = (UkbEncounter) ResourceConverter.convert(encounter, true);
+        if (ukbEncounter.isFacilityContact()) {
+          encountersOutput.add(ukbEncounter);
+        }
+      } catch (Exception ex) {
+        log.warn(
+            "Error while converting encounter {} because: {}", encounter.getId(), ex.getMessage());
+      }
     }
   }
 
@@ -449,6 +466,11 @@ public class ResourceHandler {
   private static boolean isConsentValid(UkbConsent ukbConsent) {
     // Prefiltering to consents that gave permission to use data
     return ukbConsent.isPatDataUsageAllowed() || ukbConsent.isAcribisConsentAllowed();
+  }
+
+  public static boolean isEncounterInpatientFacilityContact(UkbEncounter ukbEncounter) {
+    return (ukbEncounter.isFacilityContact()
+        && (ukbEncounter.isCaseClassInpatient() || ukbEncounter.isCaseTypePostStationary()));
   }
 
   public static void storeConsentPatientKeys(
@@ -581,5 +603,14 @@ public class ResourceHandler {
       return procedureStatus != ProcedureStatus.ENTEREDINERROR
           && procedureStatus != ProcedureStatus.NOTDONE;
     }
+  }
+
+  public static List<String> getPidsByProceduresAndConditions(
+      List<UkbProcedure> ukbProcedures, List<UkbCondition> ukbConditions) {
+    return Stream.concat(
+            ukbProcedures.stream().map(UkbProcedure::getPatientId),
+            ukbConditions.stream().map(UkbCondition::getPatientId))
+        .distinct()
+        .toList();
   }
 }

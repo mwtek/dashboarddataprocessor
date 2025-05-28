@@ -149,4 +149,11 @@ public abstract class AbstractDataRetrievalService implements DataRetrievalServi
     }
     return patientIds;
   }
+
+  public void logErrorRetrieval(String resourceType, Exception e) {
+    log.error(
+        "Retrieval {} resources: Unable to build a json module chain: {}",
+        resourceType,
+        e.getMessage());
+  }
 }
