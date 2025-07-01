@@ -51,7 +51,7 @@ public class AcribisDataItemTests extends DataItemTests {
   void testCurrentRecruitment() {
     assertNotNull(sampleData);
     assertFalse(sampleData.isEmpty());
-    verifyCurrentRecruitment(ACRIBIS, CURRENT_RECRUITMENT, 4, 0);
+    verifyCurrentRecruitment(ACRIBIS, CURRENT_RECRUITMENT, 6, 0);
   }
 
   @Test

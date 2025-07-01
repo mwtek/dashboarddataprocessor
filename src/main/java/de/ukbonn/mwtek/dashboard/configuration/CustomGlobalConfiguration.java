@@ -25,20 +25,15 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * This class is used to read out the global configuration of the dashboard processor.
- *
- * @author <a href="mailto:david.meyers@ukbonn.de">David Meyers</a>
- */
-@Configuration
-@ConfigurationProperties(prefix = "global")
 @Getter
 @Setter
+@Configuration
+@ConfigurationProperties(prefix = "global")
 public class CustomGlobalConfiguration extends GlobalConfiguration {
 
   /**
-   * The type of the server that is used for data retrieval whether its <i>FHIR</i> (any fhir
-   * server) or <i>ACUWAVE</i>
+   * Example additional property just for illustration. The type of the server used for data
+   * retrieval (e.g. FHIR, ACUWAVE).
    */
   private ServerTypeEnum serverType = ServerTypeEnum.FHIR;
 }

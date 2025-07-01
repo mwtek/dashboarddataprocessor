@@ -3490,6 +3490,558 @@
         "method": "PUT",
         "url": "Procedure/T-NO-ICU-BUT-VENT"
       }
+    },
+    {
+      "fullUrl": "Patient/T-SHORT-STAY-SEMI-STATIONARY",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "T-SHORT-STAY-SEMI-STATIONARY",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "T-SHORT-STAY-SEMI-STATIONARY"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Covid-Testpatient with a semi stationary short stay case",
+            "given": [
+              "Deceased"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1990-01-01",
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "line": [
+              "Street 33"
+            ],
+            "city": "Test city",
+            "postalCode": "12345",
+            "country": "DE"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/T-SHORT-STAY-SEMI-STATIONARY"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-SHORT-STAY-SEMI-STATIONARY-000000-EK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-SHORT-STAY-SEMI-STATIONARY-000000-EK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://fhir.de/StructureDefinition/Aufnahmegrund",
+            "extension": [
+              {
+                "url": "ErsteUndZweiteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundErsteUndZweiteStelle",
+                  "code": "01",
+                  "display": "KH-Behandlung, vollstat."
+                }
+              },
+              {
+                "url": "DritteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundDritteStelle",
+                  "code": "0",
+                  "display": "Anderes"
+                }
+              },
+              {
+                "url": "VierteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundVierteStelle",
+                  "code": "1",
+                  "display": "Normalfall"
+                }
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-SHORT-STAY-SEMI-STATIONARY"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "000000"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "EK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "SS",
+          "display": "short stay"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "einrichtungskontakt",
+                "display": "Einrichtungskontakt"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/kontaktart-de",
+                "code": "teilstationaer",
+                "display": "Teilstationäre Behandlung"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-SHORT-STAY-SEMI-STATIONARY"
+        },
+        "period": {
+          "start": "2022-08-01T10:00:00+02:00",
+          "end": "2022-08-10T17:00:00+02:00"
+        },
+        "hospitalization": {
+          "admitSource": {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/dgkev/Aufnahmeanlass",
+                "code": "A",
+                "display": "Verlegung (mit Behandlungsdauer im verlegenden Krankenhaus bis zu 24 Stunden)"
+              }
+            ]
+          },
+          "dischargeDisposition": {
+            "extension": [
+              {
+                "url": "http://fhir.de/StructureDefinition/Entlassungsgrund",
+                "extension": [
+                  {
+                    "url": "ErsteUndZweiteStelle",
+                    "valueCoding": {
+                      "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundErsteUndZweiteStelle",
+                      "code": "07",
+                      "display": "Tod"
+                    }
+                  },
+                  {
+                    "url": "DritteStelle",
+                    "valueCoding": {
+                      "system": "http://fhir.de/CodeSystem/dkgev/EntlassungsgrundDritteStelle",
+                      "code": "9",
+                      "display": "keine Angabe"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-SHORT-STAY-SEMI-STATIONARY-000000-EK"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-SHORT-STAY-SEMI-STATIONARY-22222222-AK-0-0",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-SHORT-STAY-SEMI-STATIONARY-22222222-AK-0-0",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-SHORT-STAY-SEMI-STATIONARY"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "22222222"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "AK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "SS",
+          "display": "short stay"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "abteilungskontakt",
+                "display": "Abteilungskontakt"
+              }
+            ]
+          }
+        ],
+        "serviceType": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel",
+              "code": "0300",
+              "display": "Kardiologie"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-SHORT-STAY-SEMI-STATIONARY"
+        },
+        "period": {
+          "start": "2022-08-01T10:00:00+02:00",
+          "end": "2022-08-10T17:00:00+02:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/T-222222"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "wa",
+                  "display": "Ward"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T10:00:00+02:00",
+              "end": "2022-08-10T17:00:00+02:00"
+            }
+          }
+        ],
+        "partOf": {
+          "reference": "Encounter/T-SHORT-STAY-SEMI-STATIONARY-000000-EK"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-SHORT-STAY-SEMI-STATIONARY-22222222-AK-0-0"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-SHORT-STAY-SEMI-STATIONARY-22222222-VK-0-0",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-SHORT-STAY-SEMI-STATIONARY-22222222-VK-0-0",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-SHORT-STAY-SEMI-STATIONARY"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "22222222"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "VK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "SS",
+          "display": "short stay"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "versorgungsstellenkontakt",
+                "display": "Versorgungsstellenkontakt"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/kontaktart-de",
+                "code": "teilstationaer",
+                "display": "Teilstationäre Behandlung"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-SHORT-STAY-SEMI-STATIONARY"
+        },
+        "period": {
+          "start": "2022-08-01T10:00:00+02:00",
+          "end": "2022-08-10T17:00:00+02:00"
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/T-222222"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "wa",
+                  "display": "Ward"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T10:00:00+02:00",
+              "end": "2022-08-10T17:00:00+02:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/T-333333"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "ro",
+                  "display": "Room"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T10:00:00+02:00",
+              "end": "2022-08-10T17:00:00+02:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/T-444444"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "bd",
+                  "display": "Bed"
+                }
+              ]
+            },
+            "period": {
+              "start": "2022-08-01T10:00:00+02:00",
+              "end": "2022-08-10T17:00:00+02:00"
+            }
+          }
+        ],
+        "partOf": {
+          "reference": "Encounter/T-SHORT-STAY-SEMI-STATIONARY-22222222-AK-0-0"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-SHORT-STAY-SEMI-STATIONARY-22222222-VK-0-0"
+      }
+    },
+    {
+      "fullUrl": "Observation/T-SHORT-STAY-SEMI-STATIONARY",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "T-SHORT-STAY-SEMI-STATIONARY",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-labor/StructureDefinition/ObservationLab"
+          ]
+        },
+        "identifier": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "OBI"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/observation",
+            "value": "T-SHORT-STAY-SEMI-STATIONARY",
+            "assigner": {
+              "identifier": {
+                "system": "https://www.medizininformatik-initiative.de/fhir/core/CodeSystem/core-location-identifier",
+                "value": "DIZ-ID"
+              }
+            }
+          }
+        ],
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "26436-6",
+                "display": "LABORATORY STUDIES"
+              },
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "laboratory",
+                "display": "laboratory"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "94306-8"
+            }
+          ],
+          "text": "SARS-Coronavirus-2-RNA [RT-PCR]"
+        },
+        "subject": {
+          "reference": "Patient/T-SHORT-STAY-SEMI-STATIONARY"
+        },
+        "encounter": {
+          "reference": "Encounter/T-SHORT-STAY-SEMI-STATIONARY-000000-EK"
+        },
+        "effectiveDateTime": "2022-08-01T12:00:00+02:00",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "10828004",
+              "display": "Positive"
+            }
+          ],
+          "text": "positiv"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/T-SHORT-STAY-SEMI-STATIONARY"
+      }
     }
   ]
 }

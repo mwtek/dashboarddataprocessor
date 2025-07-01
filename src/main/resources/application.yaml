@@ -17,6 +17,15 @@ global:
   #use-icu-undifferentiated: true
   ## Should procedures that don't have a linked encounter with at least one icu stay get filtered? [default: true]
   #check-procedures-icu-stays: true
+  ## Handle outpatient encounters with status = UNKNOWN as FINISHED
+  #use-outpatient-encounter-with-status-unknown: false
+  ## Threat in-progress encounter that got a period.end set as FINISHED [default: false]
+  #check-in-progress-period-end: true
+  ## Threat in-progress encounter that are older than the given date as FINISHED [default: null]
+  #check-in-progress-period-start:
+  #  older-than-x-days: 365
+  ## Optional: Ignore encounter from the updating process that are newer than the given base date [default: null]
+  #  base-date: 2025-01-21
   ## Comma-separated list of codes used for Corona patient identification (icd = Condition resources; loinc = Observation resources).
   inputcodes:
     ## ICD codes SARS-CoV-2
@@ -117,6 +126,7 @@ data-items:
   excludes:
     current.treatmentlevel: false
     current.maxtreatmentlevel: false
+    current.age.maxtreatmentlevel.normal_ward: false
     ## use-icu-undifferentiated needs to be "false" to allow parametrization of the following 3 items
     current.age.maxtreatmentlevel.icu: false
     current.age.maxtreatmentlevel.icu_with_ventilation: false

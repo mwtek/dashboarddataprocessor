@@ -15,20 +15,19 @@
  * OF THE POSSIBILITY OF SUCH DAMAGES. You should have received a copy of the GPL 3 license with *
  * this file. If not, visit http://www.gnu.de/documents/gpl-3.0.en.html
  */
+package de.ukbonn.mwtek.dashboard.controller;
 
-package de.ukbonn.mwtek.dashboard.examples;
+import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.conn.HttpHostConnectException;
+import org.hl7.fhir.r4.model.CapabilityStatement;
+import org.springframework.web.client.HttpClientErrorException;
 
-import de.ukbonn.mwtek.dashboardlogic.settings.GlobalConfiguration;
+@Slf4j
+public class StatusDataController {
 
-public class GlobalConfigurationExamples {
-
-  public static GlobalConfiguration getExampleSettings() {
-    GlobalConfiguration globalConfiguration = new GlobalConfiguration();
-    globalConfiguration.setUseIcuUndifferentiated(false);
-    globalConfiguration.setUsePartOfInsteadOfIdentifier(false);
-    globalConfiguration.setCheckProceduresIcuStays(true);
-    globalConfiguration.setDebug(true);
-    globalConfiguration.setUseOutpatientEncounterWithStatusUnknown(false);
-    return globalConfiguration;
+  public static CapabilityStatement generateData(AbstractDataRetrievalService dataRetrievalService)
+      throws HttpHostConnectException, HttpClientErrorException {
+    return dataRetrievalService.getStatus();
   }
 }

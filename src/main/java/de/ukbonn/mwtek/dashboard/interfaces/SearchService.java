@@ -22,6 +22,7 @@ import de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration;
 import java.util.List;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleLinkComponent;
+import org.hl7.fhir.r4.model.CapabilityStatement;
 import org.springframework.http.HttpMethod;
 
 /**
@@ -71,4 +72,17 @@ public interface SearchService {
    * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle} object
    */
   Bundle getBundlePart(String linkToNextPart, HttpMethod httpMethod);
+
+  /**
+   * If the query of all entries of a particular FHIR resource needs to be split (for performance
+   * reasons, for example), the meta-information must be retrieved at bundle level (e.g. the link to
+   * the next offset), not at bundle entry level.
+   *
+   * @param querySuffix The suffix with the FHIR search logic to be appended to the FHIR server
+   *     endpoint url (e.g. Patient?id=1).
+   * @param resourceType
+   * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle} object
+   */
+  CapabilityStatement getCapabilityStatement(
+      String querySuffix, HttpMethod httpMethod, String resourceType);
 }

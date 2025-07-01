@@ -79,6 +79,7 @@ import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.CapabilityStatement;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Encounter.EncounterStatus;
@@ -479,7 +480,8 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
                 encounterSet,
                 overallTotal,
                 icuLocationIdsServiceProvider,
-                serviceProviderIdentifierFound);
+                serviceProviderIdentifierFound,
+                getCustomGlobalConfiguration().getUseOutpatientEncounterWithStatusUnknown());
           } catch (Exception e) {
             // Log any errors encountered while processing the sublist
             log.error(
@@ -572,7 +574,7 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
               if (bundleEntry.getResource() instanceof Encounter encounter) {
                 UkbEncounter ukbEncounter = (UkbEncounter) ResourceConverter.convert(encounter);
                 // encounter needs to be valid, facility contact and inpatient or post-stationary
-                if (isEncounterStatusValid(ukbEncounter)
+                if (ukbEncounter.isEncounterStatusValid()
                     && isEncounterInpatientFacilityContact(ukbEncounter))
                   encounters.add(ukbEncounter);
               }
@@ -585,7 +587,8 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
       Set<UkbEncounter> encounterSet,
       AtomicLong overallTotal,
       Set<String> icuLocationIdsServiceProvider,
-      boolean serviceProviderIdentifierFound) {
+      boolean serviceProviderIdentifierFound,
+      boolean useOutpatientEncounterWithStatusUnknown) {
     var totalBundle = new Bundle();
     var initialBundle = new Bundle();
     switch (fhirSearchConfiguration.getHttpMethod()) {
@@ -623,7 +626,8 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
         encounterSet,
         icuLocationIdsServiceProvider,
         serviceProviderIdentifierFound,
-        dataItemContext);
+        dataItemContext,
+        useOutpatientEncounterWithStatusUnknown);
 
     // Handle pagination for additional pages of encounter resources
     while (initialBundle.hasLink() && initialBundle.getLink(NEXT) != null) {
@@ -635,7 +639,8 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
           encounterSet,
           icuLocationIdsServiceProvider,
           serviceProviderIdentifierFound,
-          dataItemContext);
+          dataItemContext,
+          useOutpatientEncounterWithStatusUnknown);
     }
   }
 
@@ -644,30 +649,50 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
       Set<UkbEncounter> encounterSet,
       Set<String> icuLocationIdsServiceProvider,
       boolean serviceProviderIdentifierFound,
-      DataItemContext dataItemContext) {
+      DataItemContext dataItemContext,
+      boolean useOutpatientEncounterWithStatusUnknown) {
     // Process each entry in the bundle
     bundle
         .getEntry()
         .forEach(
             bundleEntry -> {
               if (bundleEntry.getResource() instanceof Encounter encounter) {
+                UkbEncounter ukbEncounter =
+                    (UkbEncounter) ResourceConverter.convert(removeNotNeededAttributes(encounter));
+                updateEncounterStatusIfNeeded(
+                    useOutpatientEncounterWithStatusUnknown, ukbEncounter);
                 // Filtering of canceled / entered-in-error encounters
-                if (isEncounterStatusValid(encounter)) {
-                  UkbEncounter ukbEncounter =
-                      (UkbEncounter)
-                          ResourceConverter.convert(removeNotNeededAttributes(encounter));
+                if (ukbEncounter.isEncounterStatusValid()) {
                   // For acribis we just need inpatient cases
                   if (dataItemContext == KIDS_RADAR) {
                     if (!ukbEncounter.isFacilityContact() && !ukbEncounter.isCaseClassInpatient())
                       return;
                   }
                   encounterSet.add(ukbEncounter);
-
                   processEncounterLocations(
                       encounter, icuLocationIdsServiceProvider, serviceProviderIdentifierFound);
                 }
               }
             });
+  }
+
+  /**
+   * Updates the encounter status to {@link EncounterStatus#FINISHED} if the given encounter is an
+   * outpatient case and currently has the status {@link EncounterStatus#UNKNOWN}, and the feature
+   * flag to allow this update is enabled.
+   *
+   * @param useOutpatientEncounterWithStatusUnknown flag indicating whether outpatient encounters
+   *     with unknown status should be auto-finished
+   * @param ukbEncounter the encounter object to be checked and potentially updated
+   */
+  private static void updateEncounterStatusIfNeeded(
+      boolean useOutpatientEncounterWithStatusUnknown, UkbEncounter ukbEncounter) {
+
+    if (useOutpatientEncounterWithStatusUnknown
+        && ukbEncounter.isCaseClassOutpatient()
+        && ukbEncounter.getStatus() == EncounterStatus.UNKNOWN) {
+      ukbEncounter.setStatus(EncounterStatus.FINISHED);
+    }
   }
 
   private void processConditionBundle(
@@ -685,21 +710,6 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
                 } else filteredConditions.getAndIncrement();
               }
             });
-  }
-
-  /**
-   * Filtering of non-usable encounters, for example, if they got canceled or entered in error.
-   *
-   * <p>Since many data items rely explicit on {@link EncounterStatus#INPROGRESS) oder {@link
-   * EncounterStatus#FINISHED}} we filter already to the corresponding values.
-   */
-  private static boolean isEncounterStatusValid(Encounter encounter) {
-    if (!encounter.hasStatus()) return false;
-    else {
-      var encounterStatus = encounter.getStatus();
-      return (encounterStatus == EncounterStatus.INPROGRESS
-          || encounterStatus == EncounterStatus.FINISHED);
-    }
   }
 
   private void processEncounterLocations(
@@ -1141,5 +1151,10 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
   public List<CoreBaseDataItem> getUkbRenalReplacementUrineOutput(
       Collection<String> icuLocalCaseIds, DataSourceType dataSourceType) {
     return null;
+  }
+
+  @Override
+  public CapabilityStatement getStatus() {
+    return this.getSearchService().getCapabilityStatement("metadata", GET, null);
   }
 }

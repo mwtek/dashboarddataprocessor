@@ -32,6 +32,7 @@ import de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import org.hl7.fhir.r4.model.CapabilityStatement;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Location;
@@ -187,4 +188,6 @@ public interface DataRetrievalService {
 
   List<CoreBaseDataItem> getUkbRenalReplacementObservations(
       Collection<String> encounterIds, Set<Integer> codes);
+
+  public CapabilityStatement getStatus();
 }

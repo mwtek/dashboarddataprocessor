@@ -470,7 +470,8 @@ public class ResourceHandler {
 
   public static boolean isEncounterInpatientFacilityContact(UkbEncounter ukbEncounter) {
     return (ukbEncounter.isFacilityContact()
-        && (ukbEncounter.isCaseClassInpatient() || ukbEncounter.isCaseTypePostStationary()));
+        && (ukbEncounter.isCaseClassInpatientOrShortStay()
+            || ukbEncounter.isCaseTypePostStationary()));
   }
 
   public static void storeConsentPatientKeys(

@@ -28,6 +28,7 @@ import de.ukbonn.mwtek.dashboard.interfaces.SearchService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.CapabilityStatement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -89,6 +90,12 @@ public class AcuwaveSearchService extends RestConsumer implements SearchService 
 
   @Override
   public Bundle getBundlePart(String linkToNextPart, HttpMethod httpMethod) {
+    return null;
+  }
+
+  @Override
+  public CapabilityStatement getCapabilityStatement(
+      String querySuffix, HttpMethod httpMethod, String resourceType) {
     return null;
   }
 }

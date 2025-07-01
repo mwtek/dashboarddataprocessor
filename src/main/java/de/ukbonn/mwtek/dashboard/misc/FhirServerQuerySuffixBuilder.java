@@ -462,4 +462,8 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
       DataSourceType dataSourceType) {
     return null;
   }
+
+  public String getStatus(AbstractDataRetrievalService dataRetrievalService) {
+    return "metadata";
+  }
 }

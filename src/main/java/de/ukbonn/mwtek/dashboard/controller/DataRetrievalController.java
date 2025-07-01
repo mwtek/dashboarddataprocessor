@@ -61,6 +61,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +95,7 @@ public class DataRetrievalController {
 
   public static final String WORKFLOW_ABORTED = "Workflow aborted: ";
   public static final String CURRENT_DATASET_VERSION = "0.5.4";
-  public static final String CURRENT_DDP_VERSION = "0.5.4+update.11";
+  public static final String CURRENT_DDP_VERSION = "0.5.4+update.12";
   public static final String FILE_GENERATOR = "ddp";
   public static final String EXPORT_TIMESTAMP = "exporttimestamp";
   public static final String DDP_VERSION = "ddp_version";
@@ -159,27 +160,24 @@ public class DataRetrievalController {
     // Determine the data retrieval service for the server type used
     AbstractDataRetrievalService dataRetrievalService = determineDataRetrievalService();
 
+    var config = dataRetrievalService.getCustomGlobalConfiguration();
+    // Checking if any scope is activated via rest parametrization -> if so, overwrite the yaml
+    // settings
+    boolean anyScopeActivated =
+        Stream.of(COVID, INFLUENZA, KIDS_RADAR, UKB_MODEL, ACRIBIS)
+            .anyMatch(scope -> isScopeActivatedViaParameters(scopes, scope));
+
     boolean generateCovidData =
-        dataRetrievalService.getCustomGlobalConfiguration().getGenerateCovidData()
-            || isScopeActivatedViaParameters(scopes, COVID);
-
+        shouldGenerate(COVID, config.getGenerateCovidData(), scopes, anyScopeActivated);
     boolean generateInfluenzaData =
-        dataRetrievalService.getCustomGlobalConfiguration().getGenerateInfluenzaData()
-            || isScopeActivatedViaParameters(scopes, INFLUENZA);
-
+        shouldGenerate(INFLUENZA, config.getGenerateInfluenzaData(), scopes, anyScopeActivated);
     boolean generateKidsRadarData =
-        dataRetrievalService.getCustomGlobalConfiguration().getGenerateKidsRadarData()
-            || isScopeActivatedViaParameters(scopes, KIDS_RADAR);
-
+        shouldGenerate(KIDS_RADAR, config.getGenerateKidsRadarData(), scopes, anyScopeActivated);
     boolean generateUkbRenalReplacementModelData =
-        dataRetrievalService
-                .getCustomGlobalConfiguration()
-                .getGenerateUkbRenalReplacementModelData()
-            || isScopeActivatedViaParameters(scopes, UKB_MODEL);
-
+        shouldGenerate(
+            UKB_MODEL, config.getGenerateUkbRenalReplacementModelData(), scopes, anyScopeActivated);
     boolean generateAcribisData =
-        dataRetrievalService.getCustomGlobalConfiguration().getGenerateAcribisData()
-            || isScopeActivatedViaParameters(scopes, ACRIBIS);
+        shouldGenerate(ACRIBIS, config.getGenerateAcribisData(), scopes, anyScopeActivated);
 
     // If custom codes are set in the yaml file -> update the default values.
     InputCodeSettings inputCodeSettings =
@@ -377,5 +375,10 @@ public class DataRetrievalController {
   private ResponseEntity<String> handleError(Exception ex, String errorMessage, HttpStatus status) {
     logger.error(WORKFLOW_ABORTED, ex); // Log the exception stack trace
     return new ResponseEntity<>(errorMessage + "\n\n" + ex.getMessage(), status);
+  }
+
+  private boolean shouldGenerate(
+      DataItemContext scope, boolean configFlag, List<String> scopes, boolean anyScopeActivated) {
+    return isScopeActivatedViaParameters(scopes, scope) || (!anyScopeActivated && configFlag);
   }
 }

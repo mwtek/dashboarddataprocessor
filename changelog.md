@@ -1,6 +1,51 @@
+# Release Notes - Version V0.5.4+update.12
+
+01/Jul/25
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* New options to filter implausible data (in-progress encounter that got a `period.end` +
+  in-progress encounter that are older than x days)
+* A new endpoint (`/status`) is now existent that delivers feedback regarding the fhir server
+  connectivity and also the ddp version and some details about the ddp configuration.
+
+</div> 
+
+## Improvements
+
+<div style='margin-left:30px;'>
+
+* Semi-stationary cases are now also recognized if `Encounter.class` = `SS`.
+* Added a new semi-stationary covid case patients to the unit tests and examples
+
+</div> 
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* Both Level 1 and Level 2 codes are now checked during the Acribis consent checks.
+* Any parameterization of `scopes` in the rest call overwrites the yaml settings. No more
+  non-intuitive disjunctive logic.
+
+</div> 
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* Fixed a wrong positioned attribute in one of the fhir resources of the example data that also had
+  an impact on the unit test.
+* A rare bug that led to an index out of bounds exception in the kiradar data generation should
+  be fixed now.
+
+</div> 
+
 # Release Notes - Version V0.5.4+update.11
 
-XX/May/25
+28/May/25
 
 ## New Features
 

@@ -80,6 +80,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -95,6 +96,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.CapabilityStatement;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.EpisodeOfCare;
@@ -343,8 +345,9 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
     }
 
     // Splitting the entire list into smaller lists to parallelize requests
+    Set<String> stablePatientIds = new HashSet<>(patientIds);
     List<List<String>> patientIdSubLists =
-        splitList(new ArrayList<>(patientIds), this.getBatchSize());
+        splitList(new ArrayList<>(stablePatientIds), this.getBatchSize());
 
     patientIdSubLists.parallelStream()
         .forEach(
@@ -930,6 +933,11 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
             });
 
     return new ArrayList<>(CoreBaseDataItems);
+  }
+
+  @Override
+  public CapabilityStatement getStatus() {
+    return null;
   }
 
   private void logErrorMessageRenalReplacement(Exception e) {

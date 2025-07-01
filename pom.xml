@@ -30,14 +30,14 @@
   </parent>
   <groupId>de.ukbonn.mwtek</groupId>
   <artifactId>dashboarddataprocessor</artifactId>
-  <version>0.5.4+update.11</version>
+  <version>0.5.4+update.12</version>
   <name>dashboard-data-processor</name>
   <description>MII-FHIR-to-NUM-Dashboard-Processor</description>
   <properties>
     <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jackson-bom.version>2.18.3</jackson-bom.version>
-    <spring-boot.version>3.4.3</spring-boot.version>
+    <spring-boot.version>3.5.3</spring-boot.version>
     <project.version>${project.version}</project.version>
   </properties>
   <dependencies>

@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.Bundle.BundleLinkComponent;
+import org.hl7.fhir.r4.model.CapabilityStatement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -162,5 +163,22 @@ public class FhirSearchService extends RestConsumer implements SearchService {
 
     ResponseEntity<String> searchRequest = rest.getForEntity(linkToNextPartDecoded, String.class);
     return parser.parseResource(Bundle.class, searchRequest.getBody());
+  }
+
+  @Override
+  public CapabilityStatement getCapabilityStatement(
+      String querySuffix, HttpMethod httpMethod, String resourceType) {
+    IParser parser = ctx.newJsonParser();
+    String fhirServerEndpoint = this.fhirServerConf.getRestUrl();
+    RestTemplate rest = this.getRestTemplate();
+    switch (httpMethod) {
+      case GET -> {
+        String restUrl = fhirServerEndpoint + querySuffix;
+        log.debug(restUrl);
+        ResponseEntity<String> searchRequest = rest.getForEntity(restUrl, String.class);
+        return parser.parseResource(CapabilityStatement.class, searchRequest.getBody());
+      }
+    }
+    return null;
   }
 }

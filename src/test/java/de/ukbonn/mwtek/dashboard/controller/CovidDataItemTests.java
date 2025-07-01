@@ -103,19 +103,19 @@ public class CovidDataItemTests extends CovidInfluenzaDataItemTests {
   @Test
   @DisplayName("Testing cumulative.results")
   void testCumulativeResults() {
-    assertCumulativeResults(COVID, CUMULATIVE_RESULTS, 5, 0, 1);
+    assertCumulativeResults(COVID, CUMULATIVE_RESULTS, 6, 0, 1);
   }
 
   @Test
   @DisplayName("Testing cumulative.gender")
   void testCumulativeGender() {
-    assertCumulativeGender(COVID, CUMULATIVE_GENDER, 5, 1, 0);
+    assertCumulativeGender(COVID, CUMULATIVE_GENDER, 6, 1, 0);
   }
 
   @Test
   @DisplayName("Testing cumulative.inpatient.gender")
   void testCumulativeInpatientGender() {
-    assertCumulativeGender(COVID, CUMULATIVE_INPATIENT_GENDER, 4, 1, 0);
+    assertCumulativeGender(COVID, CUMULATIVE_INPATIENT_GENDER, 5, 1, 0);
   }
 
   @Test
@@ -134,7 +134,7 @@ public class CovidDataItemTests extends CovidInfluenzaDataItemTests {
   @Test
   @DisplayName("Testing cumulative.maxtreatmentlevel")
   void testCumulativeMaxTreatmentlevel() {
-    assertTreatmentLevel(COVID, CUMULATIVE_MAXTREATMENTLEVEL, 1, 2, 0, 1, 2);
+    assertTreatmentLevel(COVID, CUMULATIVE_MAXTREATMENTLEVEL, 1, 2, 1, 1, 2);
   }
 
   @Test
@@ -150,7 +150,7 @@ public class CovidDataItemTests extends CovidInfluenzaDataItemTests {
 
     assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659225600L, 0, ICU);
     assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659312000L, 1, ICU);
-    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659398400L, 2, ICU);
+    assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659398400L, 3, ICU);
 
     assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659225600L, 0, ICU_VENTILATION);
     assertTimelineValueByDay(COVID, TIMELINE_MAXTREATMENTLEVEL, 1659312000L, 0, ICU_VENTILATION);
