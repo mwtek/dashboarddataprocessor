@@ -14,13 +14,16 @@ The FHIR data can be provided via any standard compliant FHIR server that suppor
 simple) features of FHIR search. This should enable new sites to contribute to the dashboard with
 minimal additive effort if interoperable FHIR representations of operational data are already
 available.
-The development was supported by the German Federal Ministry of Science (
-Bundesministerium für Bildung und Forschung, BMBF) in the context of
+
+This work was previously funded by the German Federal Ministry of Education and Research (
+Bundesministerium für Bildung und Forschung, BMBF) within the framework of
 the [NUM RDP](https://www.netzwerk-universitaetsmedizin.de/projekte/num-rdp) (FKZ
-01KX2121), NUM CODEX (FKZ 01KX2121) and MII ADMIRE and SMITH (FKZ 01ZZ1602C, FKZ 01ZZ1803Q)
-projects and is further supported
-by [NUM RDP](https://www.netzwerk-universitaetsmedizin.de/projekte/num-rdp) (FKZ
-01KX2121).
+01KX2121), NUM CODEX (FKZ 01KX2121), as well as the MII ADMIRE and SMITH (FKZ 01ZZ1602C, FKZ
+01ZZ1803Q) projects. Current funding is provided by the Federal Ministry of Research, Technology and
+Space (Bundesministerium für Forschung, Technologie und Raumfahrt, BMFTR) as part of the NUM DIZ 3.0
+initiative (FKZ 01KX2524) and
+the [ACRIBiS project](https://www.medizininformatik-initiative.de/de/acribis-personalisierte-risikobewertungen-fuer-herz-kreislauferkrankungen) (
+FKZ 01ZZ2317A–O).
 
 For information regarding active participation in the dashboard endeavor, please contact us at
 ddp-support@ukbonn.de. For bug reports, improvement suggestions, and related technical
