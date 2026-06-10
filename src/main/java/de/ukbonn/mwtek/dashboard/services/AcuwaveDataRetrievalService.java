@@ -28,23 +28,34 @@ import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.Configurat
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.COVID_PROCEDURES_VENTILATION;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.INFLUENZA_CONDITIONS;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.INFLUENZA_OBSERVATIONS_PCR;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.KIDS_RADAR_CPAP;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.KIDS_RADAR_HIGH_FLOW;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.KIDS_RADAR_OPS_BASE;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.PREDICTION_MODEL_UKB_OBS_CODES;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.extractInputCodes;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.extractKidsRadarDiagnosisConditions;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.extractKidsRadarLoincCodes;
 import static de.ukbonn.mwtek.dashboard.misc.DateHelper.getCalendarYearsPeriod;
+import static de.ukbonn.mwtek.dashboard.misc.KiRaChecks.isConditionNeededForKiRa;
+import static de.ukbonn.mwtek.dashboard.misc.KiRaChecks.isProcedureNeededForKiRaPed;
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.logWarningForUnexpectedResource;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.encounterIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.locationIdsCouldBeFound;
 import static de.ukbonn.mwtek.dashboard.misc.ProcessHelper.patientIdsCouldBeFound;
+import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.addBroadConsentEntries;
 import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.addValidConsentEntries;
 import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.getPidsByProceduresAndConditions;
 import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.removeNotNeededAttributes;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DashboardLogicFixedValues.POSITIVE;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.ACRIBIS;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.BCT;
 import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.KJP;
-import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.RSV;
+import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.PED;
 import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.ICU;
 import static de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.enums.RenalReplacementRiskParameterCodes.VALID_LOINC_CODES_HIS;
 import static de.ukbonn.mwtek.dashboardlogic.tools.ObservationFilter.hasObservationLoincCode;
+import static de.ukbonn.mwtek.dashboardlogic.tools.ObservationFilter.isObservationValueGivenType;
+import static de.ukbonn.mwtek.utilities.generic.collections.ListTools.safeSplit;
 import static de.ukbonn.mwtek.utilities.generic.collections.ListTools.splitList;
 
 import de.ukbonn.mwtek.dashboard.DashboardApplication;
@@ -60,20 +71,27 @@ import de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer;
 import de.ukbonn.mwtek.dashboard.misc.ResourceHandler;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.Covid;
+import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.KidsRadar;
 import de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality;
 import de.ukbonn.mwtek.dashboardlogic.models.PidTimestampCohortMap;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
+import de.ukbonn.mwtek.dashboardlogic.settings.QualitativeLabCodesSettings;
 import de.ukbonn.mwtek.utilities.fhir.interfaces.CaseIdentifierValueProvider;
+import de.ukbonn.mwtek.utilities.fhir.interfaces.PatientIdentifierValueProvider;
 import de.ukbonn.mwtek.utilities.fhir.mapping.kdscase.valuesets.KdsEncounterFixedValues;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbConsent;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiCondition;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiConsent;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiEncounter;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiLocation;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiObservation;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiPatient;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiProcedure;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiQuestionnaireResponse;
 import de.ukbonn.mwtek.utilities.generic.collections.ListTools;
+import java.time.LocalDate;
 import java.time.Year;
+import java.time.ZoneId;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,6 +108,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -102,8 +121,8 @@ import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.EpisodeOfCare;
 import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Observation;
-import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Procedure;
+import org.hl7.fhir.r4.model.QuestionnaireResponse;
 import org.hl7.fhir.r4.model.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,6 +155,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
 
   @Getter @Setter private List<Integer> influenzaOrbisLabPcrCodes;
 
+  @Getter @Setter private List<Integer> rsvOrbisLabPcrCodes;
+
   Logger logger = LoggerFactory.getLogger(DashboardApplication.class);
 
   public AcuwaveDataRetrievalService(
@@ -159,6 +180,9 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
     this.setCovidLabPcrCodes(extractInputCodes(customGlobalConfiguration, COVID_OBSERVATIONS_PCR));
     this.setCovidLabVariantCodes(
         extractInputCodes(customGlobalConfiguration, COVID_OBSERVATIONS_VARIANTS));
+    this.setProcedureHighFlowCodes(
+        extractInputCodes(customGlobalConfiguration, KIDS_RADAR_HIGH_FLOW));
+    this.setProcedureCpapCodes(extractInputCodes(customGlobalConfiguration, KIDS_RADAR_CPAP));
     this.setProcedureVentilationCodes(
         extractInputCodes(customGlobalConfiguration, COVID_PROCEDURES_VENTILATION));
     this.setProcedureEcmoCodes(extractInputCodes(customGlobalConfiguration, COVID_PROCEDURES_ECMO));
@@ -178,7 +202,11 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
     this.setKidsRadarKjpIcdCodes(
         extractKidsRadarDiagnosisConditions(customGlobalConfiguration, KJP));
     this.setKidsRadarRsvIcdCodes(
-        extractKidsRadarDiagnosisConditions(customGlobalConfiguration, RSV));
+        extractKidsRadarDiagnosisConditions(customGlobalConfiguration, PED));
+    this.setKidsRadarRsvLoincCodes(extractKidsRadarLoincCodes(customGlobalConfiguration, PED));
+    this.setRsvOrbisLabPcrCodes(acuwaveSearchConfiguration.getRsvOrbisLabPcrCodes());
+    this.setKjpOpsCodePrefix(
+        extractInputCodes(customGlobalConfiguration, KIDS_RADAR_OPS_BASE).get(0));
   }
 
   private Map<String, Set<Integer>> readUkbObservationOrbisCodes(
@@ -213,7 +241,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                     this.getSearchService()
                         .getBundleData(
                             new AcuwaveQuerySuffixBuilder()
-                                .getObservations(this, month, false, dataItemContext),
+                                .getObservations(this, month, false, dataItemContext, true),
                             HttpMethod.GET,
                             null);
                 listTemp.forEach(
@@ -239,6 +267,72 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   @Override
+  public List<MiiObservation> getObservations(
+      Collection<MiiEncounter> encounters,
+      DataItemContext dataItemContext,
+      List<String> loincCodes,
+      QualitativeLabCodesSettings qualitativeLabCodesSettings)
+      throws RestClientException {
+
+    Set<MiiObservation> observations = ConcurrentHashMap.newKeySet();
+    Set<String> encounterCaseIds =
+        encounters.stream().map(CaseIdentifierValueProvider::getCaseId).collect(Collectors.toSet());
+
+    AtomicInteger nonPositiveCount = new AtomicInteger(0); // NEW counter
+    List<List<String>> encounterIdSubsets =
+        ListTools.splitList(new ArrayList<>(encounterCaseIds), this.getBatchSize());
+
+    encounterIdSubsets.parallelStream()
+        .forEach(
+            subList -> {
+              try {
+                List<Bundle.BundleEntryComponent> listTemp =
+                    this.getSearchService()
+                        .getBundleData(
+                            new AcuwaveQuerySuffixBuilder().getObservations(this, subList),
+                            HttpMethod.GET,
+                            null);
+
+                listTemp.forEach(
+                    bundleEntry -> {
+                      if (bundleEntry.getResource().getResourceType() == ResourceType.Observation) {
+                        Observation obs = (Observation) bundleEntry.getResource();
+                        removeNotNeededAttributes(obs);
+                        MiiObservation ukbObservation =
+                            (MiiObservation) ResourceConverter.convert(obs);
+
+                        switch (dataItemContext) {
+                          case KIDS_RADAR, KIDS_RADAR_PED -> {
+                            // Keep only POSITIVE observations
+                            if (isObservationValueGivenType(
+                                ukbObservation, POSITIVE, qualitativeLabCodesSettings)) {
+                              observations.add(ukbObservation);
+                            } else {
+                              // Count non-positive obs
+                              nonPositiveCount.incrementAndGet();
+                            }
+                          }
+                          default ->
+                              log.warn(
+                                  "Unhandled context {} found in the observation retrieval.",
+                                  dataItemContext);
+                        }
+                      }
+                    });
+              } catch (Exception e) {
+                logErrorRetrieval("Condition", e);
+              }
+            });
+
+    log.debug(
+        "{}/{} observations were filtered out because no 'positive' result were found.",
+        nonPositiveCount.get(),
+        observations.size() + nonPositiveCount.get());
+
+    return new ArrayList<>(observations);
+  }
+
+  @Override
   public List<Condition> getConditions(DataItemContext dataItemContext) {
     Set<Condition> setConditions = ConcurrentHashMap.newKeySet();
 
@@ -250,7 +344,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                     this.getSearchService()
                         .getBundleData(
                             new AcuwaveQuerySuffixBuilder()
-                                .getConditions(this, month, false, dataItemContext),
+                                .getConditions(this, month, false, dataItemContext, true),
                             HttpMethod.GET,
                             null);
                 listTemp.forEach(
@@ -270,9 +364,10 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   @Override
-  public List<UkbCondition> getConditions(Collection<UkbEncounter> encounters)
+  public List<MiiCondition> getConditions(
+      Collection<MiiEncounter> encounters, DataItemContext dataItemContext)
       throws RestClientException, OutOfMemoryError {
-    Set<UkbCondition> setConditions = ConcurrentHashMap.newKeySet();
+    Set<MiiCondition> setConditions = ConcurrentHashMap.newKeySet();
     Set<String> encounterCaseIds =
         encounters.stream().map(CaseIdentifierValueProvider::getCaseId).collect(Collectors.toSet());
     AtomicInteger filteredConditions = new AtomicInteger(0);
@@ -285,7 +380,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                 List<Bundle.BundleEntryComponent> listTemp =
                     this.getSearchService()
                         .getBundleData(
-                            new AcuwaveQuerySuffixBuilder().getConditions(this, subList),
+                            new AcuwaveQuerySuffixBuilder().getConditions(this, subList, null),
                             HttpMethod.GET,
                             null);
                 listTemp.forEach(
@@ -293,11 +388,25 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                       if (bundleEntry.getResource().getResourceType() == ResourceType.Condition) {
                         Condition cond = (Condition) bundleEntry.getResource();
                         removeNotNeededAttributes(cond);
-                        UkbCondition ukbCondition = (UkbCondition) ResourceConverter.convert(cond);
-                        if (isConditionNeededForAcribis(ukbCondition)) {
-                          setConditions.add(ukbCondition);
-                        } else {
-                          filteredConditions.incrementAndGet();
+                        MiiCondition ukbCondition = (MiiCondition) ResourceConverter.convert(cond);
+                        switch (dataItemContext) {
+                          case ACRIBIS -> {
+                            if (isConditionNeededForAcribis(ukbCondition)) {
+                              setConditions.add(ukbCondition);
+                            } else {
+                              filteredConditions.incrementAndGet();
+                            }
+                          }
+                          case KIDS_RADAR, KIDS_RADAR_PED -> {
+                            if (isConditionNeededForKiRa(
+                                ukbCondition,
+                                getKidsRadarIcdCodesPed(),
+                                getKidsRadarIcdCodesKjp())) {
+                              setConditions.add(ukbCondition);
+                            } else {
+                              filteredConditions.incrementAndGet();
+                            }
+                          }
                         }
                       }
                     });
@@ -313,9 +422,9 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   @Override
-  public List<Patient> getPatients(
-      List<UkbObservation> ukbObservations,
-      List<UkbCondition> ukbConditions,
+  public List<MiiPatient> getPatients(
+      List<MiiObservation> ukbObservations,
+      List<MiiCondition> ukbConditions,
       DataItemContext dataItemContext) {
 
     // A query is only useful if at least one patient id is specified.
@@ -323,7 +432,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
       return new ArrayList<>();
     }
 
-    Set<Patient> patientsOutput = ConcurrentHashMap.newKeySet();
+    Set<MiiPatient> patientsOutput = ConcurrentHashMap.newKeySet();
     // Since the patient (and thus also the encounter) resources are just relevant for statistics
     // of SARS-CoV-2 patient it reduces the amount of encounter by a lot if its getting
     // prefiltered before
@@ -359,13 +468,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                             new AcuwaveQuerySuffixBuilder().getPatients(this, patientIdList),
                             HttpMethod.GET,
                             null);
-                listTemp.forEach(
-                    bundleEntry -> {
-                      if (bundleEntry.getResource().getResourceType() == ResourceType.Patient) {
-                        patientsOutput.add((Patient) bundleEntry.getResource());
-                      }
-                    });
-
+                handlePatientRessource(listTemp, patientsOutput);
               } catch (Exception e) {
                 logErrorRetrieval("Patient", e);
               }
@@ -374,15 +477,61 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   @Override
-  public List<Patient> getPatients(
-      List<UkbProcedure> ukbProcedures, List<UkbCondition> ukbConditions) {
+  public List<MiiPatient> getPatients(Integer maxAgeAtCutOffDate, DataItemContext dataItemContext) {
+
+    Set<MiiPatient> patientsOutput = ConcurrentHashMap.newKeySet();
+    LocalDate startingDate;
+    // Since the patient (and thus also the encounter) resources are just relevant for statistics
+    // of SARS-CoV-2 patient, it reduces the amount of encounter by a lot if its getting
+    // prefiltered before
+    switch (dataItemContext) {
+      case KIDS_RADAR, KIDS_RADAR_PED ->
+          startingDate =
+              KidsRadar.QUALIFYING_DATE.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+      default ->
+          throw new IllegalArgumentException("Unsupported DataItemContext: " + dataItemContext);
+    }
+
+    int cutoffYear = startingDate.minusYears(maxAgeAtCutOffDate).getYear();
+    int currentYear = LocalDate.now().getYear();
+
+    // Parallel query for each year since cut-off-year till the current year
+    IntStream.rangeClosed(cutoffYear, currentYear)
+        .parallel()
+        .forEach(
+            year -> {
+              try {
+                List<Bundle.BundleEntryComponent> bundleEntries =
+                    this.getSearchService()
+                        .getBundleData(
+                            new AcuwaveQuerySuffixBuilder().getPatients(this, year),
+                            HttpMethod.GET,
+                            null);
+                handlePatientRessource(bundleEntries, patientsOutput);
+              } catch (Exception e) {
+                logErrorRetrieval("Patient query for calendar year " + year, e);
+              }
+            });
+
+    // The patient ids will be the input filter of further calls in the pipeline
+    patientIds =
+        patientsOutput.stream()
+            .map(PatientIdentifierValueProvider::getPatientId)
+            .collect(Collectors.toSet());
+
+    return new ArrayList<>(patientsOutput);
+  }
+
+  @Override
+  public List<MiiPatient> getPatients(
+      List<MiiProcedure> ukbProcedures, List<MiiCondition> ukbConditions) {
 
     // A query is only useful if at least one patient id is specified.
     if (!patientIdsCouldBeFound(patientIds, ResourceType.Patient)) {
       return new ArrayList<>();
     }
     List<String> patientIds = getPidsByProceduresAndConditions(ukbProcedures, ukbConditions);
-    Set<Patient> patientsOutput = ConcurrentHashMap.newKeySet();
+    Set<MiiPatient> patientsOutput = ConcurrentHashMap.newKeySet();
 
     // Splitting the entire list into smaller lists to parallelize requests
     List<List<String>> patientIdSubLists =
@@ -398,12 +547,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                             new AcuwaveQuerySuffixBuilder().getPatients(this, patientIdList),
                             HttpMethod.GET,
                             null);
-                listTemp.forEach(
-                    bundleEntry -> {
-                      if (bundleEntry.getResource().getResourceType() == ResourceType.Patient) {
-                        patientsOutput.add((Patient) bundleEntry.getResource());
-                      }
-                    });
+                handlePatientRessource(listTemp, patientsOutput);
 
               } catch (Exception e) {
                 logErrorRetrieval("Patient", e);
@@ -413,8 +557,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   @Override
-  public List<UkbEncounter> getEncounters(DataItemContext dataItemContext) {
-    Set<UkbEncounter> setEncounters = ConcurrentHashMap.newKeySet();
+  public List<MiiEncounter> getEncounters(DataItemContext dataItemContext) {
+    Set<MiiEncounter> setEncounters = ConcurrentHashMap.newKeySet();
 
     // A query is only useful if at least one patient id is specified.
     if (!patientIdsCouldBeFound(patientIds, ResourceType.Encounter)) {
@@ -422,8 +566,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
     }
 
     // Splitting the entire list into smaller lists to parallelize requests
-    List<List<String>> patientIdSubLists =
-        splitList(new ArrayList<>(patientIds), this.getBatchSize());
+    List<List<String>> patientIdSubLists = safeSplit(patientIds, this.getBatchSize());
 
     patientIdSubLists.parallelStream()
         .forEach(
@@ -463,29 +606,36 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   @Override
-  public List<UkbEncounter> getEncounters(PidTimestampCohortMap pidTimestampMap) {
+  public List<MiiEncounter> getEncounters(
+      DataItemContext dataItemContext, List<MiiPatient> patients) {
+    // Patients getting ignored since on acuwave side we got a patient id set
+    return getEncounters(dataItemContext);
+  }
+
+  @Override
+  public List<MiiEncounter> getEncounters(PidTimestampCohortMap pidTimestampMap) {
     throw new NotImplementedException();
   }
 
   private void handleEncounterEntry(
-      BundleEntryComponent bundleEntry, Set<UkbEncounter> setEncounters) {
+      BundleEntryComponent bundleEntry, Set<MiiEncounter> setEncounters) {
     Encounter encounter = (Encounter) bundleEntry.getResource();
     encounter
         .getLocation()
         .forEach(loc -> locationIds.add(loc.getLocation().getReference().split("/")[1]));
     setEncounters.add(
-        (UkbEncounter) ResourceConverter.convert(removeNotNeededAttributes(encounter)));
+        (MiiEncounter) ResourceConverter.convert(removeNotNeededAttributes(encounter)));
   }
 
   @Override
-  public List<UkbProcedure> getProcedures(DataItemContext dataItemContext) {
+  public List<MiiProcedure> getProcedures(DataItemContext dataItemContext) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public List<UkbProcedure> getProcedures(
-      Collection<UkbEncounter> encounters, DataItemContext dataItemContext) {
-    Set<UkbProcedure> setProcedures = ConcurrentHashMap.newKeySet();
+  public List<MiiProcedure> getProcedures(
+      Collection<MiiEncounter> encounters, DataItemContext dataItemContext) {
+    Set<MiiProcedure> setProcedures = ConcurrentHashMap.newKeySet();
     Set<String> encounterCaseIds =
         encounters.stream().map(CaseIdentifierValueProvider::getCaseId).collect(Collectors.toSet());
     AtomicInteger filteredProcedures = new AtomicInteger(0);
@@ -505,10 +655,10 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                     bundleEntry -> {
                       if (bundleEntry.getResource().getResourceType() == ResourceType.Procedure) {
                         Procedure procedure = (Procedure) bundleEntry.getResource();
-                        UkbProcedure ukbProcedure =
-                            (UkbProcedure) ResourceConverter.convert(procedure);
+                        MiiProcedure ukbProcedure =
+                            (MiiProcedure) ResourceConverter.convert(procedure);
                         if (isProcedureNeededForAcribis(ukbProcedure))
-                          setProcedures.add((UkbProcedure) ResourceConverter.convert(procedure));
+                          setProcedures.add((MiiProcedure) ResourceConverter.convert(procedure));
                         else filteredProcedures.incrementAndGet();
                       }
                     });
@@ -518,17 +668,78 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
             });
 
     log.debug(
-        "{} procedure resources got filtered because no needed ops code was found.",
+        "{} procedure resources got filtered because a non used ops code was found.",
         filteredProcedures.get());
     return new ArrayList<>(setProcedures);
   }
 
   @Override
-  public List<UkbProcedure> getProcedures(
-      List<UkbEncounter> ukbEncounters,
-      List<UkbLocation> listUkbLocations,
-      List<UkbObservation> listUkbObservations,
-      List<UkbCondition> listUkbConditions,
+  public List<MiiProcedure> getProcedures(
+      Collection<MiiEncounter> encounters,
+      DataItemContext dataItemContext,
+      Boolean activeEncountersOnly) {
+    Set<MiiProcedure> setProcedures = ConcurrentHashMap.newKeySet();
+    Set<String> encounterCaseIds =
+        encounters.stream().map(CaseIdentifierValueProvider::getCaseId).collect(Collectors.toSet());
+    AtomicInteger filteredProcedures = new AtomicInteger(0);
+    List<List<String>> encounterIdSubsets =
+        ListTools.splitList(new ArrayList<>(encounterCaseIds), this.getBatchSize());
+    encounterIdSubsets.parallelStream()
+        .forEach(
+            subList -> {
+              try {
+                List<Bundle.BundleEntryComponent> listTemp =
+                    this.getSearchService()
+                        .getBundleData(
+                            new AcuwaveQuerySuffixBuilder()
+                                .getIcuProcedures(
+                                    this,
+                                    acuwaveSearchConfiguration.getWardsCovidInfluenza(),
+                                    subList,
+                                    activeEncountersOnly),
+                            HttpMethod.GET,
+                            null);
+                listTemp.forEach(
+                    bundleEntry -> {
+                      if (bundleEntry.getResource().getResourceType() == ResourceType.Procedure) {
+                        Procedure procedure = (Procedure) bundleEntry.getResource();
+                        MiiProcedure ukbProcedure =
+                            (MiiProcedure) ResourceConverter.convert(procedure);
+                        switch (dataItemContext) {
+                          case KIDS_RADAR, KIDS_RADAR_PED, KIDS_RADAR_PED_RSV:
+                            {
+                              if (isProcedureNeededForKiRaPed(ukbProcedure))
+                                setProcedures.add(
+                                    (MiiProcedure) ResourceConverter.convert(procedure));
+                              else {
+                                filteredProcedures.incrementAndGet();
+                                log.debug(
+                                    "Procedure with snomed code {} got filtered",
+                                    ukbProcedure.getCode().getCodingFirstRep().getCode());
+                              }
+                            }
+                          default:
+                            setProcedures.add((MiiProcedure) ResourceConverter.convert(procedure));
+                        }
+                      }
+                    });
+              } catch (Exception e) {
+                logErrorRetrieval("Procedures", e);
+              }
+            });
+
+    log.debug(
+        "{} procedure resources got filtered because a non used snomed code was found.",
+        filteredProcedures.get());
+    return new ArrayList<>(setProcedures);
+  }
+
+  @Override
+  public List<MiiProcedure> getProcedures(
+      List<MiiEncounter> miiEncounters,
+      List<MiiLocation> listMiiLocations,
+      List<MiiObservation> listUkbObservations,
+      List<MiiCondition> listUkbConditions,
       DataItemContext dataItemContext) {
 
     // If no case ids could be found, no procedures need to be determined, because the evaluation
@@ -537,7 +748,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
       return new ArrayList<>();
     }
 
-    Set<UkbProcedure> setProcedures = ConcurrentHashMap.newKeySet();
+    Set<MiiProcedure> setProcedures = ConcurrentHashMap.newKeySet();
 
     // The finally used encounter id list which can differ from the original encounter id list
     // due to filtering steps
@@ -547,7 +758,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
     // Requires: encounter + maybe location resources
     if (acuwaveSearchConfiguration.getFilterProcedureRetrieval()) {
       // determine all the icu locations
-      Set<String> listIcuIds = getIcuLocationIds(listUkbLocations);
+      Set<String> listIcuIds = getIcuLocationIds(listMiiLocations);
 
       // add the orbis internal ids of non-ICU wards to the list if requested
       if (!acuwaveSearchConfiguration.getFilterProcedureRetrievalAdditionalWards().isEmpty()) {
@@ -555,7 +766,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
       }
 
       // figure out if encounter is inpatient
-      List<UkbEncounter> listEncountersInpatient = getInpatientEncounters(ukbEncounters);
+      List<MiiEncounter> listEncountersInpatient = getInpatientEncounters(miiEncounters);
 
       // get all the inpatient encounter ids with at least one icu transfer
       Set<String> listPatientsIcu = ConcurrentHashMap.newKeySet();
@@ -604,7 +815,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
       encounterIdsInput =
           listEncountersInpatient.parallelStream()
               .filter(x -> patientIdsIcuPositiveFindings.contains(x.getPatientId()))
-              .map(UkbEncounter::getCaseId)
+              .map(MiiEncounter::getCaseId)
               .collect(Collectors.toSet());
     } else
     // use total list then
@@ -638,7 +849,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                       bundleEntry -> {
                         if (bundleEntry.getResource().getResourceType() == ResourceType.Procedure) {
                           Procedure procedure = (Procedure) bundleEntry.getResource();
-                          setProcedures.add((UkbProcedure) ResourceConverter.convert(procedure));
+                          setProcedures.add((MiiProcedure) ResourceConverter.convert(procedure));
                         }
                       });
                 } catch (Exception e) {
@@ -655,13 +866,13 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   private static boolean doesEncounterLinkToAnyIcuLocation(
-      UkbEncounter enc, Set<String> listIcuIds) {
+      MiiEncounter enc, Set<String> listIcuIds) {
     return enc.getLocation().stream()
         .anyMatch(loc -> listIcuIds.contains(loc.getLocation().getReference().split("/")[1]));
   }
 
-  private static List<UkbEncounter> getInpatientEncounters(List<UkbEncounter> listUkbEncounters) {
-    return listUkbEncounters.parallelStream()
+  private static List<MiiEncounter> getInpatientEncounters(List<MiiEncounter> listMiiEncounters) {
+    return listMiiEncounters.parallelStream()
         .filter(Encounter::hasClass_)
         .filter(x -> x.getClass_().hasCode())
         .filter(
@@ -671,12 +882,12 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
         .toList();
   }
 
-  private static Set<String> getIcuLocationIds(List<UkbLocation> listUkbLocations) {
-    return listUkbLocations.parallelStream()
+  private static Set<String> getIcuLocationIds(List<MiiLocation> listMiiLocations) {
+    return listMiiLocations.parallelStream()
         .filter(Location::hasType)
         .filter(x -> x.getType().get(0).hasCoding())
         .filter(x -> x.getType().get(0).getCoding().get(0).getCode().equals(ICU.getValue()))
-        .map(UkbLocation::getId)
+        .map(MiiLocation::getId)
         .collect(Collectors.toSet());
   }
 
@@ -702,7 +913,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                 List<Bundle.BundleEntryComponent> listTemp =
                     this.getSearchService()
                         .getBundleData(
-                            new AcuwaveQuerySuffixBuilder().getLocations(this, locationIdSublist),
+                            new AcuwaveQuerySuffixBuilder()
+                                .getLocations(this, locationIdSublist, null),
                             HttpMethod.GET,
                             null);
                 listTemp.forEach(
@@ -719,8 +931,8 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   @Override
-  public List<UkbConsent> getConsents(Collection<UkbEncounter> ukbEncounters) {
-    Set<UkbConsent> consents = ConcurrentHashMap.newKeySet();
+  public List<MiiConsent> getConsents(Collection<MiiEncounter> miiEncounters) {
+    Set<MiiConsent> consents = ConcurrentHashMap.newKeySet();
     try {
       List<Bundle.BundleEntryComponent> listTemp =
           this.getSearchService()
@@ -729,11 +941,76 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
       listTemp.forEach(
           bundleEntry ->
               addValidConsentEntries(
-                  consents, ukbEncounters, patientIds, ServerTypeEnum.ACUWAVE, bundleEntry));
+                  consents, miiEncounters, patientIds, ServerTypeEnum.ACUWAVE, bundleEntry));
     } catch (Exception e) {
       logErrorRetrieval("Retrieval location resources: Unable to build a json module chain: {}", e);
     }
     return new ArrayList<>(consents);
+  }
+
+  @Override
+  public List<MiiConsent> getConsents() {
+    Set<MiiConsent> consents = ConcurrentHashMap.newKeySet();
+    try {
+      List<Bundle.BundleEntryComponent> listTemp =
+          this.getSearchService()
+              .getBundleData(
+                  new AcuwaveQuerySuffixBuilder().getConsents(this, BCT), HttpMethod.GET, null);
+      listTemp.forEach(
+          bundleEntry -> addBroadConsentEntries(consents, ServerTypeEnum.ACUWAVE, bundleEntry));
+    } catch (Exception e) {
+      logErrorRetrieval("Retrieval consents resources: Unable to build a json module chain: {}", e);
+    }
+    return new ArrayList<>(consents);
+  }
+
+  @Override
+  public List<MiiQuestionnaireResponse> getQuestionnaireResponses(List<String> patientIds) {
+    // If no case ids could be found, no procedures need to be determined, because the evaluation
+    // logic is based on data from the encounter resource.
+    if (!patientIdsCouldBeFound(patientIds, ResourceType.QuestionnaireResponse)) {
+      return new ArrayList<>();
+    }
+
+    Set<MiiQuestionnaireResponse> fhirResources = ConcurrentHashMap.newKeySet();
+
+    List<List<String>> patientIdSubLists =
+        splitList(new ArrayList<>(patientIds), this.getBatchSize());
+    // A query is only useful if at least one encounter id is specified.
+    if (!patientIdSubLists.isEmpty()) {
+      patientIdSubLists.parallelStream()
+          .forEach(
+              patientIdsSublist -> {
+                try {
+                  List<Bundle.BundleEntryComponent> listTemp =
+                      this.getSearchService()
+                          .getBundleData(
+                              new AcuwaveQuerySuffixBuilder()
+                                  .getQuestionnaireResponses(this, patientIdsSublist, null, true),
+                              HttpMethod.GET,
+                              null);
+                  if (!listTemp.isEmpty())
+                    listTemp.forEach(
+                        bundleEntry -> {
+                          if (bundleEntry.getResource().getResourceType()
+                              == ResourceType.QuestionnaireResponse) {
+                            QuestionnaireResponse res =
+                                (QuestionnaireResponse) bundleEntry.getResource();
+                            fhirResources.add(
+                                (MiiQuestionnaireResponse) ResourceConverter.convert(res));
+                          }
+                        });
+                } catch (Exception e) {
+                  logErrorRetrieval("QuestionnaireResponse", e);
+                }
+              });
+    } else {
+      logger.error(
+          "Unable to retrieve questionnaire response resources since no encounter ids could be"
+              + " determined.");
+    }
+
+    return new ArrayList<>(fhirResources);
   }
 
   public final ServerTypeEnum getServerType() {
@@ -841,15 +1118,15 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
                               // we need to convert the encounter resource to be able to use the
                               // "getCaseId"
                               // method
-                              UkbEncounter ukbEncounter =
-                                  (UkbEncounter) ResourceConverter.convert(encounter);
+                              MiiEncounter miiEncounter =
+                                  (MiiEncounter) ResourceConverter.convert(encounter);
                               encounter
                                   .getEpisodeOfCare()
                                   .forEach(
                                       encEpisodeRef ->
                                           episodeOfCareEncounterMap.put(
                                               encEpisodeRef.getResource().getIdElement().getValue(),
-                                              ukbEncounter.getCaseId()));
+                                              miiEncounter.getCaseId()));
                             }
                           }
                         });

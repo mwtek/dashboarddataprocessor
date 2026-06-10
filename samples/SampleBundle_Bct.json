@@ -1,0 +1,5738 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "Patient/PAT-WITH-BCT-CONSENT",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "PAT-WITH-BCT-CONSENT",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "PAT-WITH-BCT-CONSENT"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "PATIENT-WITH-APPROVED-BCT-CONSENT",
+            "given": [
+              "Deceased"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1950-01-01",
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "line": [
+              "Test avenue 33"
+            ],
+            "city": "Test city",
+            "postalCode": "12345",
+            "country": "EN"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/PAT-WITH-BCT-CONSENT"
+      }
+    },
+    {
+      "fullUrl": "Consent/TEST-BCT-PAT-1",
+      "resource": {
+        "resourceType": "Consent",
+        "id": "TEST-BCT-PAT-1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+          ]
+        },
+        "status": "active",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "research",
+              "display": "Research"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "57016-8",
+                "display": "Privacy policy acknowledgement Document"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category",
+                "code": "2.16.840.1.113883.3.1937.777.24.2.184"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/PAT-WITH-BCT-CONSENT",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "PAT-WITH-BCT-CONSENT"
+          }
+        },
+        "dateTime": "2025-01-27T00:00:00+01:00",
+        "organization": [
+          {
+            "display": "Universitätsklinikum Bonn"
+          }
+        ],
+        "policy": [
+          {
+            "uri": "urn:oid:2.16.840.1.113883.3.1937.777.24.2.1790"
+          }
+        ],
+        "provision": {
+          "type": "deny",
+          "period": {
+            "start": "2025-01-27T00:00:00+01:00",
+            "end": "2030-01-27T00:00:00+01:00"
+          },
+          "provision": [
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.11",
+                      "display": "KKDAT_5J_retro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.12",
+                      "display": "KKDAT_5J_retro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.13",
+                      "display": "KKDAT_5J_retro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.38",
+                      "display": "KKDAT_5J_retro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.1",
+                      "display": "PATDAT_erheben_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.2",
+                      "display": "IDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.3",
+                      "display": "IDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.4",
+                      "display": "IDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.5",
+                      "display": "IDAT_bereitstellen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.6",
+                      "display": "MDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.7",
+                      "display": "MDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.8",
+                      "display": "MDAT_wissenschaftlich_nutzen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.9",
+                      "display": "MDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.14",
+                      "display": "KKDAT_prospektiv_uebertragen_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.15",
+                      "display": "KKDAT_5J_pro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.16",
+                      "display": "KKDAT_5J_pro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.17",
+                      "display": "KKDAT_5J_pro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.39",
+                      "display": "KKDAT_5J_pro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.26",
+                      "display": "Rekontaktierung_Ergaenzungen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.27",
+                      "display": "Rekontaktierung_Verknuepfung_Datenbanken"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.28",
+                      "display": "Rekontaktierung_weitere_Erhebung"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.29",
+                      "display": "Rekontaktierung_weitere_Studien"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.37",
+                      "display": "Rekontaktierung_Ergebnisse_erheblicher_Bedeutung"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Consent/TEST-BCT-PAT-1"
+      }
+    },
+    {
+      "fullUrl": "Consent/TEST-BCT-PAT-1-2",
+      "resource": {
+        "resourceType": "Consent",
+        "id": "TEST-BCT-PAT-1-2",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+          ]
+        },
+        "status": "active",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "research",
+              "display": "Research"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "57016-8",
+                "display": "Privacy policy acknowledgement Document"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category",
+                "code": "2.16.840.1.113883.3.1937.777.24.2.184"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/PAT-WITH-BCT-CONSENT",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "PAT-WITH-BCT-CONSENT"
+          }
+        },
+        "dateTime": "2025-12-27T00:00:00+01:00",
+        "organization": [
+          {
+            "display": "Universitätsklinikum Bonn"
+          }
+        ],
+        "policy": [
+          {
+            "uri": "urn:oid:2.16.840.1.113883.3.1937.777.24.2.1790"
+          }
+        ],
+        "provision": {
+          "type": "deny",
+          "period": {
+            "start": "2025-12-27T00:00:00+01:00",
+            "end": "2030-12-27T00:00:00+01:00"
+          },
+          "provision": [
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.11",
+                      "display": "KKDAT_5J_retro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.12",
+                      "display": "KKDAT_5J_retro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.13",
+                      "display": "KKDAT_5J_retro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.38",
+                      "display": "KKDAT_5J_retro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.1",
+                      "display": "PATDAT_erheben_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.2",
+                      "display": "IDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.3",
+                      "display": "IDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.4",
+                      "display": "IDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.5",
+                      "display": "IDAT_bereitstellen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.6",
+                      "display": "MDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.7",
+                      "display": "MDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.8",
+                      "display": "MDAT_wissenschaftlich_nutzen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.9",
+                      "display": "MDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.44",
+                      "display": "Patientendaten retrospektiv verarbeiten, nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.45",
+                      "display": "MDAT retrospektiv speichern verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.46",
+                      "display": "MDAT retrospektiv wissenschaftlich nutzen EU DSGVO NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.47",
+                      "display": "MDAT retrospektiv zusammenfuehren Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.14",
+                      "display": "KKDAT_prospektiv_uebertragen_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.15",
+                      "display": "KKDAT_5J_pro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.16",
+                      "display": "KKDAT_5J_pro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.17",
+                      "display": "KKDAT_5J_pro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.39",
+                      "display": "KKDAT_5J_pro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.26",
+                      "display": "Rekontaktierung_Ergaenzungen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.27",
+                      "display": "Rekontaktierung_Verknuepfung_Datenbanken"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.28",
+                      "display": "Rekontaktierung_weitere_Erhebung"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.29",
+                      "display": "Rekontaktierung_weitere_Studien"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.37",
+                      "display": "Rekontaktierung_Ergebnisse_erheblicher_Bedeutung"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.50",
+                      "display": "Biomaterial retrospektiv speichern, nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.51",
+                      "display": "BIOMAT retrospektiv lagern verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.52",
+                      "display": "BIOMAT retrospektiv wissenschaftlich nutzen EU DSGVO NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-12-27T00:00:00+01:00",
+                "end": "2030-12-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.53",
+                      "display": "BIOMAT retrospektiv Analysedaten zusammenfuehren Dritte"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Consent/TEST-BCT-PAT-1-2"
+      }
+    },
+    {
+      "fullUrl": "Patient/PAT-2-WITH-BCT-CONSENT",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "PAT-2-WITH-BCT-CONSENT",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "PAT-2-WITH-BCT-CONSENT"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "PATIENT-NO-2-WITH-APPROVED-CONSENT",
+            "given": [
+              "Deceased"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1950-01-01",
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "line": [
+              "Test avenue 33"
+            ],
+            "city": "Test city",
+            "postalCode": "12345",
+            "country": "EN"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/PAT-2-WITH-BCT-CONSENT"
+      }
+    },
+    {
+      "fullUrl": "Consent/TEST-BCT-PAT-2-1",
+      "resource": {
+        "resourceType": "Consent",
+        "id": "TEST-BCT-PAT-2-1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+          ]
+        },
+        "status": "active",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "research",
+              "display": "Research"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "57016-8",
+                "display": "Privacy policy acknowledgement Document"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category",
+                "code": "2.16.840.1.113883.3.1937.777.24.2.184"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/PAT-2-WITH-BCT-CONSENT",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "PAT-2-WITH-BCT-CONSENT"
+          }
+        },
+        "dateTime": "2025-01-29T00:00:00+01:00",
+        "organization": [
+          {
+            "display": "Universitätsklinikum Bonn"
+          }
+        ],
+        "policy": [
+          {
+            "uri": "urn:oid:2.16.840.1.113883.3.1937.777.24.2.1790"
+          }
+        ],
+        "provision": {
+          "type": "deny",
+          "period": {
+            "start": "2025-01-29T00:00:00+01:00",
+            "end": "2030-01-27T00:00:00+01:00"
+          },
+          "provision": [
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.11",
+                      "display": "KKDAT_5J_retro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.12",
+                      "display": "KKDAT_5J_retro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.13",
+                      "display": "KKDAT_5J_retro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.38",
+                      "display": "KKDAT_5J_retro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.1",
+                      "display": "PATDAT_erheben_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.2",
+                      "display": "IDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.3",
+                      "display": "IDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.4",
+                      "display": "IDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.5",
+                      "display": "IDAT_bereitstellen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.6",
+                      "display": "MDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.7",
+                      "display": "MDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.8",
+                      "display": "MDAT_wissenschaftlich_nutzen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.9",
+                      "display": "MDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.14",
+                      "display": "KKDAT_prospektiv_uebertragen_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.15",
+                      "display": "KKDAT_5J_pro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.16",
+                      "display": "KKDAT_5J_pro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.17",
+                      "display": "KKDAT_5J_pro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.39",
+                      "display": "KKDAT_5J_pro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.26",
+                      "display": "Rekontaktierung_Ergaenzungen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.27",
+                      "display": "Rekontaktierung_Verknuepfung_Datenbanken"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.28",
+                      "display": "Rekontaktierung_weitere_Erhebung"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.29",
+                      "display": "Rekontaktierung_weitere_Studien"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.37",
+                      "display": "Rekontaktierung_Ergebnisse_erheblicher_Bedeutung"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Consent/TEST-BCT-PAT-2-1"
+      }
+    },
+    {
+      "fullUrl": "Patient/PAT-3-WITH-BCT-CONSENT-REVOKED",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "PAT-3-WITH-BCT-CONSENT-REVOKED",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "PAT-3-WITH-BCT-CONSENT-REVOKED"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "PATIENT-NO-2-WITH-APPROVED-CONSENT",
+            "given": [
+              "Deceased"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1950-01-01",
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "line": [
+              "Test avenue 33"
+            ],
+            "city": "Test city",
+            "postalCode": "12345",
+            "country": "EN"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/PAT-3-WITH-BCT-CONSENT-REVOKED"
+      }
+    },
+    {
+      "fullUrl": "Consent/TEST-BCT-PAT-3-REVOKED",
+      "resource": {
+        "resourceType": "Consent",
+        "id": "TEST-BCT-PAT-3-REVOKED",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+          ]
+        },
+        "status": "rejected",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "research",
+              "display": "Research"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "57016-8",
+                "display": "Privacy policy acknowledgement Document"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category",
+                "code": "2.16.840.1.113883.3.1937.777.24.2.184"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/PAT-3-WITH-BCT-CONSENT-REVOKED",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "PAT-3-WITH-BCT-CONSENT-REVOKED"
+          }
+        },
+        "dateTime": "2025-04-03T00:00:00+01:00",
+        "organization": [
+          {
+            "display": "Universitätsklinikum Bonn"
+          }
+        ],
+        "policy": [
+          {
+            "uri": "urn:oid:2.16.840.1.113883.3.1937.777.24.2.1790"
+          }
+        ],
+        "provision": {
+          "type": "deny",
+          "period": {
+            "start": "2025-04-03T00:00:00+02:00",
+            "end": "2030-04-03T00:00:00+02:00"
+          },
+          "provision": [
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.11",
+                      "display": "KKDAT_5J_retro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.12",
+                      "display": "KKDAT_5J_retro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.13",
+                      "display": "KKDAT_5J_retro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.38",
+                      "display": "KKDAT_5J_retro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.1",
+                      "display": "PATDAT_erheben_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.2",
+                      "display": "IDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.3",
+                      "display": "IDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.4",
+                      "display": "IDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.5",
+                      "display": "IDAT_bereitstellen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.6",
+                      "display": "MDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.7",
+                      "display": "MDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.8",
+                      "display": "MDAT_wissenschaftlich_nutzen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.9",
+                      "display": "MDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.14",
+                      "display": "KKDAT_prospektiv_uebertragen_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.15",
+                      "display": "KKDAT_5J_pro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.16",
+                      "display": "KKDAT_5J_pro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.17",
+                      "display": "KKDAT_5J_pro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.39",
+                      "display": "KKDAT_5J_pro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.26",
+                      "display": "Rekontaktierung_Ergaenzungen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.27",
+                      "display": "Rekontaktierung_Verknuepfung_Datenbanken"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.28",
+                      "display": "Rekontaktierung_weitere_Erhebung"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.29",
+                      "display": "Rekontaktierung_weitere_Studien"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.37",
+                      "display": "Rekontaktierung_Ergebnisse_erheblicher_Bedeutung"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Consent/TEST-BCT-PAT-3-REVOKED"
+      }
+    },
+    {
+      "fullUrl": "Patient/PAT-4-WITH-BCT-CONSENT-REVOKED-PERMIT",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "PAT-4-WITH-BCT-CONSENT-REVOKED-PERMIT",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "PAT-4-WITH-BCT-CONSENT-REVOKED-PERMIT"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "PATIENT-NO-2-WITH-APPROVED-CONSENT",
+            "given": [
+              "Deceased"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1950-01-01",
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "line": [
+              "Test avenue 33"
+            ],
+            "city": "Test city",
+            "postalCode": "12345",
+            "country": "EN"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/PAT-4-WITH-BCT-CONSENT-REVOKED-PERMIT"
+      }
+    },
+    {
+      "fullUrl": "Consent/TEST-BCT-PAT-4-REVOKED",
+      "resource": {
+        "resourceType": "Consent",
+        "id": "TEST-BCT-PAT-4-REVOKED",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+          ]
+        },
+        "status": "rejected",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "research",
+              "display": "Research"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "57016-8",
+                "display": "Privacy policy acknowledgement Document"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category",
+                "code": "2.16.840.1.113883.3.1937.777.24.2.184"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/PAT-4-WITH-BCT-CONSENT-REVOKED-PERMIT",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "PAT-4-WITH-BCT-CONSENT-REVOKED-PERMIT"
+          }
+        },
+        "dateTime": "2025-04-03T00:00:00+01:00",
+        "organization": [
+          {
+            "display": "Universitätsklinikum Bonn"
+          }
+        ],
+        "policy": [
+          {
+            "uri": "urn:oid:2.16.840.1.113883.3.1937.777.24.2.1790"
+          }
+        ],
+        "provision": {
+          "type": "deny",
+          "period": {
+            "start": "2025-04-03T00:00:00+02:00",
+            "end": "2030-04-03T00:00:00+02:00"
+          },
+          "provision": [
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.11",
+                      "display": "KKDAT_5J_retro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.12",
+                      "display": "KKDAT_5J_retro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.13",
+                      "display": "KKDAT_5J_retro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.38",
+                      "display": "KKDAT_5J_retro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.1",
+                      "display": "PATDAT_erheben_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.2",
+                      "display": "IDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.3",
+                      "display": "IDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.4",
+                      "display": "IDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.5",
+                      "display": "IDAT_bereitstellen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.6",
+                      "display": "MDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.7",
+                      "display": "MDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.8",
+                      "display": "MDAT_wissenschaftlich_nutzen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.9",
+                      "display": "MDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.14",
+                      "display": "KKDAT_prospektiv_uebertragen_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.15",
+                      "display": "KKDAT_5J_pro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.16",
+                      "display": "KKDAT_5J_pro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.17",
+                      "display": "KKDAT_5J_pro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.39",
+                      "display": "KKDAT_5J_pro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.26",
+                      "display": "Rekontaktierung_Ergaenzungen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.27",
+                      "display": "Rekontaktierung_Verknuepfung_Datenbanken"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.28",
+                      "display": "Rekontaktierung_weitere_Erhebung"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.29",
+                      "display": "Rekontaktierung_weitere_Studien"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-04-03T00:00:00+02:00",
+                "end": "2030-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.37",
+                      "display": "Rekontaktierung_Ergebnisse_erheblicher_Bedeutung"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Consent/TEST-BCT-PAT-4-REVOKED"
+      }
+    },
+    {
+      "fullUrl": "Consent/TEST-BCT-PAT-4-REVOKED-PERMIT",
+      "resource": {
+        "resourceType": "Consent",
+        "id": "TEST-BCT-PAT-4-REVOKED-PERMIT",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+          ]
+        },
+        "status": "active",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "research",
+              "display": "Research"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "57016-8",
+                "display": "Privacy policy acknowledgement Document"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category",
+                "code": "2.16.840.1.113883.3.1937.777.24.2.184"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/PAT-4-WITH-BCT-CONSENT-REVOKED-PERMIT",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "PAT-4-WITH-BCT-CONSENT-REVOKED-PERMIT"
+          }
+        },
+        "dateTime": "2025-05-03T00:00:00+01:00",
+        "organization": [
+          {
+            "display": "Universitätsklinikum Bonn"
+          }
+        ],
+        "policy": [
+          {
+            "uri": "urn:oid:2.16.840.1.113883.3.1937.777.24.2.1790"
+          }
+        ],
+        "provision": {
+          "type": "deny",
+          "period": {
+            "start": "2025-05-03T00:00:00+02:00",
+            "end": "2030-05-03T00:00:00+02:00"
+          },
+          "provision": [
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.11",
+                      "display": "KKDAT_5J_retro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.12",
+                      "display": "KKDAT_5J_retro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.13",
+                      "display": "KKDAT_5J_retro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.38",
+                      "display": "KKDAT_5J_retro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.1",
+                      "display": "PATDAT_erheben_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.2",
+                      "display": "IDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.3",
+                      "display": "IDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.4",
+                      "display": "IDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.5",
+                      "display": "IDAT_bereitstellen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.6",
+                      "display": "MDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.7",
+                      "display": "MDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.8",
+                      "display": "MDAT_wissenschaftlich_nutzen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.9",
+                      "display": "MDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.14",
+                      "display": "KKDAT_prospektiv_uebertragen_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.15",
+                      "display": "KKDAT_5J_pro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.16",
+                      "display": "KKDAT_5J_pro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.17",
+                      "display": "KKDAT_5J_pro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.39",
+                      "display": "KKDAT_5J_pro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.26",
+                      "display": "Rekontaktierung_Ergaenzungen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.27",
+                      "display": "Rekontaktierung_Verknuepfung_Datenbanken"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.28",
+                      "display": "Rekontaktierung_weitere_Erhebung"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.29",
+                      "display": "Rekontaktierung_weitere_Studien"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-05-03T00:00:00+02:00",
+                "end": "2030-05-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.37",
+                      "display": "Rekontaktierung_Ergebnisse_erheblicher_Bedeutung"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Consent/TEST-BCT-PAT-4-REVOKED-PERMIT"
+      }
+    },
+    {
+      "fullUrl": "Patient/PAT-5-WITH-BCT-CONSENT-PERMIT-PERMIT",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "PAT-5-WITH-BCT-CONSENT-PERMIT-PERMIT",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "PAT-5-WITH-BCT-CONSENT-PERMIT-PERMIT"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "PATIENT-NO-2-WITH-APPROVED-CONSENT",
+            "given": [
+              "Deceased"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1950-01-01",
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "line": [
+              "Test avenue 33"
+            ],
+            "city": "Test city",
+            "postalCode": "12345",
+            "country": "EN"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/PAT-5-WITH-BCT-CONSENT-PERMIT-PERMIT"
+      }
+    },
+    {
+      "fullUrl": "Consent/TEST-BCT-PAT-5-PERMIT",
+      "resource": {
+        "resourceType": "Consent",
+        "id": "TEST-BCT-PAT-5-PERMIT",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+          ]
+        },
+        "status": "active",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "research",
+              "display": "Research"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "57016-8",
+                "display": "Privacy policy acknowledgement Document"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category",
+                "code": "2.16.840.1.113883.3.1937.777.24.2.184"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/PAT-5-WITH-BCT-CONSENT-PERMIT-PERMIT",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "PAT-5-WITH-BCT-CONSENT-PERMIT-PERMIT"
+          }
+        },
+        "dateTime": "2020-05-05T00:00:00+02:00",
+        "organization": [
+          {
+            "display": "Universitätsklinikum Bonn"
+          }
+        ],
+        "policy": [
+          {
+            "uri": "urn:oid:2.16.840.1.113883.3.1937.777.24.2.1790"
+          }
+        ],
+        "provision": {
+          "type": "deny",
+          "period": {
+            "start": "2020-05-05T00:00:00+02:00",
+            "end": "2025-05-05T00:00:00+02:00"
+          },
+          "provision": [
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.11",
+                      "display": "KKDAT_5J_retro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.12",
+                      "display": "KKDAT_5J_retro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.13",
+                      "display": "KKDAT_5J_retro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.38",
+                      "display": "KKDAT_5J_retro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.1",
+                      "display": "PATDAT_erheben_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.2",
+                      "display": "IDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.3",
+                      "display": "IDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.4",
+                      "display": "IDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.5",
+                      "display": "IDAT_bereitstellen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.6",
+                      "display": "MDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.7",
+                      "display": "MDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.8",
+                      "display": "MDAT_wissenschaftlich_nutzen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.9",
+                      "display": "MDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.14",
+                      "display": "KKDAT_prospektiv_uebertragen_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.15",
+                      "display": "KKDAT_5J_pro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.16",
+                      "display": "KKDAT_5J_pro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.17",
+                      "display": "KKDAT_5J_pro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.39",
+                      "display": "KKDAT_5J_pro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.26",
+                      "display": "Rekontaktierung_Ergaenzungen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.27",
+                      "display": "Rekontaktierung_Verknuepfung_Datenbanken"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.28",
+                      "display": "Rekontaktierung_weitere_Erhebung"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.29",
+                      "display": "Rekontaktierung_weitere_Studien"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2020-05-05T00:00:00+02:00",
+                "end": "2025-05-05T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.37",
+                      "display": "Rekontaktierung_Ergebnisse_erheblicher_Bedeutung"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Consent/TEST-BCT-PAT-5-PERMIT"
+      }
+    },
+    {
+      "fullUrl": "Consent/TEST-BCT-PAT-5-PERMIT-PERMIT",
+      "resource": {
+        "resourceType": "Consent",
+        "id": "TEST-BCT-PAT-5-PERMIT-PERMIT",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+          ]
+        },
+        "status": "active",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "research",
+              "display": "Research"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "57016-8",
+                "display": "Privacy policy acknowledgement Document"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category",
+                "code": "2.16.840.1.113883.3.1937.777.24.2.184"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/PAT-5-WITH-BCT-CONSENT-PERMIT-PERMIT",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "PAT-5-WITH-BCT-CONSENT-PERMIT-PERMIT"
+          }
+        },
+        "dateTime": "2025-10-01T00:00:00+02:00",
+        "organization": [
+          {
+            "display": "Universitätsklinikum Bonn"
+          }
+        ],
+        "policy": [
+          {
+            "uri": "urn:oid:2.16.840.1.113883.3.1937.777.24.2.1790"
+          }
+        ],
+        "provision": {
+          "type": "deny",
+          "period": {
+            "start": "2025-10-01T00:00:00+02:00",
+            "end": "2030-10-01T00:00:00+02:00"
+          },
+          "provision": [
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.11",
+                      "display": "KKDAT_5J_retro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.12",
+                      "display": "KKDAT_5J_retro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.13",
+                      "display": "KKDAT_5J_retro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.38",
+                      "display": "KKDAT_5J_retro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.1",
+                      "display": "PATDAT_erheben_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.2",
+                      "display": "IDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.3",
+                      "display": "IDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.4",
+                      "display": "IDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.5",
+                      "display": "IDAT_bereitstellen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.6",
+                      "display": "MDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.7",
+                      "display": "MDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.8",
+                      "display": "MDAT_wissenschaftlich_nutzen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.9",
+                      "display": "MDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.14",
+                      "display": "KKDAT_prospektiv_uebertragen_speichern_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.15",
+                      "display": "KKDAT_5J_pro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.16",
+                      "display": "KKDAT_5J_pro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.17",
+                      "display": "KKDAT_5J_pro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.39",
+                      "display": "KKDAT_5J_pro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.26",
+                      "display": "Rekontaktierung_Ergaenzungen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.27",
+                      "display": "Rekontaktierung_Verknuepfung_Datenbanken"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.28",
+                      "display": "Rekontaktierung_weitere_Erhebung"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.29",
+                      "display": "Rekontaktierung_weitere_Studien"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.30",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2025-10-01T00:00:00+02:00",
+                "end": "2030-10-01T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.37",
+                      "display": "Rekontaktierung_Ergebnisse_erheblicher_Bedeutung"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Consent/TEST-BCT-PAT-5-PERMIT-PERMIT"
+      }
+    }
+  ]
+}

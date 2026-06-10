@@ -19,6 +19,7 @@ package de.ukbonn.mwtek.dashboard.controller;
 
 import static de.ukbonn.mwtek.dashboard.misc.AcribisChecks.calculateValidTimestampsByPid;
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.logAbortWorkflowMessage;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.ACRIBIS;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.ukbonn.mwtek.dashboard.configuration.CustomGlobalConfiguration;
@@ -37,11 +38,12 @@ import de.ukbonn.mwtek.dashboardlogic.models.PidTimestampCohortMap;
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
 import de.ukbonn.mwtek.dashboardlogic.settings.QualitativeLabCodesSettings;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbConsent;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiCondition;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiConsent;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiEncounter;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiPatient;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiProcedure;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiQuestionnaireResponse;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -68,55 +70,65 @@ public class AcribisDataController {
     // map fhir resources into ukb resources
     // Unusual in the acuwave workflow is
     // that the consent call also gives the valid encounter resources back.
-    List<UkbEncounter> ukbEncounters = new ArrayList<>();
+    List<MiiEncounter> miiEncounters = new ArrayList<>();
     // Retrieve consent data and also the valid encounters if acuwave server used
-    List<UkbConsent> ukbConsents = dataRetrievalService.getConsents(ukbEncounters);
-    List<UkbCondition> ukbConditions = new ArrayList<>();
-    List<UkbProcedure> ukbProcedures = new ArrayList<>();
-    List<UkbPatient> ukbPatients = new ArrayList<>();
+    List<MiiConsent> miiConsents = dataRetrievalService.getConsents(miiEncounters);
+    List<MiiCondition> miiConditions = new ArrayList<>();
+    List<MiiProcedure> miiProcedures = new ArrayList<>();
+    List<MiiPatient> miiPatients = new ArrayList<>();
+    List<MiiQuestionnaireResponse> miiQuestionnaireResponses = new ArrayList<>();
 
-    processTimer.stopLoggingTime(ukbConsents);
+    processTimer.stopLoggingTime(miiConsents);
 
-    if (!ukbConsents.isEmpty()) {
+    if (!miiConsents.isEmpty()) {
       // The FHIR search is a combination of encounter id and validity date
       if (globalConfiguration.getServerType() == ServerTypeEnum.FHIR) {
-        PidTimestampCohortMap pidTimestampMap = calculateValidTimestampsByPid(ukbConsents);
-        ukbEncounters = dataRetrievalService.getEncounters(pidTimestampMap);
+        PidTimestampCohortMap pidTimestampMap = calculateValidTimestampsByPid(miiConsents);
+        miiEncounters = dataRetrievalService.getEncounters(pidTimestampMap);
       }
     }
 
-    if (!ukbEncounters.isEmpty()) {
+    if (!miiEncounters.isEmpty()) {
       // Retrieval of condition resources
       processTimer.startLoggingTime(ResourceType.Condition);
-      ukbConditions =
-          (List<UkbCondition>)
-              ResourceConverter.convert(dataRetrievalService.getConditions(ukbEncounters));
-      processTimer.stopLoggingTime(ukbConditions);
+      miiConditions =
+          (List<MiiCondition>)
+              ResourceConverter.convert(dataRetrievalService.getConditions(miiEncounters, ACRIBIS));
+      processTimer.stopLoggingTime(miiConditions);
 
       // Retrieval of procedure resources
-      ukbProcedures = dataRetrievalService.getProcedures(ukbEncounters, dataItemContext);
-      processTimer.stopLoggingTime(ukbProcedures);
+      miiProcedures = dataRetrievalService.getProcedures(miiEncounters, dataItemContext);
+      processTimer.stopLoggingTime(miiProcedures);
 
       // Retrieval of the Patient resources
       processTimer.startLoggingTime(ResourceType.Patient);
-      ukbPatients =
-          (List<UkbPatient>)
-              ResourceConverter.convert(
-                  dataRetrievalService.getPatients(ukbProcedures, ukbConditions));
-      processTimer.stopLoggingTime(ukbPatients);
+      miiPatients = dataRetrievalService.getPatients(miiProcedures, miiConditions);
+      processTimer.stopLoggingTime(miiPatients);
+
+      // Retrieval of the Questionnaire response resources for the follow-up
+      processTimer.startLoggingTime(ResourceType.QuestionnaireResponse);
+      miiQuestionnaireResponses =
+          dataRetrievalService.getQuestionnaireResponses(
+              getPatientIdsFromAcribisConsent(miiConsents));
+      processTimer.stopLoggingTime(miiQuestionnaireResponses);
     }
 
-    if (ukbConsents.isEmpty()) {
-      logAbortWorkflowMessage(null, DataItemContext.ACRIBIS);
+    if (miiConsents.isEmpty()) {
+      logAbortWorkflowMessage(null, ACRIBIS);
       return new ArrayList<>();
     }
     processTimer.startLoggingTime("Processing logic");
 
     // Start of the processing logic
-    // Formatting of resources in json specification
+    // Formatting of resources in JSON specification
     DataItemGenerator dataItemGenerator =
         new AcribisDataItemGenerator(
-            ukbConsents, ukbConditions, ukbPatients, ukbEncounters, ukbProcedures);
+            miiConsents,
+            miiConditions,
+            miiPatients,
+            miiEncounters,
+            miiProcedures,
+            miiQuestionnaireResponses);
 
     // Creation of the data items of the dataset specification
     List<DiseaseDataItem> dataItems =
@@ -131,14 +143,22 @@ public class AcribisDataController {
 
     // Add resource sizes information to the output if needed
     if (globalConfiguration.getDebug()) {
-      result.put("acribisConsentsSize", ukbConsents.size());
-      result.put("acribisEncountersSize", ukbEncounters.size());
-      result.put("acribisPatientsSize", ukbPatients.size());
-      result.put("acribisConditionsSize", ukbConditions.size());
-      result.put("acribisProceduresSize", ukbProcedures.size());
+      result.put("acribisConsentsSize", miiConsents.size());
+      result.put("acribisEncountersSize", miiEncounters.size());
+      result.put("acribisPatientsSize", miiPatients.size());
+      result.put("acribisConditionsSize", miiConditions.size());
+      result.put("acribisProceduresSize", miiProcedures.size());
+      result.put("acribisQuestionnaireResponsesSize", miiQuestionnaireResponses.size());
     }
     processTimer.stopLoggingTime();
 
     return dataItems;
+  }
+
+  private static List<String> getPatientIdsFromAcribisConsent(List<MiiConsent> miiConsents) {
+    return miiConsents.stream()
+        .filter(MiiConsent::isAcribisConsentAllowed)
+        .map(MiiConsent::getPatientId)
+        .toList();
   }
 }

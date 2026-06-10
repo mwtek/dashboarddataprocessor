@@ -18,18 +18,23 @@
 
 package de.ukbonn.mwtek.dashboard.examples;
 
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.CPAP_SNOMED_CODE;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_ICD_CODES_COVID;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_ICD_CODES_INFLUENZA;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_KIDS_RADAR_KJP_OPS_CODE_PREFIX;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_KIDS_RADAR_MAP;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_KIDS_RADAR_PED_LOINC_MAP;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_KIDS_RADAR_RSV_DIAGNOSIS_MAP;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_PCR_LOINC_COVID;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_PCR_LOINC_COVID_VARIANTS;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_PCR_LOINC_INFLUENZA;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_SNOMED_PROCEDURE_ECMO;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_SNOMED_PROCEDURE_VENTILATION;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.HIGH_FLOW_SNOMED_CODE;
 import static de.ukbonn.mwtek.utilities.generic.collections.ListTools.commaSeparatedStringIntoList;
 
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
+import java.util.List;
 
 public class InputCodeSettingsExampleData {
 
@@ -38,11 +43,15 @@ public class InputCodeSettingsExampleData {
         commaSeparatedStringIntoList(DEFAULT_PCR_LOINC_COVID),
         commaSeparatedStringIntoList(DEFAULT_PCR_LOINC_COVID_VARIANTS),
         commaSeparatedStringIntoList(DEFAULT_ICD_CODES_COVID),
+        List.of(HIGH_FLOW_SNOMED_CODE),
+        List.of(CPAP_SNOMED_CODE),
         commaSeparatedStringIntoList(DEFAULT_SNOMED_PROCEDURE_VENTILATION),
         commaSeparatedStringIntoList(DEFAULT_SNOMED_PROCEDURE_ECMO),
         commaSeparatedStringIntoList(DEFAULT_PCR_LOINC_INFLUENZA),
         commaSeparatedStringIntoList(DEFAULT_ICD_CODES_INFLUENZA),
         DEFAULT_KIDS_RADAR_MAP,
-        DEFAULT_KIDS_RADAR_RSV_DIAGNOSIS_MAP);
+        DEFAULT_KIDS_RADAR_RSV_DIAGNOSIS_MAP,
+        DEFAULT_KIDS_RADAR_PED_LOINC_MAP,
+        DEFAULT_KIDS_RADAR_KJP_OPS_CODE_PREFIX);
   }
 }

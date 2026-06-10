@@ -20,9 +20,9 @@ import de.ukbonn.mwtek.dashboardlogic.enums.AcribisCohortIcdCodes;
 import de.ukbonn.mwtek.dashboardlogic.enums.AcribisCohortOpsCodes;
 import de.ukbonn.mwtek.dashboardlogic.models.PidTimestampCohortMap;
 import de.ukbonn.mwtek.utilities.fhir.misc.FhirConditionTools;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbConsent;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiCondition;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiConsent;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiProcedure;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +30,12 @@ import java.util.stream.Collectors;
 
 public class AcribisChecks {
 
-  public static boolean isConditionNeededForAcribis(UkbCondition cond) {
+  public static boolean isConditionNeededForAcribis(MiiCondition cond) {
     return FhirConditionTools.isIcdCodeInConditionWithPrefixWildcardCheck(
-        cond, AcribisCohortIcdCodes.ALL_CODES);
+        cond, AcribisCohortIcdCodes.ALL_CODES_PREFIXES);
   }
 
-  public static boolean isProcedureNeededForAcribis(UkbProcedure procedure) {
+  public static boolean isProcedureNeededForAcribis(MiiProcedure procedure) {
     return FhirConditionTools.isOpsCodeInProcedureWithPrefixWildcardCheck(
         procedure, AcribisCohortOpsCodes.ALL_CODES);
   }
@@ -50,15 +50,15 @@ public class AcribisChecks {
    * @param ukbConsents the list of consent records to evaluate
    * @return a map of patient IDs to their earliest valid Acribis permit start date
    */
-  public static PidTimestampCohortMap calculateValidTimestampsByPid(List<UkbConsent> ukbConsents) {
+  public static PidTimestampCohortMap calculateValidTimestampsByPid(List<MiiConsent> ukbConsents) {
     Map<String, Date> tempMap =
         ukbConsents.stream()
-            .filter(UkbConsent::isAcribisConsentAllowed)
+            .filter(MiiConsent::isAcribisConsentAllowed)
             .filter(c -> c.getPatientId() != null && c.getAcribisPermitStartDate() != null)
             .collect(
                 Collectors.toMap(
-                    UkbConsent::getPatientId,
-                    UkbConsent::getAcribisPermitStartDate,
+                    MiiConsent::getPatientId,
+                    MiiConsent::getAcribisPermitStartDate,
                     (d1, d2) -> d1.before(d2) ? d1 : d2 // Select the earliest timestamp
                     ));
 

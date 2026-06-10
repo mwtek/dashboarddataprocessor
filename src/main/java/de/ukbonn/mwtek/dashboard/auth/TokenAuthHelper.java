@@ -30,10 +30,14 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.net.ssl.SSLContext;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContexts;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.ClientTlsStrategyBuilder;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.TlsSocketStrategy;
+import org.apache.hc.core5.ssl.SSLContexts;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -191,8 +195,6 @@ public class TokenAuthHelper {
         // resolve key and trust store locations
         File keyStoreFile = ResourceUtils.getFile(keystore);
         File trustStoreFile = ResourceUtils.getFile(truststore);
-
-        // Load key and trust material
         sslContext =
             SSLContexts.custom()
                 .loadKeyMaterial(keyStoreFile, keystorePassword, keystorePassword)
@@ -202,15 +204,20 @@ public class TokenAuthHelper {
         // If no keystore/truststore, create a default SSLContext
         sslContext = SSLContexts.createDefault();
       }
+      // Create TLS strategy with the prepared SSL context
+      TlsSocketStrategy tlsStrategy =
+          ClientTlsStrategyBuilder.create()
+              .setSslContext(sslContext)
+              .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+              .buildClassic();
 
+      PoolingHttpClientConnectionManager connectionManager =
+          PoolingHttpClientConnectionManagerBuilder.create()
+              .setTlsSocketStrategy(tlsStrategy)
+              .build();
       // Set up the HTTP client with the created SSLContext
       CloseableHttpClient httpClient =
-          HttpClients.custom()
-              .setSSLContext(sslContext)
-              .setSSLHostnameVerifier(
-                  NoopHostnameVerifier
-                      .INSTANCE) // Disable hostname verification (can be adjusted in production)
-              .build();
+          HttpClients.custom().setConnectionManager(connectionManager).build();
 
       // Create the RestTemplate using the configured HTTP client
       RestTemplate restTemplate =

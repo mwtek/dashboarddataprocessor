@@ -1,5 +1,5 @@
 ### Build stage ###
-FROM maven:3.9.5-amazoncorretto-17 AS build_dashboarddataprocessor
+FROM maven:3.9.15-amazoncorretto-25 AS build_dashboarddataprocessor
 # TODO: edit path
 ENV HOME_utilities=/opt/utilities
 ENV HOME_dashboardlogic=/opt/dashboardlogic
@@ -22,7 +22,7 @@ ADD dashboarddataprocessor $HOME_dashboarddataprocessor
 RUN --mount=type=cache,target=/root/.m2 mvn -f $HOME_dashboarddataprocessor/pom.xml clean install
 
 ### Package stage ###
-FROM maven:3.9.5-amazoncorretto-17 AS dashboard-data-processor
+FROM maven:3.9.15-amazoncorretto-25 AS dashboard-data-processor
 # ToDo: edit path
 ARG JAR_FILE=/opt/dashboarddataprocessor/target/*.jar
 COPY --from=build_dashboarddataprocessor $JAR_FILE /dashboarddataprocessor/dashboard-data-processor.jar

@@ -18,6 +18,7 @@
 
 package de.ukbonn.mwtek.dashboard.controller;
 
+import static com.jayway.jsonpath.internal.path.PathCompiler.fail;
 import static de.ukbonn.mwtek.dashboardlogic.DashboardDataItemLogic.ACR_COHORT_K_1;
 import static de.ukbonn.mwtek.dashboardlogic.DashboardDataItemLogic.ACR_COHORT_K_2;
 import static de.ukbonn.mwtek.dashboardlogic.DashboardDataItemLogic.ACR_COHORT_K_3;
@@ -32,26 +33,40 @@ import static de.ukbonn.mwtek.dashboardlogic.logic.current.CurrentRecruitment.AC
 import static de.ukbonn.mwtek.dashboardlogic.tools.TimelineTools.getIndexByTimestamp;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
 import de.ukbonn.mwtek.dashboardlogic.models.StackedBarChartsItem;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 @Slf4j
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AcribisDataItemTests extends DataItemTests {
+
+  /** Load only KidsRadar sample data for this test class. */
+  @BeforeAll
+  void setupSampleData() throws IOException {
+    // Calls the single-context helper provided by ResultFunctionalityTests
+    sampleData = loadSampleData(ACRIBIS);
+  }
 
   @Test
   @DisplayName("Testing acr.current.recruitment")
   void testCurrentRecruitment() {
     assertNotNull(sampleData);
     assertFalse(sampleData.isEmpty());
-    verifyCurrentRecruitment(ACRIBIS, CURRENT_RECRUITMENT, 6, 0);
+    verifyCurrentRecruitment(ACRIBIS, CURRENT_RECRUITMENT, 5, 2);
   }
 
   @Test
@@ -64,6 +79,8 @@ public class AcribisDataItemTests extends DataItemTests {
     assertTimelineValueByDay(ACRIBIS, TIMELINE_RECRUITMENT, 1737849600L, 2, 0);
     assertTimelineValueByDay(ACRIBIS, TIMELINE_RECRUITMENT, 1737936000L, 0, 0);
     assertTimelineValueByDay(ACRIBIS, TIMELINE_RECRUITMENT, 1738022400L, 1, 0);
+    assertTimelineValueByDay(ACRIBIS, TIMELINE_RECRUITMENT, 1738022400L, 1, 0);
+    assertTimelineValueByDay(ACRIBIS, TIMELINE_RECRUITMENT, 1774828800L, 0, 1);
   }
 
   @Test
@@ -104,10 +121,29 @@ public class AcribisDataItemTests extends DataItemTests {
 
     // Get the data item for treatment level
     DiseaseDataItem dataItem = getTreatmentDataItem(context, selectedDataItem);
-    StackedBarChartsItem result = (StackedBarChartsItem) dataItem.getData();
-    assertEquals(sumRecruitmentConsent, result.getValueByBarChart(ACR_RECRUITMENT_CONSENT).get(0));
+    assertNotNull(dataItem);
+    assertNotNull(dataItem.getData());
+    assertInstanceOf(StackedBarChartsItem.class, dataItem.getData());
+
+    @SuppressWarnings("unchecked")
+    StackedBarChartsItem<Integer> result = (StackedBarChartsItem<Integer>) dataItem.getData();
     assertEquals(
-        sumRecruitmentFollowUp, result.getValueByBarChart(ACR_RECRUITMENT_FOLLOWUP).get(0));
+        sumRecruitmentConsent, result.getValueByBarChart(ACR_RECRUITMENT_CONSENT).getFirst());
+    assertEquals(
+        sumRecruitmentFollowUp, result.getValueByBarChart(ACR_RECRUITMENT_FOLLOWUP).getFirst());
+    // StackedBarChartsItem contains a debugData attribute which must not be part of the output!
+    assertNoDebugDataInJson(result);
+  }
+
+  private void assertNoDebugDataInJson(StackedBarChartsItem<Integer> result) {
+    assertNotNull(result);
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      JsonNode jsonNode = objectMapper.valueToTree(result);
+      assertFalse(jsonNode.has("debugData"), "JSON must not contain 'debugData'");
+    } catch (IllegalArgumentException e) {
+      fail("Serialization to JSON tree failed: " + e.getMessage());
+    }
   }
 
   protected void verifyCurrentDischargeDiags(

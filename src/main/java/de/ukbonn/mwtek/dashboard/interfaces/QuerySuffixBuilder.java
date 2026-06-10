@@ -19,11 +19,20 @@ package de.ukbonn.mwtek.dashboard.interfaces;
 
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboard.services.AcuwaveDataRetrievalService;
+import de.ukbonn.mwtek.dashboard.services.FhirDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.Acribis;
+import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.Bct;
 import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.Covid;
 import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.Influenza;
 import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.KidsRadar;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiCondition;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiEncounter;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiLocation;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiObservation;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiPatient;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiProcedure;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -31,41 +40,53 @@ import java.util.Set;
 public interface QuerySuffixBuilder {
 
   /**
-   * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation}
-   * resources.
+   * The retrieval of FHIR {@link MiiObservation} resources.
    *
    * @param dataRetrievalService The corresponding data search service.
    * @param month The calendar month for which data is requested. (for parallelization).
    * @param summary Should only the bundle with the total number of found resources be output
    *     instead of the data retrieval query?
+   * @param httpMethodGet Is {@link org.springframework.http.HttpMethod#GET} used?
    * @return A list of all FHIR observation resources that include a covid finding.
    */
   String getObservations(
       AbstractDataRetrievalService dataRetrievalService,
       Integer month,
       boolean summary,
-      DataItemContext dataItemContext);
+      DataItemContext dataItemContext,
+      boolean httpMethodGet);
 
   /**
-   * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition} resources.
+   * The retrieval of FHIR {@link MiiCondition} resources.
    *
    * @param dataRetrievalService The corresponding data search service.
    * @param month The calendar month for which data is requested. (for parallelization)
    * @param summary Should only the bundle with the total number of found resources be output
    *     instead of the data retrieval query?
+   * @param httpMethodGet Is {@link org.springframework.http.HttpMethod#GET} used?
    * @return A list of all FHIR condition resources that include a covid diagnosis.
    */
   String getConditions(
       AbstractDataRetrievalService dataRetrievalService,
       Integer month,
       boolean summary,
-      DataItemContext dataItemContext);
+      DataItemContext dataItemContext,
+      Boolean httpMethodGet);
 
   String getConditions(
-      AbstractDataRetrievalService acuwaveDataRetrievalService, List<String> encounterIds);
+      AbstractDataRetrievalService acuwaveDataRetrievalService,
+      List<String> encounterIds,
+      Boolean httpMethodGet);
+
+  String getObservations(
+      AbstractDataRetrievalService fhirDataRetrievalService,
+      DataItemContext dataItemContext,
+      List<String> loincCodes,
+      List<String> encounterIds,
+      Boolean httpMethodGet);
 
   /**
-   * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient} resources.
+   * The retrieval of FHIR {@link MiiPatient} resources.
    *
    * @param dataRetrievalService The corresponding data search service.
    * @param patientIdList A list with patient ids used as input criteria.
@@ -74,7 +95,16 @@ public interface QuerySuffixBuilder {
   String getPatients(AbstractDataRetrievalService dataRetrievalService, List<String> patientIdList);
 
   /**
-   * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter} resources.
+   * The retrieval of FHIR {@link MiiPatient} resources with birthdate in the given calendar year.
+   *
+   * @param dataRetrievalService The corresponding data search service.
+   * @param calendarYear The calendar year in which the date of birth must fall.
+   * @return A list of all requested FHIR patient resources.
+   */
+  String getPatients(AbstractDataRetrievalService dataRetrievalService, Integer calendarYear);
+
+  /**
+   * The retrieval of FHIR {@link MiiEncounter} resources.
    *
    * @param dataRetrievalService The corresponding data search service.
    * @param patientIdList A list with patient ids used as input criteria.
@@ -88,7 +118,7 @@ public interface QuerySuffixBuilder {
       String individualDateString);
 
   /**
-   * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure} resources.
+   * The retrieval of FHIR {@link MiiProcedure} resources.
    *
    * @param dataRetrievalService The corresponding data search service.
    * @param encounterIdList A list with encounter ids used as input criteria.
@@ -105,7 +135,7 @@ public interface QuerySuffixBuilder {
       DataItemContext dataItemContext);
 
   /**
-   * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure} resources.
+   * The retrieval of FHIR {@link MiiProcedure} resources.
    *
    * @param dataRetrievalService The corresponding data search service.
    * @param encounterIdList A list with encounter ids used as input criteria.
@@ -119,20 +149,32 @@ public interface QuerySuffixBuilder {
       String systemUrl,
       DataItemContext dataItemContext);
 
+  String getIcuProcedures(
+      AbstractDataRetrievalService dataRetrievalService,
+      List<String> wards,
+      Collection<String> encounterIds,
+      boolean clapp);
+
   /**
-   * The retrieval of FHIR {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation} resources.
+   * The retrieval of FHIR {@link MiiLocation} resources.
    *
    * @param dataRetrievalService The corresponding data search service.
    * @param locationIdList A list with location ids used as input criteria.
    * @return A list of all requested FHIR location resources.
    */
-  String getLocations(AbstractDataRetrievalService dataRetrievalService, List<?> locationIdList);
+  String getLocations(
+      AbstractDataRetrievalService dataRetrievalService,
+      List<?> locationIdList,
+      Boolean httpMethodGet);
 
   String getConsents(
       AbstractDataRetrievalService dataRetrievalService, DataItemContext dataItemContext);
 
-  String getLocationsPost(
-      AbstractDataRetrievalService dataRetrievalService, List<?> locationIdList);
+  String getQuestionnaireResponses(
+      AbstractDataRetrievalService abstractRestConfiguration,
+      List<String> encounterIdList,
+      Collection<String> questionnaireIds,
+      Boolean httpMethodGet);
 
   String getIcuEncounters(AbstractDataRetrievalService dataRetrievalService, Integer calendarYear);
 
@@ -175,7 +217,7 @@ public interface QuerySuffixBuilder {
             + "-"
             + addLeadingZeroIfNeeded(Influenza.QUALIFYING_DAY);
       }
-      case KIDS_RADAR -> {
+      case KIDS_RADAR, KIDS_RADAR_PED -> {
         return KidsRadar.QUALIFYING_YEAR
             + "-"
             + addLeadingZeroIfNeeded(KidsRadar.QUALIFYING_MONTH)
@@ -189,6 +231,13 @@ public interface QuerySuffixBuilder {
             + "-"
             + addLeadingZeroIfNeeded(Acribis.QUALIFYING_DAY);
       }
+      case BCT -> {
+        return Bct.QUALIFYING_YEAR
+            + "-"
+            + addLeadingZeroIfNeeded(Bct.QUALIFYING_MONTH)
+            + "-"
+            + addLeadingZeroIfNeeded(Bct.QUALIFYING_DAY);
+      }
     }
     // Default
     return "2020-01-27";
@@ -197,4 +246,6 @@ public interface QuerySuffixBuilder {
   private static String addLeadingZeroIfNeeded(int qualifyingMonthKidsRadar) {
     return String.format("%02d", qualifyingMonthKidsRadar);
   }
+
+  String getQuestionnaires(FhirDataRetrievalService fhirDataRetrievalService, boolean useGet);
 }

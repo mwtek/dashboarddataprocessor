@@ -18,6 +18,8 @@
 
 package de.ukbonn.mwtek.dashboard.services;
 
+import static org.springframework.http.HttpMethod.*;
+
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import de.ukbonn.mwtek.dashboard.auth.RestConsumer;
@@ -79,15 +81,15 @@ public class FhirSearchService extends RestConsumer implements SearchService {
     String fhirServerEndpoint = this.fhirServerConf.getRestUrl();
     RestTemplate rest = this.getRestTemplate();
 
-    switch (httpMethod) {
-      case GET -> {
+    switch (httpMethod.name()) {
+      case "GET" -> {
         String restUrl = fhirServerEndpoint + parametersInputString;
         log.debug(restUrl);
         ResponseEntity<String> searchRequest = rest.getForEntity(restUrl, String.class);
         Bundle requestBundle = parser.parseResource(Bundle.class, searchRequest.getBody());
         return requestBundle.getEntry();
       }
-      case POST -> {
+      case "POST" -> {
         String restUrl = fhirServerEndpoint + resourceType + "/_search";
         logPostBody(parametersInputString, restUrl);
         HttpHeaders header = new HttpHeaders();
@@ -115,14 +117,14 @@ public class FhirSearchService extends RestConsumer implements SearchService {
     IParser parser = ctx.newJsonParser();
     String fhirServerEndpoint = this.fhirServerConf.getRestUrl();
     RestTemplate rest = this.getRestTemplate();
-    switch (httpMethod) {
-      case GET -> {
+    switch (httpMethod.name()) {
+      case "GET" -> {
         String restUrl = fhirServerEndpoint + querySuffix;
         log.debug(restUrl);
         ResponseEntity<String> searchRequest = rest.getForEntity(restUrl, String.class);
         return parser.parseResource(Bundle.class, searchRequest.getBody());
       }
-      case POST -> {
+      case "POST" -> {
         String restUrl = fhirServerEndpoint + resourceType + "/_search";
         logPostBody(querySuffix, restUrl);
         HttpHeaders header = new HttpHeaders();
@@ -171,13 +173,11 @@ public class FhirSearchService extends RestConsumer implements SearchService {
     IParser parser = ctx.newJsonParser();
     String fhirServerEndpoint = this.fhirServerConf.getRestUrl();
     RestTemplate rest = this.getRestTemplate();
-    switch (httpMethod) {
-      case GET -> {
-        String restUrl = fhirServerEndpoint + querySuffix;
-        log.debug(restUrl);
-        ResponseEntity<String> searchRequest = rest.getForEntity(restUrl, String.class);
-        return parser.parseResource(CapabilityStatement.class, searchRequest.getBody());
-      }
+    if (HttpMethod.GET.equals(httpMethod)) {
+      String restUrl = fhirServerEndpoint + querySuffix;
+      log.debug(restUrl);
+      ResponseEntity<String> searchRequest = rest.getForEntity(restUrl, String.class);
+      return parser.parseResource(CapabilityStatement.class, searchRequest.getBody());
     }
     return null;
   }

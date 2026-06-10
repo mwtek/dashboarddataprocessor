@@ -33,18 +33,21 @@ import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
 import de.ukbonn.mwtek.utilities.fhir.misc.LocationTools;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbConsent;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiCondition;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiConsent;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiEncounter;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiLocation;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiObservation;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiPatient;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiProcedure;
 import de.ukbonn.mwtek.utilities.generic.time.DateTools;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -153,12 +156,10 @@ public class ResourceHandler {
   }
 
   /**
-   * Class for reading patient and case numbers from {@link
-   * de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation} resources and filling global lists
-   * with them.
+   * Class for reading patient and case numbers from {@link MiiObservation} resources and filling
+   * global lists with them.
    *
-   * @param obs The {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation} resource to be
-   *     read.
+   * @param obs The {@link MiiObservation} resource to be read.
    * @param outputPatientIds List of ids of the {@link Patient} resource to be extended by entries
    *     from the Observation resource.
    * @param outputEncounterIds List of ids of the {@link Encounter} resource to be extended by
@@ -192,12 +193,10 @@ public class ResourceHandler {
   }
 
   /**
-   * Class for reading patient and case numbers from {@link
-   * de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition} resources and filling global lists with
-   * them.
+   * Class for reading patient and case numbers from {@link MiiCondition} resources and filling
+   * global lists with them.
    *
-   * @param cond The {@link de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition} resource to be
-   *     read.
+   * @param cond The {@link MiiCondition} resource to be read.
    * @param outputPatientIds List of ids of the {@link Patient} resource to be extended by entries
    *     from the Observation resource.
    * @param outputEncounterIds List of ids of the {@link Encounter} resource to be extended by
@@ -259,6 +258,100 @@ public class ResourceHandler {
                 conditions.add(removeNotNeededAttributes(cond));
               }
             });
+  }
+
+  /**
+   * Links {@link MiiCondition} instances to matching {@link MiiEncounter} objects using the
+   * reference defined in {@code Encounter.diagnosis.condition}.
+   *
+   * <p>Only conditions without an existing encounter reference are processed. Only encounters where
+   * {@code isFacilityContact() == true} are considered.
+   *
+   * @param conditions conditions to process
+   * @param encounters encounters providing diagnosis references
+   */
+  public static void linkConditionsToEncounters(
+      Collection<MiiCondition> conditions, Collection<MiiEncounter> encounters) {
+
+    if (conditions == null || conditions.isEmpty() || encounters == null || encounters.isEmpty()) {
+      return;
+    }
+
+    // Only conditions that do not have an encounter yet
+    List<MiiCondition> conditionsNeedingAssignment =
+        conditions.stream().filter(Objects::nonNull).filter(c -> !c.hasEncounter()).toList();
+    if (conditionsNeedingAssignment.isEmpty()) {
+      return;
+    }
+
+    // Only facility encounters
+    List<MiiEncounter> facilityEncounters =
+        encounters.stream()
+            .filter(Objects::nonNull)
+            .filter(MiiEncounter::isFacilityContact)
+            .toList();
+    if (facilityEncounters.isEmpty()) {
+      return;
+    }
+
+    // Map conditionId -> UkbCondition (ensure id format matches the reference idPart)
+    Map<String, MiiCondition> conditionById = new HashMap<>(conditionsNeedingAssignment.size());
+    for (MiiCondition cond : conditionsNeedingAssignment) {
+      String id = cond.getId();
+      if (id != null && !id.isEmpty()) {
+        conditionById.put(id, cond);
+      }
+    }
+    if (conditionById.isEmpty()) {
+      return;
+    }
+
+    // Track which condition ids still need an encounter
+    Set<String> remaining = new HashSet<>(conditionById.keySet());
+    int linkedCount = 0;
+
+    encounterLoop:
+    for (MiiEncounter miiEncounter : facilityEncounters) {
+      List<Encounter.DiagnosisComponent> diagnoses = miiEncounter.getDiagnosis();
+      if (diagnoses == null || diagnoses.isEmpty()) {
+        continue;
+      }
+
+      Reference encounterRef = new Reference(miiEncounter.getId());
+
+      for (Encounter.DiagnosisComponent diag : diagnoses) {
+        if (diag == null) {
+          continue;
+        }
+
+        Reference condRef = diag.getCondition();
+        if (condRef == null || condRef.isEmpty()) {
+          continue;
+        }
+
+        String condId = condRef.getReferenceElement().getIdPart();
+        if (condId == null || condId.isEmpty()) {
+          continue;
+        }
+
+        // Remove returns false if the id is not in remaining anymore
+        if (!remaining.remove(condId)) {
+          continue;
+        }
+
+        MiiCondition match = conditionById.get(condId);
+        if (match != null) {
+          match.setEncounter(encounterRef);
+          linkedCount++;
+          log.trace("Updated encounter reference on condition {}", match.getId());
+        }
+
+        if (remaining.isEmpty()) {
+          break encounterLoop;
+        }
+      }
+    }
+    log.debug("Added encounter references to {} conditions.", linkedCount);
   }
 
   /**
@@ -357,9 +450,9 @@ public class ResourceHandler {
     Set<CoreBaseDataItem> coreBaseDataItems = ConcurrentHashMap.newKeySet();
     Set<CoreBaseDataItem> icuEpisodes = ConcurrentHashMap.newKeySet();
     // Just the top level resources are needed
-    List<UkbEncounter> facilityContacts =
-        ((List<UkbEncounter>) ResourceConverter.convert(dataRetrievalService.getIcuEncounters()))
-            .parallelStream().filter(UkbEncounter::isFacilityContact).toList();
+    List<MiiEncounter> facilityContacts =
+        ((List<MiiEncounter>) ResourceConverter.convert(dataRetrievalService.getIcuEncounters()))
+            .parallelStream().filter(MiiEncounter::isFacilityContact).toList();
 
     // To detect cases that are currently in ICU, we need to find the active transfers and check
     // for ICU status.
@@ -378,11 +471,11 @@ public class ResourceHandler {
 
     // Reduce the location ids to the icu wards.
     List<String> icuWardIds =
-        ((List<UkbLocation>) ResourceConverter.convert(dataRetrievalService.getLocations()))
+        ((List<MiiLocation>) ResourceConverter.convert(dataRetrievalService.getLocations()))
             .stream()
                 .filter(x -> !x.getType().isEmpty())
-                .filter(UkbLocation::isLocationWard)
-                .filter(UkbLocation::isLocationIcu)
+                .filter(MiiLocation::isLocationWard)
+                .filter(MiiLocation::isLocationIcu)
                 .map(Resource::getIdBase)
                 .toList();
 
@@ -413,8 +506,8 @@ public class ResourceHandler {
 
   public static void handleConsentEntries(
       Bundle currentBundle,
-      List<UkbConsent> consents,
-      Collection<UkbEncounter> encountersOutput,
+      List<MiiConsent> consents,
+      Collection<MiiEncounter> encountersOutput,
       Set<String> outputPatientIds,
       ServerTypeEnum serverType) {
     currentBundle
@@ -426,15 +519,26 @@ public class ResourceHandler {
             });
   }
 
+  /**
+   * Processes all Broad Consent entries from the bundle, including revoked or otherwise non-valid
+   * entries. This is required because downstream logic determines the latest consent state per
+   * patient, so older valid entries alone would not reliably reflect the most recent consent
+   * status.
+   */
+  public static void handleBroadConsentEntries(
+      Bundle currentBundle, List<MiiConsent> consents, ServerTypeEnum serverType) {
+    currentBundle.getEntry().forEach(entry -> addBroadConsentEntries(consents, serverType, entry));
+  }
+
   public static void addValidConsentEntries(
-      Collection<UkbConsent> consents,
-      Collection<UkbEncounter> encountersOutput,
+      Collection<MiiConsent> consents,
+      Collection<MiiEncounter> encountersOutput,
       Set<String> outputPatientIds,
       ServerTypeEnum serverType,
       BundleEntryComponent entry) {
     if (entry.getResource() instanceof Consent consent) {
       try {
-        UkbConsent ukbConsent = (UkbConsent) ResourceConverter.convert(consent, true);
+        MiiConsent ukbConsent = (MiiConsent) ResourceConverter.convert(consent, true);
         if (isConsentValid(ukbConsent)) {
           storeConsentPatientKeys(ukbConsent, outputPatientIds, serverType);
           consents.add(ukbConsent);
@@ -447,13 +551,41 @@ public class ResourceHandler {
     } else if (entry.getResource() instanceof Encounter encounter) {
       // We just need the facility contacts
       try {
-        UkbEncounter ukbEncounter = (UkbEncounter) ResourceConverter.convert(encounter, true);
-        if (ukbEncounter.isFacilityContact()) {
-          encountersOutput.add(ukbEncounter);
+        MiiEncounter miiEncounter = (MiiEncounter) ResourceConverter.convert(encounter, true);
+        if (miiEncounter.isFacilityContact()) {
+          encountersOutput.add(miiEncounter);
         }
       } catch (Exception ex) {
         log.warn(
             "Error while converting encounter {} because: {}", encounter.getId(), ex.getMessage());
+      }
+    }
+  }
+
+  public static void addValidBroadConsentEntries(
+      Collection<MiiConsent> consents, ServerTypeEnum serverType, BundleEntryComponent entry) {
+    if (entry.getResource() instanceof Consent consent) {
+      try {
+        MiiConsent ukbConsent = (MiiConsent) ResourceConverter.convert(consent, true);
+        if (isValidBroadConsent(ukbConsent)) {
+          consents.add(ukbConsent);
+        } else {
+          log.debug("Consent usage not allowed for consent id: {}", ukbConsent.getId());
+        }
+      } catch (Exception ex) {
+        logMissingCoreAttribute(consent, ex);
+      }
+    }
+  }
+
+  public static void addBroadConsentEntries(
+      Collection<MiiConsent> consents, ServerTypeEnum serverType, BundleEntryComponent entry) {
+    if (entry.getResource() instanceof Consent consent) {
+      try {
+        MiiConsent ukbConsent = (MiiConsent) ResourceConverter.convert(consent, true);
+        consents.add(ukbConsent);
+      } catch (Exception ex) {
+        logMissingCoreAttribute(consent, ex);
       }
     }
   }
@@ -463,15 +595,20 @@ public class ResourceHandler {
         "Resource {} not usable since {} attribute is missing.", consent.getId(), ex.getMessage());
   }
 
-  private static boolean isConsentValid(UkbConsent ukbConsent) {
+  private static boolean isConsentValid(MiiConsent ukbConsent) {
     // Prefiltering to consents that gave permission to use data
-    return ukbConsent.isPatDataUsageAllowed() || ukbConsent.isAcribisConsentAllowed();
+    return ukbConsent.isPatDataUsageCurrentlyAllowed() || ukbConsent.isAcribisConsentAllowed();
   }
 
-  public static boolean isEncounterInpatientFacilityContact(UkbEncounter ukbEncounter) {
-    return (ukbEncounter.isFacilityContact()
-        && (ukbEncounter.isCaseClassInpatientOrShortStay()
-            || ukbEncounter.isCaseTypePostStationary()));
+  private static boolean isValidBroadConsent(MiiConsent ukbConsent) {
+    // Prefiltering to consents that gave permission to use data
+    return ukbConsent.isPatDataUsageCurrentlyAllowed();
+  }
+
+  public static boolean isEncounterInpatientFacilityContact(MiiEncounter miiEncounter) {
+    return (miiEncounter.isFacilityContact()
+        && (miiEncounter.isCaseClassInpatientOrShortStay()
+            || miiEncounter.isCaseTypePostStationary()));
   }
 
   public static void storeConsentPatientKeys(
@@ -499,17 +636,17 @@ public class ResourceHandler {
    * create references to a dummy icu location.
    */
   public static void addDummyIcuLocationIfNeeded(
-      List<UkbEncounter> ukbEncounters, List<UkbLocation> ukbLocations) {
-    boolean isServiceProviderUsed = ukbEncounters.stream().anyMatch(Encounter::hasServiceProvider);
+      List<MiiEncounter> miiEncounters, List<MiiLocation> miiLocations) {
+    boolean isServiceProviderUsed = miiEncounters.stream().anyMatch(Encounter::hasServiceProvider);
 
     boolean isDummyIcuLocationReferencePresent =
-        ukbEncounters.parallelStream()
+        miiEncounters.parallelStream()
             .filter(Encounter::hasLocation)
             .flatMap(encounter -> encounter.getLocation().stream())
             .anyMatch(location -> isDummyIcuLocation(location.getLocation()));
 
     if (isServiceProviderUsed || isDummyIcuLocationReferencePresent) {
-      ukbLocations.add(LocationTools.createDummyIcuWardLocation());
+      miiLocations.add(LocationTools.createDummyIcuWardLocation());
       log.info(
           "Dummy ICU location resource was added because service provider entries were found or a "
               + "resource with Encounter.type.kontaktart = 'intensivstationaer' "
@@ -526,21 +663,21 @@ public class ResourceHandler {
    * period includes the deceased date. If the conditions match, a discharge disposition extension
    * is added to the encounter.
    *
-   * @param ukbPatients The list of {@link UkbPatient} containing patient records.
-   * @param ukbEncounters The list of {@link UkbEncounter} representing encounters to be processed.
+   * @param miiPatients The list of {@link MiiPatient} containing patient records.
+   * @param miiEncounters The list of {@link MiiEncounter} representing encounters to be processed.
    */
   public static void addDeceasedStatusToEncounters(
-      List<UkbPatient> ukbPatients, List<UkbEncounter> ukbEncounters) {
+      List<MiiPatient> miiPatients, List<MiiEncounter> miiEncounters) {
 
     // Create a map with Patient-ID as Key and DeceasedDateTimeType as Value
     Map<String, DateTimeType> deceasedPatientsMap =
-        ukbPatients.parallelStream()
+        miiPatients.parallelStream()
             .filter(Patient::hasDeceasedDateTimeType)
-            .collect(Collectors.toMap(UkbPatient::getId, UkbPatient::getDeceasedDateTimeType));
+            .collect(Collectors.toMap(MiiPatient::getId, MiiPatient::getDeceasedDateTimeType));
 
     // Filter relevant UkbEncounters
-    List<UkbEncounter> encountersDeceased =
-        ukbEncounters.stream()
+    List<MiiEncounter> encountersDeceased =
+        miiEncounters.stream()
             .filter(
                 encounter -> {
                   DateTimeType deceasedDate = deceasedPatientsMap.get(encounter.getPatientId());
@@ -577,9 +714,9 @@ public class ResourceHandler {
    * <p>This method always overwrites any existing hospitalization component with a new one
    * containing the discharge disposition extension indicating death.
    *
-   * @param encounter The {@link UkbEncounter} to update with a "deceased" discharge disposition.
+   * @param encounter The {@link MiiEncounter} to update with a "deceased" discharge disposition.
    */
-  public static void addDischargeDispositionDeadToEncounter(UkbEncounter encounter) {
+  public static void addDischargeDispositionDeadToEncounter(MiiEncounter encounter) {
     // Create a new hospitalization component
     EncounterHospitalizationComponent hospitalizationComponent =
         new EncounterHospitalizationComponent();
@@ -607,10 +744,10 @@ public class ResourceHandler {
   }
 
   public static List<String> getPidsByProceduresAndConditions(
-      List<UkbProcedure> ukbProcedures, List<UkbCondition> ukbConditions) {
+      List<MiiProcedure> ukbProcedures, List<MiiCondition> ukbConditions) {
     return Stream.concat(
-            ukbProcedures.stream().map(UkbProcedure::getPatientId),
-            ukbConditions.stream().map(UkbCondition::getPatientId))
+            ukbProcedures.stream().map(MiiProcedure::getPatientId),
+            ukbConditions.stream().map(MiiCondition::getPatientId))
         .distinct()
         .toList();
   }

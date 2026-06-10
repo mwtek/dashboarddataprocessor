@@ -18,8 +18,8 @@
 
 package de.ukbonn.mwtek.dashboard.configuration;
 
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiCondition;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiObservation;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -56,8 +56,8 @@ public abstract class SearchConfiguration {
 
   /**
    * Should the Encounter FHIR search query be filtered by admission date (All cases by
-   * disease-positive-encounter start reference date) / {@link UkbCondition#getRecordedDate()} /
-   * {@link UkbObservation#getEffective()}?
+   * disease-positive-encounter start reference date) / {@link MiiCondition#getRecordedDate()} /
+   * {@link MiiObservation#getEffective()}?
    *
    * <p>Must be disabled if outpatient cases do not have an end date.
    */

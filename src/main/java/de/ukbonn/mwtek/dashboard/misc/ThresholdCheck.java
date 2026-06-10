@@ -110,7 +110,7 @@ public class ThresholdCheck {
               .values().stream().anyMatch(value -> value > 0 && value < threshold);
       case ITEMTYPE_LIST -> checkListThresholdViolation(rawData, threshold);
       case ITEMTYPE_STACKED_BAR_CHARTS ->
-          ((StackedBarChartsItem) rawData)
+          ((StackedBarChartsItem<Integer>) rawData)
               .getValues().stream()
                   .flatMap(List::stream)
                   .flatMap(List::stream)
@@ -125,7 +125,6 @@ public class ThresholdCheck {
                               .values()
                               .stream()
                               .anyMatch(count -> count > 0 && count < threshold));
-
       default -> false;
     };
   }

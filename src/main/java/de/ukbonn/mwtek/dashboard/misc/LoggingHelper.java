@@ -22,12 +22,12 @@ import static de.ukbonn.mwtek.dashboard.controller.DataRetrievalController.WORKF
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiCondition;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiEncounter;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiLocation;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiObservation;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiPatient;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiProcedure;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,6 +60,12 @@ public class LoggingHelper {
   static Boolean kidsRadarWorkflowAborted = false;
   @Getter static String abortMessage;
 
+  public static void resetAbortStatus() {
+    covidWorkflowAborted = false;
+    influenzaWorkflowAborted = false;
+    kidsRadarWorkflowAborted = false;
+  }
+
   public static void logAbortWorkflowMessage(
       InputCodeSettings inputCodeSettings, DataItemContext dataItemContext) {
     List<String> pcrCodes = new ArrayList<>();
@@ -81,10 +87,10 @@ public class LoggingHelper {
             inputCodeSettings.getKidsRadarConditionKjpIcdCodes().values().stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
-        icdCodes.addAll(
-            inputCodeSettings.getKidsRadarConditionRsvIcdCodes().values().stream()
-                .flatMap(List::stream)
-                .toList());
+        //        icdCodes.addAll(
+        //            inputCodeSettings.getKidsRadarConditionPedCodes().values().stream()
+        //                .flatMap(List::stream)
+        //                .toList());
         kidsRadarWorkflowAborted = true;
       }
     }
@@ -108,33 +114,37 @@ public class LoggingHelper {
       case INFLUENZA -> {
         return influenzaWorkflowAborted;
       }
+      case KIDS_RADAR -> {
+        return kidsRadarWorkflowAborted;
+      }
     }
     return false;
   }
 
   public static void addResourceSizesToOutput(
       ObjectNode result,
-      List<UkbCondition> ukbConditions,
-      List<UkbObservation> ukbObservations,
-      List<UkbPatient> ukbPatients,
-      List<UkbEncounter> ukbEncounters,
-      List<UkbLocation> ukbLocations,
-      List<UkbProcedure> ukbProcedures,
+      List<MiiCondition> ukbConditions,
+      List<MiiObservation> ukbObservations,
+      List<MiiPatient> miiPatients,
+      List<MiiEncounter> miiEncounters,
+      List<MiiLocation> miiLocations,
+      List<MiiProcedure> ukbProcedures,
       DataItemContext dataItemContext) {
     String contextPrefix = "";
     switch (dataItemContext) {
       case COVID -> contextPrefix = "covid";
       case INFLUENZA -> contextPrefix = "influenza";
       case KIDS_RADAR -> contextPrefix = "kira";
+      case ACRIBIS -> contextPrefix = "acribis";
     }
     result.put(contextPrefix + "ConditionSize", ukbConditions.size());
     if (ukbObservations != null) {
       result.put(contextPrefix + "ObservationSize", ukbObservations.size());
     }
-    result.put(contextPrefix + "PatientSize", ukbPatients.size());
-    result.put(contextPrefix + "EncounterSize", ukbEncounters.size());
-    if (ukbLocations != null) {
-      result.put(contextPrefix + "LocationSize", ukbLocations.size());
+    result.put(contextPrefix + "PatientSize", miiPatients.size());
+    result.put(contextPrefix + "EncounterSize", miiEncounters.size());
+    if (miiLocations != null) {
+      result.put(contextPrefix + "LocationSize", miiLocations.size());
     }
     if (ukbProcedures != null) {
       result.put(contextPrefix + "ProcedureSize", ukbProcedures.size());

@@ -19,7 +19,7 @@ package de.ukbonn.mwtek.dashboard.controller;
 
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.conn.HttpHostConnectException;
+import org.apache.hc.client5.http.HttpHostConnectException;
 import org.hl7.fhir.r4.model.CapabilityStatement;
 import org.springframework.web.client.HttpClientErrorException;
 

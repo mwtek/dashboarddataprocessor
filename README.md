@@ -1,7 +1,7 @@
 # MII-FHIR-to-NUM-Dashboard-Processor
 
 The _DashboardDataProcessor_ (DDP) provides a middleware solution which allows to transmit
-aggregated, anonymous datasets to the [NUM CODEX Dashboard](http://coronadashboard.ukbonn.de) for
+aggregated, anonymous datasets to the [NUM Dashboard](https://numdashboard.ukbonn.de) for
 visualization. The DDP was developed as part
 of [NUM CODEX project](https://www.netzwerk-universitaetsmedizin.de/projekte/codex). It is an
 interoperable,
@@ -9,19 +9,24 @@ fully [MII national core dataset](https://simplifier.net/organization/koordinati
 based [FHIR](https://hl7.org/FHIR/) representation of operational patient data from the hospital
 information systems as specified by
 the [Medical Informatics Initiative (MII)](https://www.medizininformatik-initiative.de/en/start).
-The _DashboardDataProcessor_ is currently developed further and maintained in the NUM RDP project.
-The FHIR data can be provided via any standard compliant FHIR server that supports the required (
-simple) features of FHIR search. This should enable new sites to contribute to the dashboard with
+The _DashboardDataProcessor_ is currently developed further and maintained within the NUM platform
+for Surveillance and Rapid
+Response, [NUM-SAR](https://www.netzwerk-universitaetsmedizin.de/plattformen/num-sar).
+The FHIR data can be provided via any standard compliant FHIR server that supports the required
+basic features of FHIR search. This should enable new sites to contribute to the dashboard with
 minimal additive effort if interoperable FHIR representations of operational data are already
 available.
 
 This work was previously funded by the German Federal Ministry of Education and Research (
 Bundesministerium für Bildung und Forschung, BMBF) within the framework of
 the [NUM RDP](https://www.netzwerk-universitaetsmedizin.de/projekte/num-rdp) (FKZ
-01KX2121), NUM CODEX (FKZ 01KX2121), as well as the MII ADMIRE and SMITH (FKZ 01ZZ1602C, FKZ
-01ZZ1803Q) projects. Current funding is provided by the Federal Ministry of Research, Technology and
-Space (Bundesministerium für Forschung, Technologie und Raumfahrt, BMFTR) as part of the NUM DIZ 3.0
-initiative (FKZ 01KX2524) and
+01KX2121), [NUM CODEX](https://www.netzwerk-universitaetsmedizin.de/projekte/codex) (FKZ 01KX2121),
+as well as the MII ADMIRE and SMITH (FKZ 01ZZ1602C, FKZ 01ZZ1803Q) projects.
+Current funding is provided by the Federal Ministry of Research, Technology and
+Space (Bundesministerium für Forschung, Technologie und Raumfahrt, BMFTR) as part
+of [NUM-SAR](https://www.netzwerk-universitaetsmedizin.de/plattformen/num-sar) (FKZ 01KX2524) and
+the [NUM-DIZ](https://www.netzwerk-universitaetsmedizin.de/plattformen/num-diz) 3.0
+initiative (FKZ 01KX2524) as well as
 the [ACRIBiS project](https://www.medizininformatik-initiative.de/de/acribis-personalisierte-risikobewertungen-fuer-herz-kreislauferkrankungen) (
 FKZ 01ZZ2317A–O).
 
@@ -45,7 +50,7 @@ and a short description.
 <th>Description</th>
 </tr>
 <tr>
-<td><a href="./files/Datensatzbeschreibung_Dashboard_v0_5_4_20241128.pdf" target="_blank">JSON dataset description</a></td>
+<td><a href="./files/Datensatzbeschreibung_Dashboard_v0_5_6_20260409_release.pdf" target="_blank">JSON dataset description</a></td>
 <td>The dataset description of the resulting JSON format, including the description of the aggregated data items.</td> 
 </tr> 
 <tr>
@@ -100,7 +105,7 @@ The code is platform-independent and was tested on Linux and Windows environment
 
 The following software must be available to execute the program:
 
-- Java 17 (JDK mandatory for compilation, OpenJDK recommended)
+- Java 25 (JDK mandatory for compilation, OpenJDK recommended)
 - Apache Maven (mandatory for compilation, optional if provided jar is executed)
 - Dependencies ([utilities](https://www.github.com/mwtek/utilities)
   and [dashboardlogic](https://www.github.com/mwtek/dashboardlogic) repositories)
@@ -115,7 +120,7 @@ resources, 4 GB was the lower limit.
 ## Requirements FHIR data
 
 In order for the data set to be generated completely and correctly, the following FHIR resource
-types are required:
+types are required to generate covid/influenza data:
 
 - Observation (Disease-context-related laboratory codes, encoded in LOINC; results coded as <i>
   CodeableConcept</i>
@@ -137,24 +142,30 @@ A whole list of the mandatory and optional attribute can be
 found <a href="./files/Data_Items_Composition.md" target="_blank">here</a>.
 
 The following diagram shows the workflow of the FHIR data query and the content of the respective
-FHIR resources required for the Json transformation:
+FHIR resources required for the JSON transformation for the covid and influenza elements:
 
 ![Corona Dashboard - FHIR Data Retrieval](img/CoronaDashboard-FHIRDataRetrieval.png)
+
+The following diagram shows the workflow of the FHIR data query and the content of the respective
+FHIR resources required for the JSON transformation for the kiradar elements:
+
+![KiRadar - FHIR Data Retrieval](img/Kiradar-FHIRDataRetrieval.png)
 
 ## FHIR search queries
 
 The following is an overview of the approximate FHIR search requests sent from the processor to the
 FHIR server:
 
-| Resource    | FHIR Search Query                                                                | Comments                                         |
-|-------------|----------------------------------------------------------------------------------|--------------------------------------------------|
-| Condition   | [base]/Condition?code=U07.1&_pretty=false&_count=500                             |                                                  |
-| Observation | [base]/Observation?code=94640-0,94306-8,96763-8,96895-8&_pretty=false&_count=500 |                                                  |
-| Patient     | [base]/Patient?_id=1234,1235,1236                                                | IDs from Observation.subject + Condition.subject |
-| Encounter   | [base]/Encounter?subject=1234,1235,1236                                          | IDs from Patient.subject                         |
-| Procedure   | [base]/Procedure?code=233573008,243147009&subject=1234,1235,1236                 | IDs from Encounter.id                            |
-| Location    | [base]/Location?_id=123,234,345                                                  | IDs from Encounter.location                      |
-| Consent     | [base]/Consent?category=[MII category and broad consent code]&date=ge2024-10-01  |                                                  |
+| Resource              | FHIR Search Query                                                                | Comments                                         |
+|-----------------------|----------------------------------------------------------------------------------|--------------------------------------------------|
+| Condition             | [base]/Condition?code=U07.1&_pretty=false&_count=500                             |                                                  |
+| Observation           | [base]/Observation?code=94640-0,94306-8,96763-8,96895-8&_pretty=false&_count=500 |                                                  |
+| Patient               | [base]/Patient?_id=1234,1235,1236                                                | IDs from Observation.subject + Condition.subject |
+| Encounter             | [base]/Encounter?subject=1234,1235,1236                                          | IDs from Patient.subject                         |
+| Procedure             | [base]/Procedure?code=233573008,243147009&subject=1234,1235,1236                 | IDs from Encounter.id                            |
+| Location              | [base]/Location?_id=123,234,345                                                  | IDs from Encounter.location                      |
+| Consent               | [base]/Consent?category=[MII category and broad consent code]&date=ge2024-10-01  |                                                  |
+| QuestionnaireResponse | [base]/QuestionnaireResponse?questionnaire=[OID]&subject=1234,1235,1236          |                                                  |
 
 ## Compatibility KDS profile versions
 
@@ -176,6 +187,7 @@ constant innovations by new Dashboard Processor versions.
 | [KDS ICU](https://simplifier.net/MedizininformatikInitiative-Modul-Intensivmedizin/~introduction)          | [MII_Beatmung](https://simplifier.net/packages/de.medizininformatikinitiative.kerndatensatz.icu/2025.0.2/files/2728659)                                       | 2024.0.0-alpha1 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | [KDS Strukturdaten](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten)                 | [Location](https://simplifier.net/medizininformatikinitiative-modulstrukturdaten/sd_mii_struktur_location)                                                    | 1.0             | Optional since the modul is still in the draft phase.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | [KDS Consent](https://simplifier.net/guide/mii-ig-modul-consent-2025/MII-IG-Modul-Consent?version=current) | [Consent](https://simplifier.net/guide/mii-ig-modul-consent-2025/MII-IG-Modul-Consent/TechnischeImplementierung/FHIRProfile/Consent.guide.md?version=current) | 2025.0.0        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| [KDS Kardiologie](https://simplifier.net/guide/mii-ig-modul-meta-2025?version=current)                     | [QuestionnaireResponse](https://simplifier.net/MII-Erweiterungsmodul-Kardiologie/MII-EXA-Kardio-QuestionnaireResponse-Patient/~overview)                      | 2026.0.0        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 
 ## Runtime Configuration
 
@@ -225,9 +237,9 @@ cd dashboardprocessor
 * Clone the repos in there via:
 
 ```
-git clone --branch v0.5.4+update.13 https://www.github.com/mwtek/utilities.git
-git clone --branch v0.5.4+update.13 https://www.github.com/mwtek/dashboardlogic.git
-git clone --branch v0.5.4+update.13 https://www.github.com/mwtek/dashboarddataprocessor.git
+git clone --branch v0.5.6 https://www.github.com/mwtek/utilities.git
+git clone --branch v0.5.6 https://www.github.com/mwtek/dashboardlogic.git
+git clone --branch v0.5.6 https://www.github.com/mwtek/dashboarddataprocessor.git
 ```
 
 * Go into "dashboarddataprocessor"
@@ -281,7 +293,7 @@ mvn spring-boot:run
 base folder and configured with the local settings. When the .JAR file is executed,
 the `application.yaml` is taken from the base directory by default at runtime.
 
-A precompiled file named `dashboarddataprocessor-0.5.4+update.13.jar` can be found in the project
+A precompiled file named `dashboarddataprocessor-0.5.6.jar` can be found in the project
 target directory. Be aware that before you can access the .jar file, you have to successfully build
 the project following one of the before mentioned approaches of 'Install and run via script' or '
 Install and run manually'.
@@ -289,7 +301,7 @@ Install and run manually'.
 Execute this file (or the precompiled file accordingly):
 
 ```
-java -jar target/dashboarddataprocessor-0.5.4+update.13.jar
+java -jar target/dashboarddataprocessor-0.5.6.jar
 ```
 
 Note that the settings must be adjusted in the .yaml file inside the packed .jar archive. This can
@@ -302,7 +314,7 @@ We provided files for **creating DDP-Image** and using it with docker. There is 
 -script in `docker-image`-folder you can execute to
 build DDP-Image on local Server.
 The script will use the file `Dockerfile` in same directory to create the docker container. It is
-necessary to have the `dashboarddataprocessor-0.5.4+update.13.jar` and the `application.yaml` you
+necessary to have the `dashboarddataprocessor-0.5.6.jar` and the `application.yaml` you
 want to use
 on
 the right place. By default, the created jar by `build.sh`-script in the target-folder is used and a
@@ -310,12 +322,12 @@ copy of the `application.yaml` in the dashboarddataprocessor-folder. You can ada
 editing following lines in `Dockerfile`.
 
 ```
-COPY dashboarddataprocessor/target/dashboarddataprocessor-0.5.4+update.13.jar /dashboarddataprocessor/dashboard-data-processor.jar
+COPY dashboarddataprocessor/target/dashboarddataprocessor-0.5.6.jar /dashboarddataprocessor/dashboard-data-processor.jar
 COPY dashboarddataprocessor/application.yaml /dashboarddataprocessor
 ```
 
 After the script has been finished, you can use the created container locally. Besides this the
-file `DDP-v0.5.4+update.13.tar` is created, which contains the whole software. You can put it to any
+file `DDP-v0.5.6.tar` is created, which contains the whole software. You can put it to any
 server
 you want to use for DDP. To deploy it you can use ansible-script `deploy-docker.yaml` which also
 handles whole serversetup.
@@ -424,7 +436,7 @@ found [here](./data-items-support.md).
 The connection status to the configured FHIR server can be checked by querying the `status` endpoint
 and information on the version and runtime settings of the DDP is also output.
 
-If the fhir server connection is working fine u will receive a `200 (OK)` http status code and
+If the FHIR server connection is working fine u will receive a `200 (OK)` http status code and
 otherwise a `503 (Service unavailable)`.
 
 Http-Request:
@@ -445,10 +457,7 @@ local FHIR resources have special characteristics). If there should be wishes in
 send mail to one of the developers or alternatively create an issue.
 
 In addition, the <a href="./files/Documentation_Dashboard_Backend_v0_3_0a.pdf" target="_blank">
-documentation of the FHIR implementation</a> still needs to be updated to version 0.5.4+update.13.
-
-There is no support for the follow-up classification of some acribis items atm., as it has not yet
-been officially defined what the FHIR representation should look like.
+documentation of the FHIR implementation</a> still needs to be updated to version 0.5.6.
 
 # Troubleshooting / Logging
 
@@ -481,7 +490,7 @@ If you discover that the Java VM has too little RAM available (OutOfMemoryError:
 you can try increasing the maximum heap size. For example, in this way:
 
 ```
-java -jar -xMx 8G  target/dashboarddataprocessor-0.5.4+update.13.jar
+java -jar -xMx 8G  target/dashboarddataprocessor-0.5.6.jar
 ```
 
 **Connection to the FHIR server failed: 431 Request Header Fields Too Large**
@@ -500,7 +509,7 @@ standard length of the IDs.
 With the HAPI server it could be observed that with certain data load, the creation of partial index
 lists in the navigation via offset and count (e.g. the retrieval of all observation resources) can
 take longer than one minute. The HAPI server apparently stops processing requests after one minute
-by default if it cannot process the request in that time. s
+by default if it cannot process the request in that time.
 
 Solution: Caching the data before retrieving it can be helpful in the short term (e.g.
 via `?_summary=count`) on the corresponding resource. Otherwise, this timeout value would have to be
@@ -529,3 +538,6 @@ Thanks to everyone who contributed to this project:
 - [KutSaleh](https://github.com/KutSaleh)
 - [weberch-ukl](https://github.com/weberch-ukl)
 - [mw-uke](https://github.com/mw-uke)
+- [nr23730](https://github.com/nr23730)
+- [ekrasniq](https://github.com/ekrasniq)
+- [MarcelErpi](https://github.com/MarcelErpi)

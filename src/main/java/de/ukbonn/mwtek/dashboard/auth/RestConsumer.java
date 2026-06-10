@@ -23,12 +23,18 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import javax.net.ssl.SSLContext;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContextBuilder;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.client.ClientHttpRequestFactory;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
+import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
+import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.DefaultHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.core5.http.config.Registry;
+import org.apache.hc.core5.http.config.RegistryBuilder;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
@@ -85,8 +91,8 @@ public class RestConsumer {
    * @return a pre configured spring RestTemplate object
    */
   protected RestTemplate getRestTemplateNone() {
-    RestTemplate result = new RestTemplateBuilder().build();
-    result.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+    RestTemplate result = new RestTemplate();
+    result.getMessageConverters().addFirst(new StringHttpMessageConverter(StandardCharsets.UTF_8));
     return result;
   }
 
@@ -96,12 +102,13 @@ public class RestConsumer {
    * @return a pre configured spring RestTemplate object
    */
   protected RestTemplate getRestTemplateBasicAuth() {
-    RestTemplate result =
-        new RestTemplateBuilder()
-            .basicAuthentication(
-                restConfiguration.getRestUser(), restConfiguration.getRestPassword())
-            .build();
-    result.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+    RestTemplate result = new RestTemplate();
+    result
+        .getInterceptors()
+        .add(
+            new BasicAuthenticationInterceptor(
+                restConfiguration.getRestUser(), restConfiguration.getRestPassword()));
+    result.getMessageConverters().addFirst(new StringHttpMessageConverter(StandardCharsets.UTF_8));
     return result;
   }
 
@@ -123,48 +130,56 @@ public class RestConsumer {
    * @return {@link RestTemplate} initialized with the settings from the runtime configuration
    */
   protected RestTemplate getRestTemplateCertificateAuth() {
-    String keystore = restConfiguration.getKeyStore();
-    String truststore = restConfiguration.getTrustStore();
-    char[] truststorePassword = restConfiguration.getTrustStorePassword().toCharArray();
-    char[] keystorePassword = restConfiguration.getKeyStorePassword().toCharArray();
-
-    String restUser = restConfiguration.getRestUser();
-    String restPassword = restConfiguration.getRestPassword();
-    RestTemplateBuilder builder = new RestTemplateBuilder();
-    // Apply Basic Auth only if both username and password are available
-    if (restUser != null && restPassword != null) {
-      builder = builder.basicAuthentication(restUser, restPassword);
-    } else {
-      log.info("No REST user and password found in the settings, proceeding without Basic Auth.");
-    }
-    RestTemplate resultTemplate = builder.build();
 
     try {
-      // resolve key and trust store locations
-      File keyStoreFile = ResourceUtils.getFile(keystore);
-      File trustStoreFile = ResourceUtils.getFile(truststore);
+      File keyStoreFile = ResourceUtils.getFile(restConfiguration.getKeyStore());
+      File trustStoreFile = ResourceUtils.getFile(restConfiguration.getTrustStore());
 
-      // load up the key and trust store
+      char[] keyStorePassword = restConfiguration.getKeyStorePassword().toCharArray();
+      char[] trustStorePassword = restConfiguration.getTrustStorePassword().toCharArray();
+
+      // Build SSLContext
       SSLContext sslContext =
           SSLContextBuilder.create()
-              .loadKeyMaterial(keyStoreFile, keystorePassword, keystorePassword)
-              .loadTrustMaterial(trustStoreFile, truststorePassword)
+              .loadKeyMaterial(keyStoreFile, keyStorePassword, keyStorePassword)
+              .loadTrustMaterial(trustStoreFile, trustStorePassword)
               .build();
 
-      // set the http client to use the loaded key and trust store
-      HttpClient client = HttpClients.custom().setSSLContext(sslContext).build();
-      ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(client);
-      // set the charset
-      resultTemplate
+      // Hostname verifier (HttpClient 5)
+      DefaultHostnameVerifier hostnameVerifier = new DefaultHostnameVerifier();
+
+      // SSL socket factory (classic client, deprecated but REQUIRED)
+      SSLConnectionSocketFactory sslSocketFactory =
+          new SSLConnectionSocketFactory(
+              sslContext, new String[] {"TLSv1.3", "TLSv1.2"}, null, hostnameVerifier);
+
+      // Socket factory registry
+      Registry<ConnectionSocketFactory> socketFactoryRegistry =
+          RegistryBuilder.<ConnectionSocketFactory>create()
+              .register("https", sslSocketFactory)
+              .register("http", PlainConnectionSocketFactory.getSocketFactory())
+              .build();
+
+      // Connection manager
+      PoolingHttpClientConnectionManager connectionManager =
+          new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+
+      // HttpClient
+      CloseableHttpClient httpClient =
+          HttpClients.custom().setConnectionManager(connectionManager).build();
+
+      RestTemplate restTemplate =
+          new RestTemplate(new HttpComponentsClientHttpRequestFactory(httpClient));
+
+      restTemplate
           .getMessageConverters()
-          .add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
-      resultTemplate.setRequestFactory(requestFactory);
+          .addFirst(new StringHttpMessageConverter(StandardCharsets.UTF_8));
+
+      return restTemplate;
 
     } catch (Exception ex) {
-      // basic error handling if something goes wrong with the ssl context set up
-      throw new IllegalStateException("SSL setup failed: " + ex.getMessage(), ex);
+      log.error("Couldn't set up client SSL context", ex);
+      return new RestTemplate();
     }
-
-    return resultTemplate;
   }
 }

@@ -203,7 +203,7 @@ Most of the items just rely on data with at least one positive influenza lab fin
 |                                           | Encounter.period.end                                                                    |                                                                                          |                                                                                                                                                                                                                                                                                   |
 |                                           | Encounter.hospitalization.dischargeDisposition<br>.EntlassungsgrundErsteUndZweiteStelle | `07`                                                                                     |                                                                                                                                                                                                                                                                                   |
 
-# Kiradar
+# Kiradar - KJP
 
 ## General queries
 
@@ -220,7 +220,7 @@ The default list can be seen in the data set description.
 ### Further data retrieval
 
     2) [base]/Patient?_id=[ids_from_1]
-    3) [base]/Encounter?subject=[ids_from_2]&date=gt2020-01-01&_class=IMP&_count=200
+    3) [base]/Encounter?subject=[ids_from_2]&date=gt2020-01-01&class=IMP&_count=200
 
 ## Data items composition
 
@@ -246,16 +246,94 @@ and `Condition.code.coding.code`.
 | `kira.kjp.cumulative.diags.lengthofstay` | Encounter.type             | `Einrichtungskontakt` |                      |
 |                                          | Encounter.period           |                       |                      |
 | `kira.kjp.timeline.diags.occurrence`     | Encounter.period.start     |                       |                      |
-| `kira.rsv.cumulative.diags.zipcode`      | Patient.address.postalCode |                       |                      |
-|                                          | Patient.address.country    |                       | `DE` or not          |
-| `kira.rsv.cumulative.diags.age`          | Patient.birthDate          |                       |                      |
-|                                          | Encounter.type             | `Einrichtungskontakt` |                      |
-|                                          | Encounter.period.start     |                       |                      |
-|                                          | Encounter.class            | `IMP`                 |                      |
-| `kira.rsv.cumulative.diags.gender`       | Patient.gender             |                       |                      |
-| `kira.rsv.cumulative.diags.lengthofstay` | Encounter.type             | `Einrichtungskontakt` |                      |
-|                                          | Encounter.period           |                       |                      |
-| `kira.rsv.timeline.diags.occurrence`     | Encounter.period.start     |                       |                      |
+
+# Kiradar - PED
+
+## General queries
+
+The following queries are used at the beginning of a run to determine the patient/encounter pool.
+
+### Retrieval input criteria
+
+The codes are read dynamically from the `application.yaml`, all entries
+under `global.inputcodes.kids-radar.ped` are read. The default list can be seen in the data set
+description.
+
+    1) [base]/Patient?birthdate=ge2002-01-01&_pretty=false&_count=200 
+
+### Further data retrieval
+
+Part of the code filtering takes place after data retrieval, as this has been proven to be faster in
+some cases than using a complex FHIR search query.
+
+    2) [base]/Encounter?subject=[ids_from_1]&date=gt2020-01-01&class=IMP&_count=200
+    3) [base]/Condition?encounter=[ids_from_2]&code=A37.0,A37.1,A37.8,A37.9,U07.1,J10.0,J10.1,J10.8,J09,J20.5,J21.0,J12.1,B97.4
+    4) [base]/Observation?encounter=[ids_from_2]&code=94640-0,94306-8,96763-8,94500-6,96895-8,96741-4,34487-9,60416-5,49521-8,49531-7,61365-3,48509-4,29909-9,40982-1,43913-3,23826-1,92128-8,82179-3,42588-4,82177-7,80601-8,40988-8,92131-2&date=ge2020-01-01
+    5) [base]/Location?_id=[ids_from_2]
+    6) [base]/Procedure?code=26763009,243147009,[...],19647005&encounter=[ids_from_2]    
+
+## Data items composition
+
+The following data items are generated for all patients who were under the age of 18 at the start of
+the treatment case and with at least one diagnosis per kiradar context (KJP or RSV). For the KJP
+data, encounters >18 years are also considered due to possible case merges (see dataset
+description).
+
+To find out which encounters are valid, there are a few pre-filtering steps. In addition to age
+checks, which are also carried out again in the items due to clustering, the analysis of the
+condition diagnosis resources is mandatory. The necessary attributes are `Condition.recordedDate`
+and `Condition.code.coding.code`.
+
+| Item name                                    | FHIR attributes                  | Forced Condition            | Separation criterium                                                                                                                                                                                                                                                              |
+|----------------------------------------------|----------------------------------|-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `kira.ped.current.zipcode`                   | Patient.address.postalCode       |                             |                                                                                                                                                                                                                                                                                   |
+|                                              | Patient.address.country          |                             | `DE` or not                                                                                                                                                                                                                                                                       |
+| `kira.ped.current.treatmentlevel`            | Encounter.location               |                             | referenced `Location.type` = `ICU`                                                                                                                                                                                                                                                |
+|                                              | Encounter.status                 | `IN-PROGRESS`               |                                                                                                                                                                                                                                                                                   |
+|                                              | Encounter.type                   | `Versorgungsstellenkontakt` |                                                                                                                                                                                                                                                                                   |
+|                                              | Encounter.class                  | `IMP`                       |                                                                                                                                                                                                                                                                                   |
+|                                              | Procedure.code                   |                             | `code` from [VENTILATION](https://simplifier.net/medizininformatikinitiative-modul-intensivmedizin/vs-mii-icu-code-procedure-beatmung-snomed)/[ECMO](https://simplifier.net/medizininformatikinitiative-modul-intensivmedizin/vs-mii-icu-code-extrakorporale-verfahren) value set |
+|                                              | Procedure.status                 |                             | `IN-PROGRESS`, `FINISHED`                                                                                                                                                                                                                                                         |
+| `kira.ped.timeline.maxtreatmentlevel`        | Encounter.location               |                             |                                                                                                                                                                                                                                                                                   |
+|                                              | Encounter.status                 | `IN-PROGRESS`               |                                                                                                                                                                                                                                                                                   |
+|                                              | Encounter.type                   | `Versorgungsstellenkontakt` |                                                                                                                                                                                                                                                                                   |
+|                                              | Encounter.class                  | `IMP`                       |                                                                                                                                                                                                                                                                                   |
+|                                              | Procedure.code                   |                             | `code` from [VENTILATION](https://simplifier.net/medizininformatikinitiative-modul-intensivmedizin/vs-mii-icu-code-procedure-beatmung-snomed)/[ECMO](https://simplifier.net/medizininformatikinitiative-modul-intensivmedizin/vs-mii-icu-code-extrakorporale-verfahren) value set |
+|                                              | Procedure.status                 |                             | `IN-PROGRESS`, `FINISHED`                                                                                                                                                                                                                                                         |
+| `kira.ped.rsv.cumulative.diags.zipcode`      | Patient.address.postalCode       |                             |                                                                                                                                                                                                                                                                                   |
+|                                              | Patient.address.country          |                             | `DE` or not                                                                                                                                                                                                                                                                       |
+| `kira.ped.rsv.cumulative.diags.age`          | Patient.birthDate                |                             |                                                                                                                                                                                                                                                                                   |
+|                                              | Encounter.type                   | `Einrichtungskontakt`       |                                                                                                                                                                                                                                                                                   |
+|                                              | Encounter.period.start           |                             |                                                                                                                                                                                                                                                                                   |
+|                                              | Encounter.class                  | `IMP`                       |                                                                                                                                                                                                                                                                                   |
+| `kira.ped.rsv.cumulative.diags.gender`       | Patient.gender                   |                             |                                                                                                                                                                                                                                                                                   |
+| `kira.ped.rsv.cumulative.diags.lengthofstay` | Encounter.type                   | `Einrichtungskontakt`       |                                                                                                                                                                                                                                                                                   |
+|                                              | Encounter.period                 |                             |                                                                                                                                                                                                                                                                                   |
+| `kira.ped.rsv.timeline.diags.occurrence`     | Encounter.period.start           |                             |                                                                                                                                                                                                                                                                                   |
+| `kira.ped.rsv.timeline.age`                  | Patient.birthDate                |                             |                                                                                                                                                                                                                                                                                   |
+|                                              | Condition.code                   |                             | ICD code IN (`J20.5`, `J21.0`, `J12.1`, `B97.4`)                                                                                                                                                                                                                                  |
+| `kira.ped.rsv.timeline.age.pcr`              | Patient.birthDate                |                             |                                                                                                                                                                                                                                                                                   |
+|                                              | Observation.effective            |                             | younger than kick-off-date                                                                                                                                                                                                                                                        |
+|                                              | Observation.code                 |                             | IN (`40988-8`,`92131-2`,...)                                                                                                                                                                                                                                                      |
+|                                              | Observation.valueCodeableConcept |                             | IN (`10828004`,`260373001`,`52101004`)                                                                                                                                                                                                                                            |
+| `kira.ped.influenza.timeline.age`            | Patient.birthDate                |                             |                                                                                                                                                                                                                                                                                   |
+|                                              | Condition.code                   |                             | ICD code IN (`J10.0`, `J10.1`, `J10.8`, `U69.24`)                                                                                                                                                                                                                                 |
+| `kira.ped.influenza.timeline.age.pcr`        | Patient.birthDate                |                             |                                                                                                                                                                                                                                                                                   |
+|                                              | Observation.effective            |                             | younger than kick-off-date                                                                                                                                                                                                                                                        |
+|                                              | Observation.code                 |                             | IN (`34487-9`,`60416-5`,`49521-8`,`49531-7`,<br>`61365-3`,`48509-4`,`29909-9`,`40982-1`)                                                                                                                                                                                          |
+|                                              | Observation.valueCodeableConcept |                             | IN (`10828004`,`260373001`,`52101004`)                                                                                                                                                                                                                                            |
+| `kira.ped.covid.timeline.age`                | Patient.birthDate                |                             |                                                                                                                                                                                                                                                                                   |
+|                                              | Condition.code                   |                             | ICD code IN (`U07.1`)                                                                                                                                                                                                                                                             |
+| `kira.ped.covid.timeline.age.pcr`            | Patient.birthDate                |                             |                                                                                                                                                                                                                                                                                   |
+|                                              | Observation.effective            |                             | younger than kick-off-date                                                                                                                                                                                                                                                        |
+|                                              | Observation.code                 |                             | IN (`94640-0`,`94306-8`,`96763-8`,`94500-6`)                                                                                                                                                                                                                                      |
+|                                              | Observation.valueCodeableConcept |                             | IN (`10828004`,`260373001`,`52101004`)                                                                                                                                                                                                                                            |
+| `kira.ped.pertussis.timeline.age`            | Patient.birthDate                |                             |                                                                                                                                                                                                                                                                                   |
+|                                              | Condition.code                   |                             | ICD code IN (`A37.0`, `A37.1`, `A37.8`, `A37.9`)                                                                                                                                                                                                                                  |
+| `kira.ped.pertussis.timeline.age.pcr`        | Patient.birthDate                |                             |                                                                                                                                                                                                                                                                                   |
+|                                              | Observation.effective            |                             | younger than kick-off-date                                                                                                                                                                                                                                                        |
+|                                              | Observation.code                 |                             | IN (`43913-3`,`23826-1`,`92128-8`,`82179-3`,`42588-4`,`82177-7`,`80601-8`)                                                                                                                                                                                                        |
+|                                              | Observation.valueCodeableConcept |                             | IN (`10828004`,`260373001`,`52101004`)                                                                                                                                                                                                                                            |
 
 # Acribis
 
@@ -275,6 +353,16 @@ The following fhir search queries are used:
     3) [base]/Condition?encounter=[ids_from_2]
     4) [base]/Procedure?encounter=[ids_from_2]
     5) [base]/Patient?encounter=[ids_from_3_or_4]
+
+## Determination of the patient collective
+
+In order for patients to be counted in the subitems, permissions must be granted for the following 3
+consent
+form [provisions](https://simplifier.net/medizininformatikinitiative-modulconsent/2.16.840.1.113883.3.1937.777.24.5.3--20210423105554):
+
+    1) "MDAT ERHEBEN" [either via lvl 1 (2.16.840.1.113883.3.1937.777.24.5.3.1) or lvl 2 code (2.16.840.1.113883.3.1937.777.24.5.3.6)]
+    2) "Rekontaktierung weitere Erhebung" [either via lvl 1 (2.16.840.1.113883.3.1937.777.24.5.3.26) or lvl 2 code (2.16.840.1.113883.3.1937.777.24.5.3.28)]
+    3) "PATDAT erheben, nutzen, Kontaktierung im acribis-Projekt" [either via lvl 1 (2.16.840.1.113883.3.1937.777.24.5.3.57) or lvl 2 code (2.16.840.1.113883.3.1937.777.24.5.3.58)]
 
 ## Data items composition
 
@@ -305,3 +393,72 @@ If additional special checks exist within the data items, these are listed here:
 | `acr.timeline.dischargediags.cohorts` | Condition.code                           |                           | ICD codes from cohort logic |
 |                                       | Procedure.code                           |                           | OPS codes from cohort logic |
 |                                       | Encounter.diagnosis                      | `.use.coding.code` = `DD` |                             |
+
+# Bct
+
+## General queries
+
+The bct module is based on FHIR consent resources only.
+
+### Retrieval input criteria
+
+The following FHIR search queries are used:
+
+    1) [base]/Consent?category=https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category|2.16.840.1.113883.3.1937.777.24.2.184&date=ge2020-04-15
+
+## BCT Module assignment logic
+
+The BCT modules are assigned either using a valid [L1 code or a combination of the following L2
+codes](https://www.medizininformatik-initiative.de/Kerndatensatz/KDS_Consent_V2025/MII-IG-Modul-Consent-TechnischeImplementierung-Terminologien.html):
+
+| Module     | L1 Code                                  | L2 codes that all must be valid          |
+|------------|------------------------------------------|------------------------------------------|
+| `bct_mod1` | `2.16.840.1.113883.3.1937.777.24.5.3.1`  | `2.16.840.1.113883.3.1937.777.24.5.3.3`  |
+|            |                                          | `2.16.840.1.113883.3.1937.777.24.5.3.7`  |
+|            |                                          | `2.16.840.1.113883.3.1937.777.24.5.3.8`  |
+| `bct_mod2` | `2.16.840.1.113883.3.1937.777.24.5.3.44` | `2.16.840.1.113883.3.1937.777.24.5.3.45` |
+|            |                                          | `2.16.840.1.113883.3.1937.777.24.5.3.46` | 
+| `bct_mod3` | `2.16.840.1.113883.3.1937.777.24.5.3.10` | `2.16.840.1.113883.3.1937.777.24.5.3.12` |
+|            |                                          | `2.16.840.1.113883.3.1937.777.24.5.3.13` |
+| `bct_mod4` | `2.16.840.1.113883.3.1937.777.24.5.3.14` | `2.16.840.1.113883.3.1937.777.24.5.3.16` |
+|            |                                          | `2.16.840.1.113883.3.1937.777.24.5.3.17` |
+| `bct_mod5` | `2.16.840.1.113883.3.1937.777.24.5.3.18` | `2.16.840.1.113883.3.1937.777.24.5.3.20` |
+|            |                                          | `2.16.840.1.113883.3.1937.777.24.5.3.22` |
+| `bct_mod6` | `2.16.840.1.113883.3.1937.777.24.5.3.24` | `2.16.840.1.113883.3.1937.777.24.5.3.25` |
+| `bct_mod7` | `2.16.840.1.113883.3.1937.777.24.5.3.50` | `2.16.840.1.113883.3.1937.777.24.5.3.51` |
+|            |                                          | `2.16.840.1.113883.3.1937.777.24.5.3.52` |
+| `bct_mod8` | `2.16.840.1.113883.3.1937.777.24.5.3.26` | `2.16.840.1.113883.3.1937.777.24.5.3.27` |
+|            |                                          | `2.16.840.1.113883.3.1937.777.24.5.3.28` |
+|            |                                          | `2.16.840.1.113883.3.1937.777.24.5.3.29` | 
+| `bct_mod9` | `2.16.840.1.113883.3.1937.777.24.5.3.30` | `2.16.840.1.113883.3.1937.777.24.5.3.31` |
+
+## Data items composition
+
+The following attributes are checked to detect valid (acribis) consent resources:
+
+| Resource.attribute                         | Forced Condition                                                                                            | Separation criterium |
+|--------------------------------------------|-------------------------------------------------------------------------------------------------------------|----------------------|
+| `Consent.category[0].system`               | `http://loinc.org`                                                                                          |                      |
+| `Consent.category[0].code`                 | `57016-8`                                                                                                   |                      |
+| `Consent.category[1].system`               | `https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category` |                      |
+| `Consent.category[1].code`                 | `2.16.840.1.113883.3.1937.777.24.2.184`                                                                     |                      |
+| `Consent.patient`                          |                                                                                                             |                      |
+| `Consent.policy`                           | `urn:oid:2.16.840.1.113883.3.1937.777.24.2.1790` (any main form uri as 1.6d; 1.6f; 1.7.2...)                |                      |
+| `Consent.provision.provision.type`         | `PERMIT`                                                                                                    |                      |
+| `Consent.provision.provision.period.start` | `>= 15.04.2020`                                                                                             |                      |
+| `Consent.provision.provision.period.end`   |                                                                                                             |                      |
+| `Consent.provision.provision.code.system`  | `urn:oid:2.16.840.1.113883.3.1937.777.24.5.3`                                                               |                      |
+| `Consent.provision.provision.code.code`    |                                                                                                             |                      |
+
+If additional special checks exist within the data items, these are listed here:
+
+| Item name              | FHIR attributes                          | Forced Condition | Separation criterium |
+|------------------------|------------------------------------------|------------------|----------------------|
+| `bct.current.consent`  | Consent.patient                          |                  |                      |
+|                        | Consent.provision.provision.period.start |                  |                      |
+|                        | Consent.provision.provision.period.end   |                  |                      |
+|                        | Consent.status                           | `active`         |                      |
+| `bct.timeline.consent` | Consent.patient                          |                  |                      |
+|                        | Consent.provision.provision.period.start |                  |                      |
+|                        | Consent.provision.provision.period.end   |                  |                      |
+|                        | Consent.status                           | `active`         |                      |

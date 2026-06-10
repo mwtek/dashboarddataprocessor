@@ -26,6 +26,7 @@ import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_AGE_MAXT
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_AGE_MAXTREATMENTLEVEL_OUTPATIENT;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_GENDER;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_INPATIENT_GENDER;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_LENGTHOFSTAY_HOSPITAL_DEAD;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_LENGTHOFSTAY_ICU_DEAD;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_MAXTREATMENTLEVEL;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_OUTPATIENT_GENDER;
@@ -74,13 +75,16 @@ public class CovidDataItemTests extends CovidInfluenzaDataItemTests {
   @Test
   @DisplayName("Testing current.age.maxtreatmentlevel.icu_with_ecmo")
   void testCurrentAgeMaxTreatmentLevelEcmo() {
-    assertListEqual(COVID, CURRENT_AGE_MAXTREATMENTLEVEL_ICU_WITH_ECMO, List.of(70L));
+    assertListExactly(COVID, CURRENT_AGE_MAXTREATMENTLEVEL_ICU_WITH_ECMO, List.of(70L));
   }
 
   @Test
   @DisplayName("Testing cumulative.zipcode")
   void testCumulativeZipCodes() {
-    assertListEqual(COVID, CUMULATIVE_ZIPCODE, List.of("12345", "33333", "77777"));
+    assertListExactly(
+        COVID,
+        CUMULATIVE_ZIPCODE,
+        List.of("12345", "12345", "12345", "33333", "64756", "64756", "77777", "99999"));
     assertListIsSortedAscending(COVID, CUMULATIVE_ZIPCODE);
   }
 
@@ -103,19 +107,19 @@ public class CovidDataItemTests extends CovidInfluenzaDataItemTests {
   @Test
   @DisplayName("Testing cumulative.results")
   void testCumulativeResults() {
-    assertCumulativeResults(COVID, CUMULATIVE_RESULTS, 6, 0, 1);
+    assertCumulativeResults(COVID, CUMULATIVE_RESULTS, 8, 0, 1);
   }
 
   @Test
   @DisplayName("Testing cumulative.gender")
   void testCumulativeGender() {
-    assertCumulativeGender(COVID, CUMULATIVE_GENDER, 6, 1, 0);
+    assertCumulativeGender(COVID, CUMULATIVE_GENDER, 6, 1, 1);
   }
 
   @Test
   @DisplayName("Testing cumulative.inpatient.gender")
   void testCumulativeInpatientGender() {
-    assertCumulativeGender(COVID, CUMULATIVE_INPATIENT_GENDER, 5, 1, 0);
+    assertCumulativeGender(COVID, CUMULATIVE_INPATIENT_GENDER, 5, 1, 1);
   }
 
   @Test
@@ -127,14 +131,22 @@ public class CovidDataItemTests extends CovidInfluenzaDataItemTests {
   @Test
   @DisplayName("Testing cumulative.lengthofstay.icu.dead")
   void testCumulativeLengthOfStayIcuDead() {
-    assertListEqual(COVID, CUMULATIVE_LENGTHOFSTAY_ICU_DEAD, List.of(223L));
+    assertListExactly(COVID, CUMULATIVE_LENGTHOFSTAY_ICU_DEAD, List.of(223L, 223L, 223L, 223L));
     assertListIsSortedAscending(COVID, CUMULATIVE_LENGTHOFSTAY_ICU_DEAD);
+  }
+
+  @Test
+  @DisplayName("Testing cumulative.lengthofstay.hospital.dead")
+  void testCumulativeLengthOfStayHospitalDead() {
+    assertListExactly(
+        COVID, CUMULATIVE_LENGTHOFSTAY_HOSPITAL_DEAD, List.of(10L, 10L, 10L, 20L, 20L, 20L));
+    assertListIsSortedAscending(COVID, CUMULATIVE_LENGTHOFSTAY_HOSPITAL_DEAD);
   }
 
   @Test
   @DisplayName("Testing cumulative.maxtreatmentlevel")
   void testCumulativeMaxTreatmentlevel() {
-    assertTreatmentLevel(COVID, CUMULATIVE_MAXTREATMENTLEVEL, 1, 2, 1, 1, 2);
+    assertTreatmentLevel(COVID, CUMULATIVE_MAXTREATMENTLEVEL, 1, 2, 2, 1, 2);
   }
 
   @Test
@@ -174,11 +186,11 @@ public class CovidDataItemTests extends CovidInfluenzaDataItemTests {
   @Test
   @DisplayName("Testing cumulative.age.maxtreatmentlevel")
   void testCumulativeAgeMaxTreatmentlevel() {
-    assertListEqual(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_OUTPATIENT, List.of(60));
-    assertListEqual(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_NORMAL_WARD, List.of());
-    assertListEqual(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_ICU, List.of());
-    assertListEqual(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_ICU_WITH_VENTILATION, List.of(90));
-    assertListEqual(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_ICU_WITH_ECMO, List.of(70, 70));
+    assertListExactly(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_OUTPATIENT, List.of(60));
+    assertListExactly(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_NORMAL_WARD, List.of(45, 45));
+    assertListExactly(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_ICU, List.of(25, 30));
+    assertListExactly(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_ICU_WITH_VENTILATION, List.of(90));
+    assertListExactly(COVID, CUMULATIVE_AGE_MAXTREATMENTLEVEL_ICU_WITH_ECMO, List.of(70, 70));
   }
 
   @Test

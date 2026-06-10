@@ -61,7 +61,7 @@ public class AcuwaveSearchService extends RestConsumer implements SearchService 
    *
    * @param querySuffix The suffix with the Acuwave search logic to be appended to the FHIR server
    *     endpoint url (e.g. Kdslabor?code=1234).
-   * @param resourceType
+   * @param resourceType TODO Remove if not needed
    * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle#getEntry()
    *     bundle entry components}
    */

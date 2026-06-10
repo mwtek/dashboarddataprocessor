@@ -79,6 +79,9 @@ public class AcuwaveSearchConfiguration extends SearchConfiguration {
   /** Orbis internal keys for influenza laboratory codes. */
   private List<Integer> influenzaOrbisLabPcrCodes = new ArrayList<>();
 
+  /** Orbis internal keys for rsv laboratory codes. */
+  private List<Integer> rsvOrbisLabPcrCodes = new ArrayList<>();
+
   /** Reducing the procedure calls on certain wards */
   private List<String> wardsCovidInfluenza = new ArrayList<>();
 }

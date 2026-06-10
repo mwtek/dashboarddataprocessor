@@ -18,6 +18,7 @@
 
 package de.ukbonn.mwtek.dashboard.services;
 
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_KIDS_RADAR_PED_PERTUSSIS;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.extractInputCodeSettings;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.extractQualitativeLabCodesSettings;
 import static de.ukbonn.mwtek.dashboardlogic.tools.KidsRadarTools.getIcdCodesAsString;
@@ -30,8 +31,10 @@ import de.ukbonn.mwtek.dashboard.interfaces.SearchService;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation;
+import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiCondition;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiObservation;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiPatient;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,6 +44,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.ResourceType;
 
 /**
  * All methods for retrieving the data required for the Corona dashboard from any supported server.
@@ -72,6 +79,12 @@ public abstract class AbstractDataRetrievalService implements DataRetrievalServi
   /** A list of covid-19 relevant ICD diagnosis codes (usually U07.1). */
   @Getter @Setter private List<String> covidIcdCodes;
 
+  /** A list of snomed procedure codes that identifies high flow ventilation procedures */
+  @Getter @Setter private List<String> procedureHighFlowCodes;
+
+  /** A list of snomed procedure codes that identifies artificial cpap procedures */
+  @Getter @Setter private List<String> procedureCpapCodes;
+
   /**
    * A list of covid-19 relevant snomed procedure codes that identifies artificial ventilation
    * procedures
@@ -80,6 +93,9 @@ public abstract class AbstractDataRetrievalService implements DataRetrievalServi
 
   /** A list of covid-19 relevant snomed procedure codes that identifies ecmo procedures */
   @Getter @Setter private List<String> procedureEcmoCodes;
+
+  /** The prefix for the kjp intensive */
+  @Getter @Setter private String kjpOpsCodePrefix;
 
   /** A list of influenza relevant ICD diagnosis codes (e.g. J10.0). */
   @Getter @Setter private List<String> influenzaIcdCodes;
@@ -93,8 +109,24 @@ public abstract class AbstractDataRetrievalService implements DataRetrievalServi
   /** The icd codes for kids radar in one list. */
   public List<String> getKidsRadarIcdCodesAll() {
     List<String> allCodes = new ArrayList<>();
+    // TODO Check if covid / infl data needs to be added here aswell
     allCodes.addAll(getIcdCodesAsString(kidsRadarRsvIcdCodes));
     allCodes.addAll(getIcdCodesAsString(kidsRadarKjpIcdCodes));
+    return allCodes;
+  }
+
+  /** The icd codes for kids radar in one list. */
+  public List<String> getKidsRadarIcdCodesKjp() {
+    return getIcdCodesAsString(kidsRadarKjpIcdCodes);
+  }
+
+  /** The icd codes for kids radar in one list. */
+  public List<String> getKidsRadarIcdCodesPed() {
+    List<String> allCodes = new ArrayList<>();
+    allCodes.addAll(getIcdCodesAsString(kidsRadarRsvIcdCodes));
+    allCodes.addAll(covidIcdCodes);
+    allCodes.addAll(influenzaIcdCodes);
+    allCodes.addAll(DEFAULT_KIDS_RADAR_PED_PERTUSSIS);
     return allCodes;
   }
 
@@ -103,6 +135,9 @@ public abstract class AbstractDataRetrievalService implements DataRetrievalServi
 
   /** The icd codes for kids radar, split by group. */
   @Getter @Setter private Map<String, List<String>> kidsRadarRsvIcdCodes;
+
+  /** The loinc codes for rsv, split by group. */
+  @Getter @Setter private Map<String, List<String>> kidsRadarRsvLoincCodes;
 
   @Getter @Setter private SearchConfiguration searchConfiguration;
 
@@ -128,8 +163,8 @@ public abstract class AbstractDataRetrievalService implements DataRetrievalServi
   protected Set<String> handleFilterPatientRetrieval(
       DataItemContext dataItemContext,
       Boolean filterEnabled,
-      List<UkbObservation> ukbObservations,
-      List<UkbCondition> ukbConditions) {
+      List<MiiObservation> ukbObservations,
+      List<MiiCondition> ukbConditions) {
     if (filterEnabled) {
       Set<String> patientIdsPositive =
           CoronaResultFunctionality.getPidsPosFinding(
@@ -148,6 +183,38 @@ public abstract class AbstractDataRetrievalService implements DataRetrievalServi
       }
     }
     return patientIds;
+  }
+
+  protected static void addUkbPatientToOutput(
+      BundleEntryComponent entry, Set<MiiPatient> patientsOutput) {
+    MiiPatient miiPatient =
+        (MiiPatient) ResourceConverter.convert((Patient) entry.getResource(), false);
+    patientsOutput.add(miiPatient);
+  }
+
+  protected void handlePatientRessource(Bundle bundle, Set<MiiPatient> setPatients) {
+    bundle.getEntry().parallelStream()
+        .forEach(
+            singlePatient -> {
+              if (singlePatient.getResource().getResourceType() == ResourceType.Patient) {
+                setPatients.add(
+                    (MiiPatient)
+                        ResourceConverter.convert((Patient) singlePatient.getResource(), false));
+              }
+            });
+  }
+
+  protected void handlePatientRessource(
+      List<Bundle.BundleEntryComponent> bundleEntryComponents, Set<MiiPatient> setPatients) {
+    bundleEntryComponents.parallelStream()
+        .forEach(
+            singlePatient -> {
+              if (singlePatient.getResource().getResourceType() == ResourceType.Patient) {
+                setPatients.add(
+                    (MiiPatient)
+                        ResourceConverter.convert((Patient) singlePatient.getResource(), false));
+              }
+            });
   }
 
   public void logErrorRetrieval(String resourceType, Exception e) {

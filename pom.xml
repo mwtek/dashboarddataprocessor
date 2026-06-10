@@ -24,20 +24,21 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.16</version>
+    <version>4.0.6</version>
     <relativePath/>
     <!-- lookup parent from repository -->
   </parent>
   <groupId>de.ukbonn.mwtek</groupId>
   <artifactId>dashboarddataprocessor</artifactId>
-  <version>0.5.4+update.13</version>
+  <version>0.5.6</version>
   <name>dashboard-data-processor</name>
   <description>MII-FHIR-to-NUM-Dashboard-Processor</description>
   <properties>
-    <java.version>17</java.version>
+    <java.version>25</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jackson-bom.version>2.18.3</jackson-bom.version>
-    <spring-boot.version>3.5.3</spring-boot.version>
+    <jackson-bom.version>3.1.0</jackson-bom.version>
+    <spring-boot.version>4.0.6</spring-boot.version>
+    <lombok.version>1.18.42</lombok.version>
     <project.version>${project.version}</project.version>
   </properties>
   <dependencies>
@@ -81,19 +82,15 @@
       <version>${spring-boot.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>4.5.14</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>${jackson-bom.version}</version>
+
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+      <version>5.5.2</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.36</version>
+      <version>${lombok.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -109,6 +106,17 @@
       <scope>compile</scope>
     </dependency>
   </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>2.21.1</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <build>
     <plugins>
       <plugin>
@@ -142,8 +150,15 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>17</source>
-          <target>17</target>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
         <version>3.10.1</version>
       </plugin>

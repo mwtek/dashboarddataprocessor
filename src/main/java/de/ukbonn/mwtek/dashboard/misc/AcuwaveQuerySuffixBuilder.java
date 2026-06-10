@@ -25,6 +25,7 @@ import de.ukbonn.mwtek.dashboard.interfaces.DataSourceType;
 import de.ukbonn.mwtek.dashboard.interfaces.QuerySuffixBuilder;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboard.services.AcuwaveDataRetrievalService;
+import de.ukbonn.mwtek.dashboard.services.FhirDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import java.util.Collection;
 import java.util.HashSet;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /** Building the templates of the individual REST requests to the Acuwaveles server. */
 public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
@@ -44,7 +46,8 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
       AbstractDataRetrievalService acuwaveDataRetrievalService,
       Integer month,
       boolean summary,
-      DataItemContext dataItemContext) {
+      DataItemContext dataItemContext,
+      boolean httpMethodGet) {
     String orbisLabPcrCodes = "";
     String orbisLabVariantCodes = "";
     switch (dataItemContext) {
@@ -79,7 +82,8 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
       AbstractDataRetrievalService acuwaveDataRetrievalService,
       Integer month,
       boolean summary,
-      DataItemContext dataItemContext) {
+      DataItemContext dataItemContext,
+      Boolean httpMethodGet) {
     String icdCodes = "";
     switch (dataItemContext) {
       case COVID ->
@@ -98,9 +102,40 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
   }
 
   public String getConditions(
-      AbstractDataRetrievalService acuwaveDataRetrievalService, List<String> encounterIds) {
+      AbstractDataRetrievalService acuwaveDataRetrievalService,
+      List<String> encounterIds,
+      Boolean httpMethodeGet) {
     String encounterIdsString = getListAsString(encounterIds);
     return "kdsdiagnose?cases=" + encounterIdsString;
+  }
+
+  @Override
+  public String getObservations(
+      AbstractDataRetrievalService fhirDataRetrievalService,
+      DataItemContext dataItemContext,
+      List<String> loincCodes,
+      List<String> encounterIds,
+      Boolean httpMethodGet) {
+    return "";
+  }
+
+  public String getObservations(
+      AbstractDataRetrievalService acuwaveDataRetrievalService, List<String> encounterIds) {
+
+    String encounterIdsString = getListAsString(encounterIds);
+    AcuwaveDataRetrievalService service = (AcuwaveDataRetrievalService) acuwaveDataRetrievalService;
+
+    // Collect all code lists, transform them into strings, and join with commas
+    // No pertussis code existing since the data is coming from the microbiology
+    String codes =
+        Stream.of(
+                service.getCovidOrbisLabPcrCodes(),
+                service.getInfluenzaOrbisLabPcrCodes(),
+                service.getRsvOrbisLabPcrCodes())
+            .map(this::joinCodes)
+            .collect(Collectors.joining(DELIMITER));
+
+    return "kdslabor?cases=" + encounterIdsString + "&codes=" + codes;
   }
 
   @Override
@@ -108,6 +143,18 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
       AbstractDataRetrievalService abstractRestConfiguration, List<String> patientIdList) {
     return "kdsperson?patients="
         + String.join(DELIMITER, patientIdList)
+        + "&hideResourceTypes=Observation";
+  }
+
+  @Override
+  public String getPatients(
+      AbstractDataRetrievalService abstractRestConfiguration, Integer calendarYear) {
+    return "kdsperson?birthDateFrom="
+        + calendarYear
+        + "-01-01"
+        + "&birthDateTo="
+        + calendarYear
+        + "-12-31"
         + "&hideResourceTypes=Observation";
   }
 
@@ -152,6 +199,30 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
     return "kdsprozedur?cases=" + encounterIdsString;
   }
 
+  /** Builds the ICU procedures URL for the given encounters and optional wards. */
+  public String getIcuProcedures(
+      AbstractDataRetrievalService acuwaveDataRetrievalService, // kept for signature compatibility
+      List<String> wards,
+      Collection<String> encounterIds,
+      boolean clapp) {
+
+    // Select base path once
+    final String base = clapp ? "kdsicu" : "pdmsreporting";
+
+    StringBuilder url =
+        new StringBuilder(base)
+            .append("?cases=")
+            .append(joinCodes(encounterIds))
+            .append("&profileFilters=VENTILATION,ECMO");
+
+    // Append wards only if provided
+    if (wards != null && !wards.isEmpty()) {
+      url.append("&wards=").append(joinCodes(wards));
+    }
+
+    return url.toString();
+  }
+
   @Override
   public String getProceduresPost(
       AbstractDataRetrievalService dataRetrievalService,
@@ -165,7 +236,9 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
 
   @Override
   public String getLocations(
-      AbstractDataRetrievalService abstractRestConfiguration, List<?> locationIdSublist) {
+      AbstractDataRetrievalService abstractRestConfiguration,
+      List<?> locationIdSublist,
+      Boolean httpMethodGet) {
     return "location?ids="
         + locationIdSublist.stream().map(String::valueOf).collect(Collectors.joining(DELIMITER));
   }
@@ -173,13 +246,21 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
   @Override
   public String getConsents(
       AbstractDataRetrievalService dataRetrievalService, DataItemContext dataItemContext) {
-    return "kdsconsent?versions=1.6,1.7.2,acribis&dateFrom=" + getStartingDate(dataItemContext);
+    String versions = dataItemContext == DataItemContext.BCT ? "1.6,1.7.2" : "1.6,1.7.2,acribis";
+    return "kdsconsent?versions="
+        + versions
+        + "&hideResourceTypes=Encounter&dateFrom="
+        + getStartingDate(dataItemContext);
   }
 
   @Override
-  public String getLocationsPost(
-      AbstractDataRetrievalService dataRetrievalService, List<?> locationIdList) {
-    return "";
+  public String getQuestionnaireResponses(
+      AbstractDataRetrievalService abstractRestConfiguration,
+      List<String> encounterIdList,
+      Collection<String> questionnaireIds,
+      Boolean httpMethodGet) {
+    String encounterIdsString = String.join(DELIMITER, encounterIdList);
+    return "kdskardiologie?profileFilters=FOLLOWUP&patients=" + encounterIdsString;
   }
 
   @Override
@@ -282,6 +363,13 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
     return null;
   }
 
+  @Override
+  public String getQuestionnaires(
+      FhirDataRetrievalService fhirDataRetrievalService, boolean useGet) {
+    // Not needed for the acuwave retrieval pipeline since it's implemented in the rest endpoint
+    return "";
+  }
+
   private static String getModuleName(AcuwaveDataSourceType acuwaveDataSourceType) {
     String kdsModule = null;
     switch (acuwaveDataSourceType) {
@@ -289,5 +377,10 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
       case PDMS_REPORTING_DB -> kdsModule = "pdmsreporting";
     }
     return kdsModule;
+  }
+
+  private String joinCodes(Collection<?> codes) {
+    // Convert each element to string and join with DELIMITER
+    return codes.stream().map(String::valueOf).collect(Collectors.joining(DELIMITER));
   }
 }

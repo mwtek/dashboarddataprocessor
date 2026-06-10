@@ -18,6 +18,8 @@
 
 package de.ukbonn.mwtek.dashboard.configuration;
 
+import static de.ukbonn.mwtek.dashboard.controller.DataRetrievalController.CURRENT_DATASET_VERSION;
+
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
 import de.ukbonn.mwtek.dashboardlogic.settings.GlobalConfiguration;
 import lombok.Getter;
@@ -36,4 +38,10 @@ public class CustomGlobalConfiguration extends GlobalConfiguration {
    * retrieval (e.g. FHIR, ACUWAVE).
    */
   private ServerTypeEnum serverType = ServerTypeEnum.FHIR;
+
+  /**
+   * Debug option to overwrite the dataset description version in the output JSON, in order to
+   * potentially bypass server restrictions.
+   */
+  private String dsdVersion = CURRENT_DATASET_VERSION;
 }

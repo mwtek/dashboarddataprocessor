@@ -53,7 +53,7 @@ public interface SearchService {
    *
    * @param querySuffix The suffix with the FHIR search logic to be appended to the FHIR server
    *     endpoint url (e.g. Patient?id=1).
-   * @param resourceType
+   * @param resourceType The FHIR Resource type
    * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle} object
    */
   Bundle getInitialBundle(String querySuffix, HttpMethod httpMethod, String resourceType);

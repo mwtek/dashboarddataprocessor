@@ -57,17 +57,17 @@
       }
     },
     {
-      "fullUrl": "Location/T-333333",
+      "fullUrl": "Location/T-ICU-ROOM",
       "resource": {
         "resourceType": "Location",
-        "id": "T-333333",
+        "id": "T-ICU-ROOM",
         "meta": {
           "source": "http://hl7.org/fhir/StructureDefinition/Location"
         },
         "identifier": [
           {
             "system": "http://localIdentifier.de/identifiers/location",
-            "value": "T-333333"
+            "value": "T-ICU-ROOM"
           }
         ],
         "name": "Intensivstation 2. Zimmer 2",
@@ -97,21 +97,21 @@
       },
       "request": {
         "method": "PUT",
-        "url": "Location/T-333333"
+        "url": "Location/T-ICU-ROOM"
       }
     },
     {
-      "fullUrl": "Location/T-444444",
+      "fullUrl": "Location/T-ICU-BED",
       "resource": {
         "resourceType": "Location",
-        "id": "T-444444",
+        "id": "T-ICU-BED",
         "meta": {
           "source": "http://hl7.org/fhir/StructureDefinition/Location"
         },
         "identifier": [
           {
             "system": "http://localIdentifier.de/identifiers/location",
-            "value": "T-444444"
+            "value": "T-ICU-BED"
           }
         ],
         "name": "Zimmer 2. Bett links",
@@ -141,21 +141,21 @@
       },
       "request": {
         "method": "PUT",
-        "url": "Location/T-444444"
+        "url": "Location/T-ICU-BED"
       }
     },
     {
-      "fullUrl": "Location/T-222222",
+      "fullUrl": "Location/T-ICU-WARD",
       "resource": {
         "resourceType": "Location",
-        "id": "T-222222",
+        "id": "T-ICU-WARD",
         "meta": {
           "source": "http://hl7.org/fhir/StructureDefinition/Location"
         },
         "identifier": [
           {
             "system": "http://localIdentifier.de/identifiers/location",
-            "value": "T-222222"
+            "value": "T-ICU-WARD"
           }
         ],
         "name": "Intensivstation 2",
@@ -185,7 +185,7 @@
       },
       "request": {
         "method": "PUT",
-        "url": "Location/T-222222"
+        "url": "Location/T-ICU-WARD"
       }
     },
     {
@@ -462,7 +462,7 @@
         "location": [
           {
             "location": {
-              "reference": "Location/T-222222"
+              "reference": "Location/T-ICU-WARD"
             },
             "physicalType": {
               "coding": [
@@ -564,7 +564,7 @@
         "location": [
           {
             "location": {
-              "reference": "Location/T-222222"
+              "reference": "Location/T-ICU-WARD"
             },
             "physicalType": {
               "coding": [
@@ -581,7 +581,7 @@
           },
           {
             "location": {
-              "reference": "Location/T-333333"
+              "reference": "Location/T-ICU-ROOM"
             },
             "physicalType": {
               "coding": [
@@ -598,7 +598,7 @@
           },
           {
             "location": {
-              "reference": "Location/T-444444"
+              "reference": "Location/T-ICU-BED"
             },
             "physicalType": {
               "coding": [
@@ -1215,7 +1215,7 @@
           },
           {
             "location": {
-              "reference": "Location/T-444444"
+              "reference": "Location/T-ICU-BED"
             },
             "physicalType": {
               "coding": [
@@ -1324,7 +1324,7 @@
         "location": [
           {
             "location": {
-              "reference": "Location/T-222222"
+              "reference": "Location/T-ICU-WARD"
             },
             "physicalType": {
               "coding": [
@@ -1342,7 +1342,7 @@
           },
           {
             "location": {
-              "reference": "Location/T-333333"
+              "reference": "Location/T-ICU-ROOM"
             },
             "physicalType": {
               "coding": [
@@ -1360,7 +1360,7 @@
           },
           {
             "location": {
-              "reference": "Location/T-444444"
+              "reference": "Location/T-ICU-BED"
             },
             "physicalType": {
               "coding": [
@@ -2419,6 +2419,1320 @@
       "request": {
         "method": "PUT",
         "url": "Condition/T-UNKNOWN-ENCOUNTER-STATUS-1"
+      }
+    },
+    {
+      "fullUrl": "Patient/T-MULTIPLE-CASES",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "T-MULTIPLE-CASES",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "T-MULTIPLE-CASES"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Influenza-Testpatient with multiple cases",
+            "given": [
+              "Alive"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1970-01-01",
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "line": [
+              "Test street 10"
+            ],
+            "city": "Musterhausen",
+            "postalCode": "77777",
+            "country": "DE"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/T-MULTIPLE-CASES"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-MULTIPLE-CASES-000000-EK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-MULTIPLE-CASES-000000-EK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://fhir.de/StructureDefinition/Aufnahmegrund",
+            "extension": [
+              {
+                "url": "ErsteUndZweiteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundErsteUndZweiteStelle",
+                  "code": "01",
+                  "display": "KH-Behandlung, vollstat."
+                }
+              },
+              {
+                "url": "DritteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundDritteStelle",
+                  "code": "0",
+                  "display": "Anderes"
+                }
+              },
+              {
+                "url": "VierteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundVierteStelle",
+                  "code": "1",
+                  "display": "Normalfall"
+                }
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-MULTIPLE-CASES"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "000000"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "EK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "einrichtungskontakt",
+                "display": "Einrichtungskontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-MULTIPLE-CASES",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "T-MULTIPLE-CASES"
+          }
+        },
+        "period": {
+          "start": "2024-01-01T00:00:00+02:00",
+          "end": "2024-01-30T00:00:00+02:00"
+        },
+        "hospitalization": {
+          "admitSource": {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/dgkev/Aufnahmeanlass",
+                "code": "E",
+                "display": "Einweisung durch einen Arzt"
+              }
+            ]
+          }
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-MULTIPLE-CASES-000000-EK"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-MULTIPLE-CASES-22222222-AK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-MULTIPLE-CASES-22222222-AK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-MULTIPLE-CASES"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "22222222"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "AK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "abteilungskontakt",
+                "display": "Abteilungskontakt"
+              }
+            ]
+          }
+        ],
+        "serviceType": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel",
+              "code": "0100",
+              "display": "Innere Medizin"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-MULTIPLE-CASES",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "T-MULTIPLE-CASES"
+          }
+        },
+        "period": {
+          "start": "2024-01-01T00:00:00+02:00",
+          "end": "2024-01-30T00:00:00+02:00"
+        },
+        "partOf": {
+          "reference": "Encounter/T-MULTIPLE-CASES-000000-EK"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-MULTIPLE-CASES-22222222-AK"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-MULTIPLE-CASES-22222222-VK-0-0",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-MULTIPLE-CASES-22222222-VK-0-0",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-MULTIPLE-CASES"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "22222222"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "VK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "versorgungsstellenkontakt",
+                "display": "Versorgungsstellenkontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-MULTIPLE-CASES",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "T-MULTIPLE-CASES"
+          }
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/T-ICU-WARD"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "wa",
+                  "display": "Ward"
+                }
+              ]
+            },
+            "period": {
+              "start": "2024-01-01T00:00:00+02:00",
+              "end": "2024-01-15T00:00:00+02:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/T-NON-ICU-ROOM"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "ro",
+                  "display": "Room"
+                }
+              ]
+            },
+            "period": {
+              "start": "2024-01-01T00:00:00+02:00",
+              "end": "2024-01-15T00:00:00+02:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/T-ICU-BED"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "bd",
+                  "display": "Bed"
+                }
+              ]
+            },
+            "period": {
+              "start": "2024-01-01T00:00:00+02:00",
+              "end": "2024-01-15T00:00:00+02:00"
+            }
+          }
+        ],
+        "period": {
+          "start": "2024-01-01T00:00:00+02:00",
+          "end": "2024-01-15T00:00:00+02:00"
+        },
+        "partOf": {
+          "reference": "Encounter/T-MULTIPLE-CASES-22222222-AK"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-MULTIPLE-CASES-22222222-VK-0-0"
+      }
+    },
+    {
+      "fullUrl": "Condition/T-MULTIPLE-CASES-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-MULTIPLE-CASES-1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://localIdentifier.de/identifiers/condition",
+            "value": "T-MULTIPLE-CASES-1"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2024",
+              "code": "J10.0",
+              "display": "Grippe mit Pneumonie, saisonale Influenzaviren nachgewiesen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-MULTIPLE-CASES"
+        },
+        "encounter": {
+          "reference": "Encounter/T-MULTIPLE-CASES-000000-EK"
+        },
+        "onsetDateTime": "2024-01-10T00:00:00+02:00",
+        "recordedDate": "2024-01-10T00:00:00+02:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-MULTIPLE-CASES-1"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-MULTIPLE-CASES-2-000000-EK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-MULTIPLE-CASES-2-000000-EK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://fhir.de/StructureDefinition/Aufnahmegrund",
+            "extension": [
+              {
+                "url": "ErsteUndZweiteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundErsteUndZweiteStelle",
+                  "code": "01",
+                  "display": "KH-Behandlung, vollstat."
+                }
+              },
+              {
+                "url": "DritteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundDritteStelle",
+                  "code": "0",
+                  "display": "Anderes"
+                }
+              },
+              {
+                "url": "VierteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundVierteStelle",
+                  "code": "1",
+                  "display": "Normalfall"
+                }
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-MULTIPLE-CASES-2"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "000000"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "EK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "einrichtungskontakt",
+                "display": "Einrichtungskontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-MULTIPLE-CASES",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "T-MULTIPLE-CASES"
+          }
+        },
+        "period": {
+          "start": "2025-01-01T00:00:00+02:00",
+          "end": "2025-01-30T00:00:00+02:00"
+        },
+        "hospitalization": {
+          "admitSource": {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/dgkev/Aufnahmeanlass",
+                "code": "E",
+                "display": "Einweisung durch einen Arzt"
+              }
+            ]
+          }
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-MULTIPLE-CASES-2-000000-EK"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-MULTIPLE-CASES-2-22222222-AK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-MULTIPLE-CASES-2-22222222-AK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-MULTIPLE-CASES-2"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "22222222"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "AK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "abteilungskontakt",
+                "display": "Abteilungskontakt"
+              }
+            ]
+          }
+        ],
+        "serviceType": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel",
+              "code": "0100",
+              "display": "Innere Medizin"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-MULTIPLE-CASES",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "T-MULTIPLE-CASES"
+          }
+        },
+        "period": {
+          "start": "2025-01-01T00:00:00+02:00",
+          "end": "2025-01-30T00:00:00+02:00"
+        },
+        "partOf": {
+          "reference": "Encounter/T-MULTIPLE-CASES-2-000000-EK"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-MULTIPLE-CASES-2-22222222-AK"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-MULTIPLE-CASES-2-22222222-VK-0-0",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-MULTIPLE-CASES-2-22222222-VK-0-0",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-MULTIPLE-CASES-2"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "22222222"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "VK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "versorgungsstellenkontakt",
+                "display": "Versorgungsstellenkontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-MULTIPLE-CASES",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "T-MULTIPLE-CASES"
+          }
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/T-NON-ICU-WARD"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "wa",
+                  "display": "Ward"
+                }
+              ]
+            },
+            "period": {
+              "start": "2025-01-01T00:00:00+02:00",
+              "end": "2025-01-15T00:00:00+02:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/T-NON-ICU-ROOM"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "ro",
+                  "display": "Room"
+                }
+              ]
+            },
+            "period": {
+              "start": "2025-01-01T00:00:00+02:00",
+              "end": "2025-01-15T00:00:00+02:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/T-ICU-BED"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "bd",
+                  "display": "Bed"
+                }
+              ]
+            },
+            "period": {
+              "start": "2025-01-01T00:00:00+02:00",
+              "end": "2025-01-15T00:00:00+02:00"
+            }
+          }
+        ],
+        "period": {
+          "start": "2025-01-01T00:00:00+02:00",
+          "end": "2025-01-15T00:00:00+02:00"
+        },
+        "partOf": {
+          "reference": "Encounter/T-MULTIPLE-CASES-2-22222222-AK"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-MULTIPLE-CASES-2-22222222-VK-0-0"
+      }
+    },
+    {
+      "fullUrl": "Condition/T-MULTIPLE-CASES-2",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-MULTIPLE-CASES-2",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://localIdentifier.de/identifiers/condition",
+            "value": "T-MULTIPLE-CASES-2"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2024",
+              "code": "J10.0",
+              "display": "Grippe mit Pneumonie, saisonale Influenzaviren nachgewiesen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-MULTIPLE-CASES"
+        },
+        "encounter": {
+          "reference": "Encounter/T-MULTIPLE-CASES-2-000000-EK"
+        },
+        "onsetDateTime": "2025-01-10T00:00:00+02:00",
+        "recordedDate": "2025-01-10T00:00:00+02:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-MULTIPLE-CASES-2"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-MULTIPLE-CASES-3-000000-EK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-MULTIPLE-CASES-3-000000-EK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://fhir.de/StructureDefinition/Aufnahmegrund",
+            "extension": [
+              {
+                "url": "ErsteUndZweiteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundErsteUndZweiteStelle",
+                  "code": "01",
+                  "display": "KH-Behandlung, vollstat."
+                }
+              },
+              {
+                "url": "DritteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundDritteStelle",
+                  "code": "0",
+                  "display": "Anderes"
+                }
+              },
+              {
+                "url": "VierteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundVierteStelle",
+                  "code": "1",
+                  "display": "Normalfall"
+                }
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-MULTIPLE-CASES-3"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "000000"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "EK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "einrichtungskontakt",
+                "display": "Einrichtungskontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-MULTIPLE-CASES",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "T-MULTIPLE-CASES"
+          }
+        },
+        "period": {
+          "start": "2026-01-01T00:00:00+02:00",
+          "end": "2026-01-30T00:00:00+02:00"
+        },
+        "hospitalization": {
+          "admitSource": {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/dgkev/Aufnahmeanlass",
+                "code": "E",
+                "display": "Einweisung durch einen Arzt"
+              }
+            ]
+          }
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-MULTIPLE-CASES-3-000000-EK"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-MULTIPLE-CASES-3-22222222-AK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-MULTIPLE-CASES-3-22222222-AK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-MULTIPLE-CASES-3"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "22222222"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "AK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "abteilungskontakt",
+                "display": "Abteilungskontakt"
+              }
+            ]
+          }
+        ],
+        "serviceType": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/dkgev/Fachabteilungsschluessel",
+              "code": "0100",
+              "display": "Innere Medizin"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-MULTIPLE-CASES",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "T-MULTIPLE-CASES"
+          }
+        },
+        "period": {
+          "start": "2026-01-01T00:00:00+02:00",
+          "end": "2026-01-30T00:00:00+02:00"
+        },
+        "partOf": {
+          "reference": "Encounter/T-MULTIPLE-CASES-3-000000-EK"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-MULTIPLE-CASES-3-22222222-AK"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T-MULTIPLE-CASES-3-22222222-VK-0-0",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-MULTIPLE-CASES-3-22222222-VK-0-0",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-MULTIPLE-CASES-3"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "22222222"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "VK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "versorgungsstellenkontakt",
+                "display": "Versorgungsstellenkontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-MULTIPLE-CASES",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "T-MULTIPLE-CASES"
+          }
+        },
+        "location": [
+          {
+            "location": {
+              "reference": "Location/T-ICU-WARD"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "wa",
+                  "display": "Ward"
+                }
+              ]
+            },
+            "period": {
+              "start": "2026-01-01T00:00:00+02:00",
+              "end": "2026-01-15T00:00:00+02:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/T-ICU-ROOM"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "ro",
+                  "display": "Room"
+                }
+              ]
+            },
+            "period": {
+              "start": "2026-01-01T00:00:00+02:00",
+              "end": "2026-01-15T00:00:00+02:00"
+            }
+          },
+          {
+            "location": {
+              "reference": "Location/T-ICU-BED"
+            },
+            "physicalType": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                  "code": "bd",
+                  "display": "Bed"
+                }
+              ]
+            },
+            "period": {
+              "start": "2026-01-01T00:00:00+02:00",
+              "end": "2026-01-15T00:00:00+02:00"
+            }
+          }
+        ],
+        "period": {
+          "start": "2026-01-01T00:00:00+02:00",
+          "end": "2026-01-15T00:00:00+02:00"
+        },
+        "partOf": {
+          "reference": "Encounter/T-MULTIPLE-CASES-3-22222222-AK"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-MULTIPLE-CASES-3-22222222-VK-0-0"
+      }
+    },
+    {
+      "fullUrl": "Condition/T-MULTIPLE-CASES-3",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-MULTIPLE-CASES-3",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://localIdentifier.de/identifiers/condition",
+            "value": "T-MULTIPLE-CASES-3"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2024",
+              "code": "J10.0",
+              "display": "Grippe mit Pneumonie, saisonale Influenzaviren nachgewiesen"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-MULTIPLE-CASES"
+        },
+        "encounter": {
+          "reference": "Encounter/T-MULTIPLE-CASES-3-000000-EK"
+        },
+        "onsetDateTime": "2026-01-10T00:00:00+02:00",
+        "recordedDate": "2026-01-10T00:00:00+02:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-MULTIPLE-CASES-3"
       }
     }
   ]

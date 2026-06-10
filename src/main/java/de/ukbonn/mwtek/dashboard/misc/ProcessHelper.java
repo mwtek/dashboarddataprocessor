@@ -19,9 +19,9 @@
 package de.ukbonn.mwtek.dashboard.misc;
 
 import de.ukbonn.mwtek.dashboard.DashboardApplication;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiEncounter;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiLocation;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiPatient;
 import java.util.Collection;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -39,11 +39,12 @@ public class ProcessHelper {
    * Could a reference to the patient be found in at least one FHIR resource (usually via the
    * "Subject" attribute)?
    *
-   * @param patientIds A set of {@link UkbPatient#getPatientId() patient ids}.
+   * @param patientIds A set of {@link MiiPatient#getPatientId() patient ids}.
    * @param resourceType The fhir resource type of the context, e.g. {@link ResourceType#Procedure}.
    * @return <code>True</code>, if patient ids could be determined.
    */
-  public static boolean patientIdsCouldBeFound(Set<?> patientIds, ResourceType resourceType) {
+  public static boolean patientIdsCouldBeFound(
+      Collection<?> patientIds, ResourceType resourceType) {
     boolean patientIdsCouldBeFound = patientIds != null && !patientIds.isEmpty();
     // If the set is empty after the observation and condition queries have run, most of the data
     // items can no longer be filled.
@@ -60,7 +61,7 @@ public class ProcessHelper {
    * Could a reference to the case be found in at least one FHIR resource (usually via the "Context"
    * attribute)?
    *
-   * @param encounterIds A set of {@link UkbEncounter#getCaseId() case ids}.
+   * @param encounterIds A set of {@link MiiEncounter#getCaseId() case ids}.
    * @param resourceType The fhir resource type of the context, e.g. {@link
    *     ResourceType#Observation}.
    * @return <code>True</code>, if encounter ids could be determined.
@@ -81,7 +82,7 @@ public class ProcessHelper {
   /**
    * Could a reference to the location be found in at least one FHIR encounter resource?
    *
-   * @param locationIds A set of {@link UkbLocation#getId() location ids}.
+   * @param locationIds A set of {@link MiiLocation#getId() location ids}.
    * @param resourceType The fhir resource type of the context, which will mainly be {@link
    *     ResourceType#Location} here.
    * @return <code>True</code>, if location ids could be determined.

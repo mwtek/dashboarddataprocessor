@@ -1,21 +1,23 @@
 FROM alpine:latest
 
 RUN apk add --no-cache git
-RUN apk add --no-cache openjdk17 maven
+RUN apk add --no-cache openjdk25 maven
 
-RUN cd /opt && mkdir dashboardprocessor
-WORKDIR /opt/dashboardprocessor
+RUN mkdir -p /opt/dashboarddataprocessor
+WORKDIR /opt/dashboarddataprocessor
 
-RUN git clone --depth 1 --branch v0.5.4+update.13 https://www.github.com/mwtek/utilities.git
-RUN git clone --depth 1 --branch v0.5.4+update.13 https://www.github.com/mwtek/dashboardlogic.git
-RUN git clone --depth 1 --branch v0.5.4+update.13 https://www.github.com/mwtek/dashboarddataprocessor.git
+RUN git clone --depth 1 --branch v0.5.6 https://www.github.com/mwtek/utilities.git
+RUN git clone --depth 1 --branch v0.5.6 https://www.github.com/mwtek/dashboardlogic.git
+RUN git clone --depth 1 --branch v0.5.6 https://www.github.com/mwtek/dashboarddataprocessor.git
 
-# Experimental
-#RUN git clone --depth 1 --branch main https://ghp_TOKEN@github.com/mwtek/utilities-experimental.git /opt/dashboardprocessor/utilities
-#RUN git clone --depth 1 --branch main https://ghp_TOKEN@github.com/mwtek/dashboardlogic-experimental.git /opt/dashboardprocessor/dashboardlogic
-#RUN git clone --depth 1 --branch main https://ghp_TOKEN@github.com/mwtek/dashboarddataprocessor-experimental.git /opt/dashboardprocessor/dashboarddataprocessor
+# Experimental repos
+# RUN git clone --depth 1 --branch main https://ghp_TOKEN@github.com/mwtek/utilities-experimental.git utilities
+# RUN git clone --depth 1 --branch main https://ghp_TOKEN@github.com/mwtek/dashboardlogic-experimental.git dashboardlogic
+# RUN git clone --depth 1 --branch main https://ghp_TOKEN@github.com/mwtek/dashboarddataprocessor-experimental.git dashboarddataprocessor
 
 RUN cd dashboarddataprocessor && sh build.sh
 
-SHELL ["/bin/sh","-c"]
-ENTRYPOINT cd dashboarddataprocessor && sh run.sh
+RUN chown -R 1000:1000 .
+
+WORKDIR /opt/dashboarddataprocessor/dashboarddataprocessor
+ENTRYPOINT ["sh", "run.sh"]

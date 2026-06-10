@@ -38,12 +38,12 @@ import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
 import de.ukbonn.mwtek.dashboardlogic.settings.QualitativeLabCodesSettings;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiCondition;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiEncounter;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiLocation;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiObservation;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiPatient;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiProcedure;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -68,16 +68,16 @@ public class CovidDataController {
 
     // Retrieval of the Observation resources
     processTimer.startLoggingTime(ResourceType.Observation);
-    List<UkbObservation> ukbObservations =
-        (List<UkbObservation>)
+    List<MiiObservation> ukbObservations =
+        (List<MiiObservation>)
             ResourceConverter.convert(dataRetrievalService.getObservations(dataItemContext));
     processTimer.stopLoggingTime(ukbObservations);
 
     // Retrieval of the Condition resources
     processTimer.startLoggingTime(ResourceType.Condition);
     // map fhir resources into ukb resources
-    List<UkbCondition> ukbConditions =
-        (List<UkbCondition>)
+    List<MiiCondition> ukbConditions =
+        (List<MiiCondition>)
             ResourceConverter.convert(dataRetrievalService.getConditions(dataItemContext));
     processTimer.stopLoggingTime(ukbConditions);
 
@@ -86,44 +86,43 @@ public class CovidDataController {
     if (!ukbObservations.isEmpty() || !ukbConditions.isEmpty()) {
       // Retrieval of the Patient resources
       processTimer.startLoggingTime(ResourceType.Patient);
-      List<UkbPatient> ukbPatients =
-          (List<UkbPatient>)
-              ResourceConverter.convert(
-                  dataRetrievalService.getPatients(
-                      ukbObservations, ukbConditions, dataItemContext));
-      processTimer.stopLoggingTime(ukbPatients);
+      List<MiiPatient> miiPatients =
+          dataRetrievalService.getPatients(ukbObservations, ukbConditions, dataItemContext);
+      processTimer.stopLoggingTime(miiPatients);
 
       // Retrieval of the Encounter resources
       processTimer.startLoggingTime(ResourceType.Encounter);
-      List<UkbEncounter> ukbEncounters =
-          (List<UkbEncounter>)
-              ResourceConverter.convert(dataRetrievalService.getEncounters(dataItemContext), true);
-      processTimer.stopLoggingTime(ukbEncounters);
+      List<MiiEncounter> miiEncounters =
+          (List<MiiEncounter>)
+              ResourceConverter.convert(
+                  dataRetrievalService.getEncounters(dataItemContext, miiPatients), true);
+      processTimer.stopLoggingTime(miiEncounters);
 
       // Retrieval of the Location resources
       processTimer.startLoggingTime(ResourceType.Location);
-      List<UkbLocation> ukbLocations =
-          (List<UkbLocation>) ResourceConverter.convert(dataRetrievalService.getLocations());
-      processTimer.stopLoggingTime(ukbLocations);
+      List<MiiLocation> miiLocations =
+          (List<MiiLocation>) ResourceConverter.convert(dataRetrievalService.getLocations());
+      processTimer.stopLoggingTime(miiLocations);
 
       // If at least one service provider entry was found or a corresponding contact type
       // => add a dummy icu location
-      addDummyIcuLocationIfNeeded(ukbEncounters, ukbLocations);
+      addDummyIcuLocationIfNeeded(miiEncounters, miiLocations);
 
       // If activated; use Patient.deceasedDateTime for the detection of deceased cases.
       if (customGlobalConfiguration.getUsePatientDeceased())
-        addDeceasedStatusToEncounters(ukbPatients, ukbEncounters);
+        addDeceasedStatusToEncounters(miiPatients, miiEncounters);
 
       // Retrieval of the Procedure resources
-      List<UkbProcedure> ukbProcedures = new ArrayList<>();
+      List<MiiProcedure> ukbProcedures = new ArrayList<>();
       if (!customGlobalConfiguration.getUseIcuUndifferentiated()) {
+
         processTimer.startLoggingTime(ResourceType.Procedure);
         ukbProcedures =
-            (List<UkbProcedure>)
+            (List<MiiProcedure>)
                 ResourceConverter.convert(
                     dataRetrievalService.getProcedures(
-                        ukbEncounters,
-                        ukbLocations,
+                        miiEncounters,
+                        miiLocations,
                         ukbObservations,
                         ukbConditions,
                         dataItemContext));
@@ -141,10 +140,10 @@ public class CovidDataController {
           new DataItemGenerator(
               ukbConditions,
               ukbObservations,
-              ukbPatients,
-              ukbEncounters,
+              miiPatients,
+              miiEncounters,
               ukbProcedures,
-              ukbLocations);
+              miiLocations);
 
       // Creation of the data items of the dataset specification
       dataItems.addAll(
@@ -178,9 +177,9 @@ public class CovidDataController {
             result,
             ukbConditions,
             ukbObservations,
-            ukbPatients,
-            ukbEncounters,
-            ukbLocations,
+            miiPatients,
+            miiEncounters,
+            miiLocations,
             ukbProcedures,
             dataItemContext);
       }

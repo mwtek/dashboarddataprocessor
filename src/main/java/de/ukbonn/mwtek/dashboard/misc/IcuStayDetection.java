@@ -19,7 +19,7 @@
 import static de.ukbonn.mwtek.dashboardlogic.logic.DiseaseResultFunctionality.extractIdFromReference;
 import static de.ukbonn.mwtek.utilities.fhir.mapping.kdscase.valuesets.KdsEncounterFixedValues.CASETYPE_INTENSIVESTATIONARY;
 import static de.ukbonn.mwtek.utilities.fhir.misc.LocationTools.ICU_DUMMY_ID;
-import static de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter.getContactType;
+import static de.ukbonn.mwtek.utilities.fhir.resources.MiiEncounter.getContactType;
 
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;

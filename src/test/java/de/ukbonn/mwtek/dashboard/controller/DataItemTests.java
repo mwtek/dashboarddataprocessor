@@ -32,6 +32,10 @@ import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.ICU_ECMO;
 import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.ICU_VENTILATION;
 import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.NORMAL_WARD;
 import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.OUTPATIENT;
+import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.Pediatric.CPAP;
+import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.Pediatric.ECMO;
+import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.Pediatric.HIGHFLOW;
+import static de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels.Pediatric.INVASIVE_VENTILATION;
 import static de.ukbonn.mwtek.dashboardlogic.tools.TimelineTools.getIndexByTimestamp;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -43,7 +47,6 @@ import de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels;
 import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
 import de.ukbonn.mwtek.dashboardlogic.models.TimestampedListPair;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -69,7 +72,6 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
    */
   @SuppressWarnings("unchecked")
   protected List<Integer> getDataAsIntegerList(DataItemContext context, String dataType) {
-    System.out.println(getTreatmentDataItem(context, dataType).getData().getClass());
     log.error("{}", getTreatmentDataItem(context, dataType).getData().getClass());
     return (List<Integer>) getTreatmentDataItem(context, dataType).getData();
   }
@@ -111,6 +113,47 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
     assertEquals(icuEcmo, result.get(ICU_ECMO.getValue()).intValue());
   }
 
+  /**
+   * Asserts the pediatric (KiRadar) treatment level data for a specific context.
+   *
+   * <p>This method verifies that the treatment level values stored in the data item match the
+   * expected values for pediatric patients in the given context.
+   *
+   * @param context The data item context.
+   * @param selectedDataItem The identifier of the selected data item.
+   * @param icuVentilation The expected value for invasive ventilation treatment.
+   * @param icuEcmo The expected value for ECMO treatment.
+   * @param normalWard The expected value for normal ward treatment.
+   * @param icu The expected value for ICU treatment (general).
+   * @param icuHighFlow The expected value for high-flow oxygen treatment.
+   * @param icuCpap The expected value for CPAP treatment.
+   */
+  protected void assertTreatmentLevelKiradarPed(
+      DataItemContext context,
+      String selectedDataItem,
+      Integer icuVentilation,
+      Integer icuEcmo,
+      Integer normalWard,
+      Integer icu,
+      Integer icuHighFlow,
+      Integer icuCpap) {
+    // Test setup
+    assertNotNull(sampleData);
+    assertFalse(sampleData.isEmpty());
+
+    // Get the data item for treatment level
+    DiseaseDataItem dataItem = getTreatmentDataItem(context, selectedDataItem);
+
+    Map<String, Integer> result = (Map<String, Integer>) dataItem.getData();
+
+    assertEquals(normalWard, result.get(TreatmentLevels.Pediatric.NORMAL_WARD).intValue());
+    assertEquals(icu, result.get(TreatmentLevels.Pediatric.ICU).intValue());
+    assertEquals(icuVentilation, result.get(INVASIVE_VENTILATION).intValue());
+    assertEquals(icuEcmo, result.get(ECMO).intValue());
+    assertEquals(icuHighFlow, result.get(HIGHFLOW).intValue());
+    assertEquals(icuCpap, result.get(CPAP).intValue());
+  }
+
   protected void assertCumulativeResults(
       DataItemContext context,
       String selectedDataItem,
@@ -149,19 +192,38 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
     assertEquals(diverse, result.get(DIVERSE_SPECIFICATION.getValue()).intValue());
   }
 
-  protected void assertListEqual(
-      DataItemContext context, String selectedDataItem, Collection<?> entries) {
-    // Your existing implementation
+  /**
+   * Asserts that the list contained in the {@link DiseaseDataItem} for the given context/key is
+   * exactly identical to {@code expected}: same size, same elements, in the same order.
+   *
+   * <p><strong>Order matters.</strong> Pass a {@link java.util.List} as {@code expected} to avoid
+   * nondeterministic iteration from unordered collections (e.g., HashSet).
+   *
+   * @param context data item context used to retrieve the item under test
+   * @param selectedDataItem key/name passed to getTreatmentDataItem(...)
+   * @param expected expected list in exact order (duplicates preserved)
+   * @throws AssertionError if the data is null, not a List, sizes differ, or any element differs
+   */
+  protected void assertListExactly(
+      DataItemContext context, String selectedDataItem, List<?> expected) {
 
-    // Assuming sampleData and positive are defined somewhere in your test class
-    assertNotNull(sampleData);
-    assertFalse(sampleData.isEmpty());
+    // Optional preconditions if these exist in your test fixture
+    assertNotNull(sampleData, "sampleData must be initialized in the test fixture");
+    assertFalse(sampleData.isEmpty(), "sampleData must not be empty");
 
+    // Retrieve and validate the data item
     DiseaseDataItem dataItem = getTreatmentDataItem(context, selectedDataItem);
-    List<?> result = (List<?>) dataItem.getData();
+    assertNotNull(dataItem, "getTreatmentDataItem(...) returned null");
 
-    // Check if dataResult contains all entries
-    assertTrue(result.containsAll(entries));
+    Object raw = dataItem.getData();
+    assertNotNull(raw, "dataItem.getData() must not be null");
+    assertTrue(raw instanceof List<?>, "dataItem.getData() must be a List");
+
+    List<?> actual = (List<?>) raw;
+
+    // Strict equality: List.equals enforces element-by-element order and content equality
+    assertEquals(
+        expected, actual, () -> "Lists differ.\nexpected=" + expected + "\nactual=" + actual);
   }
 
   protected void assertListIsSortedAscending(DataItemContext context, String selectedDataItem) {
@@ -214,6 +276,44 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
     assertEquals(sum, resultValue);
   }
 
+  /**
+   * Asserts the timeline value for a specific treatment level on a given day.
+   *
+   * <p>This method verifies that the timeline data for the provided treatment level and timestamp
+   * matches the expected sum value.
+   *
+   * @param context The data item context.
+   * @param selectedDataItem The identifier of the selected data item.
+   * @param timeStamp The timestamp (day) for which the value should be asserted.
+   * @param sum The expected aggregated value at the given timestamp.
+   * @param treatmentLevel The treatment level (as string key) to check the value for.
+   */
+  protected void assertTimelineValueByDay(
+      DataItemContext context,
+      String selectedDataItem,
+      Long timeStamp,
+      long sum,
+      String treatmentLevel) {
+    // Test setup
+    assertNotNull(sampleData);
+    assertFalse(sampleData.isEmpty());
+
+    // Get the data item for treatment level
+    DiseaseDataItem dataItem = getTreatmentDataItem(context, selectedDataItem);
+    Map<String, List<? extends Number>> result =
+        (Map<String, List<? extends Number>>) dataItem.getData();
+
+    List<? extends Number> dates = result.get(DATE.getValue());
+    int indexByTimeStamp = getIndexByTimestamp(timeStamp, dates);
+
+    // Minimal change: same for the series + use longValue()
+    List<? extends Number> resultByTreatmentlevel = result.get(treatmentLevel);
+    Number resultValue = resultByTreatmentlevel.get(indexByTimeStamp);
+
+    // Perform assertion for the expected value
+    assertEquals(sum, resultValue.longValue());
+  }
+
   protected void assertListIsEmpty(DataItemContext context, String selectedDataItem) {
     assertListSize(context, selectedDataItem, 0);
   }
@@ -224,6 +324,27 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
     DiseaseDataItem dataItem = getTreatmentDataItem(context, selectedDataItem);
     List<?> dataItemType = (ArrayList<?>) dataItem.getData();
     assertEquals(expectedSize, dataItemType.size());
+  }
+
+  @SuppressWarnings("unchecked")
+  protected void assertListContains(
+      DataItemContext context, String selectedDataItem, Long expectedValue) {
+
+    assertNotNull(sampleData, "sampleData must be initialized in the test fixture");
+    assertFalse(sampleData.isEmpty(), "sampleData must not be empty");
+
+    DiseaseDataItem dataItem = getTreatmentDataItem(context, selectedDataItem);
+    assertNotNull(dataItem, "getTreatmentDataItem(...) returned null");
+
+    Object raw = dataItem.getData();
+    assertNotNull(raw, "dataItem.getData() must not be null");
+    assertTrue(raw instanceof List<?>, "dataItem.getData() must be a List");
+
+    List<Long> actual = (List<Long>) raw;
+
+    assertTrue(
+        actual.contains(expectedValue),
+        () -> "Expected integer value " + expectedValue + " not found in list: " + actual);
   }
 
   void assertValueByTimestampEquals(
@@ -250,7 +371,7 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
     int index = timestamps.indexOf(dayStart);
 
     if (index == -1 || index >= series.size()) {
-      return 0L; // oder OptionalLong.empty() / Fehler werfen, je nach gewünschtem Verhalten
+      return 0L;
     }
 
     return series.get(index);

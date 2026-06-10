@@ -1717,6 +1717,111 @@
       }
     },
     {
+      "fullUrl": "Questionnaire/MII-QN-Kardio-Acribis-Study-FollowUp",
+      "resource": {
+        "resourceType": "Questionnaire",
+        "id": "MII-QN-Kardio-Acribis-Study-FollowUp",
+        "url": "https://www.medizininformatik-initiative.de/fhir/ext/modul-kardio/Questionnaire/MII-QN-Kardio-Acribis-Study-FollowUp",
+        "version": "2026.0.0-alpha.1",
+        "name": "MII_QN_Kardio_Acribis_Study_FollowUp",
+        "title": "MII QN Kardio Acribis Study FollowUp",
+        "status": "draft",
+        "subjectType": [
+          "Patient"
+        ],
+        "date": "2026-01-20T18:56:34+01:00",
+        "publisher": "Medizininformatik Initiative"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Questionnaire/MII-QN-Kardio-Acribis-Study-FollowUp"
+      }
+    },
+    {
+      "fullUrl": "QuestionnaireResponse/PAT-WITH-CONSENT-1",
+      "resource": {
+        "resourceType": "QuestionnaireResponse",
+        "id": "PAT-WITH-CONSENT-1",
+        "questionnaire": "https://www.medizininformatik-initiative.de/fhir/ext/modul-kardio/Questionnaire/MII-QN-Kardio-Acribis-Study-FollowUp",
+        "status": "completed",
+        "subject": {
+          "reference": "Patient/PAT-WITH-CONSENT",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "PAT-WITH-CONSENT"
+          }
+        },
+        "authored": "2026-01-20T18:56:34+01:00",
+        "item": [
+          {
+            "linkId": "group1",
+            "text": "Allgemeine Angaben",
+            "item": [
+              {
+                "linkId": "o_1",
+                "text": "Wer füllt den Fragebogen aus?",
+                "answer": [
+                  {
+                    "valueCoding": {
+                      "code": "1",
+                      "display": "Patient/Patientin"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "QuestionnaireResponse/PAT-WITH-CONSENT-1"
+      }
+    },
+    {
+      "fullUrl": "QuestionnaireResponse/PAT-WITH-CONSENT-2",
+      "resource": {
+        "resourceType": "QuestionnaireResponse",
+        "id": "PAT-WITH-CONSENT-2",
+        "questionnaire": "https://www.medizininformatik-initiative.de/fhir/ext/modul-kardio/Questionnaire/MII-QN-Kardio-Acribis-Study-FollowUp",
+        "status": "completed",
+        "subject": {
+          "reference": "Patient/PAT-WITH-CONSENT",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "PAT-WITH-CONSENT"
+          }
+        },
+        "authored": "2026-03-20T18:56:34+01:00",
+        "item": [
+          {
+            "linkId": "group1",
+            "text": "Allgemeine Angaben",
+            "item": [
+              {
+                "linkId": "o_1",
+                "text": "Wer füllt den Fragebogen aus?",
+                "answer": [
+                  {
+                    "valueCoding": {
+                      "code": "1",
+                      "display": "Patient/Patientin"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "QuestionnaireResponse/PAT-WITH-CONSENT-2"
+      }
+    },
+    {
       "fullUrl": "Patient/PAT-2-WITH-CONSENT",
       "resource": {
         "resourceType": "Patient",
@@ -2040,6 +2145,48 @@
       "request": {
         "method": "PUT",
         "url": "Patient/PAT-WITH-DECLINED-CONSENT"
+      }
+    },
+    {
+      "fullUrl": "QuestionnaireResponse/PAT-WITH-DECLINED-CONSENT-1",
+      "resource": {
+        "resourceType": "QuestionnaireResponse",
+        "id": "PAT-WITH-DECLINED-CONSENT-1",
+        "questionnaire": "https://www.medizininformatik-initiative.de/fhir/ext/modul-kardio/Questionnaire/MII-QN-Kardio-Acribis-Study-FollowUp",
+        "status": "completed",
+        "subject": {
+          "reference": "Patient/PAT-WITH-DECLINED-CONSENT",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "PAT-WITH-DECLINED-CONSENT"
+          }
+        },
+        "authored": "2026-03-20T18:56:34+01:00",
+        "item": [
+          {
+            "linkId": "group1",
+            "text": "Allgemeine Angaben",
+            "item": [
+              {
+                "linkId": "o_1",
+                "text": "Wer füllt den Fragebogen aus?",
+                "answer": [
+                  {
+                    "valueCoding": {
+                      "code": "1",
+                      "display": "Patient/Patientin"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "QuestionnaireResponse/PAT-WITH-DECLINED-CONSENT-1"
       }
     },
     {
@@ -4572,6 +4719,48 @@
       "request": {
         "method": "PUT",
         "url": "Patient/TEST-AGGREGATED-CONSENT-WITH-LVL-1-CODES-ONLY"
+      }
+    },
+    {
+      "fullUrl": "QuestionnaireResponse/TEST-AGGREGATED-CONSENT-WITH-LVL-1-CODES-ONLY-1",
+      "resource": {
+        "resourceType": "QuestionnaireResponse",
+        "id": "TEST-AGGREGATED-CONSENT-WITH-LVL-1-CODES-ONLY-1",
+        "questionnaire": "https://www.medizininformatik-initiative.de/fhir/ext/modul-kardio/Questionnaire/MII-QN-Kardio-Acribis-Study-FollowUp",
+        "status": "completed",
+        "subject": {
+          "reference": "Patient/TEST-AGGREGATED-CONSENT-WITH-LVL-1-CODES-ONLY",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "TEST-AGGREGATED-CONSENT-WITH-LVL-1-CODES-ONLY"
+          }
+        },
+        "authored": "2026-03-30T18:56:34+01:00",
+        "item": [
+          {
+            "linkId": "group1",
+            "text": "Allgemeine Angaben",
+            "item": [
+              {
+                "linkId": "o_1",
+                "text": "Wer füllt den Fragebogen aus?",
+                "answer": [
+                  {
+                    "valueCoding": {
+                      "code": "1",
+                      "display": "Patient/Patientin"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "QuestionnaireResponse/TEST-AGGREGATED-CONSENT-WITH-LVL-1-CODES-ONLY-1"
       }
     },
     {

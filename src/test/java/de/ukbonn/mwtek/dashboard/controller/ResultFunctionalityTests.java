@@ -34,18 +34,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import ca.uhn.fhir.context.FhirContext;
 import de.ukbonn.mwtek.dashboard.examples.GlobalConfigurationExamples;
 import de.ukbonn.mwtek.dashboardlogic.AcribisDataItemGenerator;
+import de.ukbonn.mwtek.dashboardlogic.BctDataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.DataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.KidsRadarDataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbCondition;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbConsent;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbEncounter;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbLocation;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbObservation;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbPatient;
-import de.ukbonn.mwtek.utilities.fhir.resources.UkbProcedure;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiCondition;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiConsent;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiEncounter;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiLocation;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiObservation;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiPatient;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiProcedure;
+import de.ukbonn.mwtek.utilities.fhir.resources.MiiQuestionnaireResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,30 +63,31 @@ import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Procedure;
+import org.hl7.fhir.r4.model.QuestionnaireResponse;
 import org.hl7.fhir.r4.model.Resource;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
+@TestInstance(Lifecycle.PER_CLASS)
 public class ResultFunctionalityTests {
 
+  private static final FhirContext FHIR_CTX = FhirContext.forR4();
   public static final String SAMPLE_FILE_INFLUENZA = "./samples/SampleBundle_Influenza.json";
-  private static final List<UkbPatient> ukbPatients = new ArrayList<>();
-  private static final List<UkbEncounter> ukbEncounters = new ArrayList<>();
-  private static final List<UkbCondition> ukbConditions = new ArrayList<>();
-  private static final List<UkbObservation> ukbObservations = new ArrayList<>();
-  private static final List<UkbProcedure> ukbProcedures = new ArrayList<>();
-  private static final List<UkbLocation> ukbLocations = new ArrayList<>();
-  private static final List<UkbConsent> ukbConsents = new ArrayList<>();
+  private static final List<MiiPatient> patients = new ArrayList<>();
+  private static final List<MiiEncounter> encounters = new ArrayList<>();
+  private static final List<MiiCondition> conditions = new ArrayList<>();
+  private static final List<MiiObservation> observations = new ArrayList<>();
+  private static final List<MiiProcedure> procedures = new ArrayList<>();
+  private static final List<MiiLocation> locations = new ArrayList<>();
+  private static final List<MiiConsent> consents = new ArrayList<>();
+  private static final List<MiiQuestionnaireResponse> questionnaireResponses = new ArrayList<>();
   public static final String SAMPLE_FILE_COVID = "./samples/SampleBundle_Covid.json";
   public static final String SAMPLE_FILE_KIDS_RADAR = "./samples/SampleBundle_KiRadar.json";
   public static final String SAMPLE_FILE_ACRIBIS = "./samples/SampleBundle_Acribis.json";
+  public static final String SAMPLE_FILE_BCT = "./samples/SampleBundle_Bct.json";
   static List<DiseaseDataItem> sampleData;
-
-  @BeforeAll
-  static void setupSampleData() throws IOException {
-    sampleData = loadSampleData();
-  }
 
   @DisplayName("Getting data items for a run with at least one example patient.")
   @Test
@@ -105,37 +108,29 @@ public class ResultFunctionalityTests {
             SAMPLE_FILE_COVID,
             SAMPLE_FILE_INFLUENZA,
             SAMPLE_FILE_KIDS_RADAR,
-            SAMPLE_FILE_ACRIBIS)) {
+            SAMPLE_FILE_ACRIBIS,
+            SAMPLE_FILE_BCT)) {
       parseSampleFile(sampleFile);
 
       // Determine the appropriate generator based on the file
-      DataItemGenerator generator;
-      if (sampleFile.equals(SAMPLE_FILE_KIDS_RADAR)) {
-        // Use the KidsRadarDataItemGenerator for KIDS_RADAR
-        generator =
-            new KidsRadarDataItemGenerator(
-                ukbConditions,
-                ukbObservations,
-                ukbPatients,
-                ukbEncounters,
-                ukbProcedures,
-                ukbLocations);
-      } else if (sampleFile.equals(SAMPLE_FILE_ACRIBIS)) {
-        // Use the KidsRadarDataItemGenerator for KIDS_RADAR
-        generator =
-            new AcribisDataItemGenerator(
-                ukbConsents, ukbConditions, ukbPatients, ukbEncounters, ukbProcedures);
-      } else {
-        // Use the regular DataItemGenerator for COVID and INFLUENZA
-        generator =
-            new DataItemGenerator(
-                ukbConditions,
-                ukbObservations,
-                ukbPatients,
-                ukbEncounters,
-                ukbProcedures,
-                ukbLocations);
-      }
+      DataItemGenerator generator =
+          switch (sampleFile) {
+            case SAMPLE_FILE_KIDS_RADAR ->
+                // Use the KidsRadarDataItemGenerator for KIDS_RADAR
+                new KidsRadarDataItemGenerator(
+                    conditions, observations, patients, encounters, procedures, locations);
+            case SAMPLE_FILE_ACRIBIS ->
+                // Use the AcribisDataItemGenerator for ACRIBIS
+                new AcribisDataItemGenerator(
+                    consents, conditions, patients, encounters, procedures, questionnaireResponses);
+            case SAMPLE_FILE_BCT ->
+                // Use the BctDataItemGenerator for BCT
+                new BctDataItemGenerator(consents);
+            default ->
+                // Use the regular DataItemGenerator for COVID and INFLUENZA
+                new DataItemGenerator(
+                    conditions, observations, patients, encounters, procedures, locations);
+          };
 
       // Generate and store data items in the map
       diseaseDataMap.put(
@@ -154,6 +149,43 @@ public class ResultFunctionalityTests {
     return output;
   }
 
+  protected static List<DiseaseDataItem> loadSampleData(DataItemContext context)
+      throws IOException {
+    String sampleFile =
+        switch (context) {
+          case COVID -> SAMPLE_FILE_COVID;
+          case INFLUENZA -> SAMPLE_FILE_INFLUENZA;
+          case KIDS_RADAR -> SAMPLE_FILE_KIDS_RADAR;
+          case ACRIBIS -> SAMPLE_FILE_ACRIBIS;
+          case BCT -> SAMPLE_FILE_BCT;
+          default -> throw new IllegalArgumentException("Unsupported context: " + context);
+        };
+
+    parseSampleFile(sampleFile);
+
+    DataItemGenerator generator =
+        switch (context) {
+          case KIDS_RADAR ->
+              new KidsRadarDataItemGenerator(
+                  conditions, observations, patients, encounters, procedures, locations);
+          case ACRIBIS ->
+              new AcribisDataItemGenerator(
+                  consents, conditions, patients, encounters, procedures, questionnaireResponses);
+          case BCT -> new BctDataItemGenerator(consents);
+          default ->
+              new DataItemGenerator(
+                  conditions, observations, patients, encounters, procedures, locations);
+        };
+
+    return generator.getDataItems(
+        null,
+        null,
+        getExampleData(),
+        null,
+        context,
+        GlobalConfigurationExamples.getExampleSettings());
+  }
+
   private static DataItemContext determineContext(String sampleFile) {
     return switch (sampleFile) {
       case SAMPLE_FILE_COVID -> COVID;
@@ -169,7 +201,6 @@ public class ResultFunctionalityTests {
   }
 
   public static void parseJsonFile(String jsonFile) throws IOException {
-    FhirContext ctx = FhirContext.forR4();
     try {
       // Clearing the resource lists before starting a new run to isolate the workflow data sources.
       clearResourceLists();
@@ -177,26 +208,29 @@ public class ResultFunctionalityTests {
       String json = FileUtils.readFileToString(sampleFile, "UTF-8");
 
       // Use the FhirContext object to parse the JSON data into a Bundle
-      Bundle bundle = (Bundle) ctx.newJsonParser().parseResource(json);
+      Bundle bundle = (Bundle) FHIR_CTX.newJsonParser().parseResource(json);
 
       for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
         Resource resource = entry.getResource();
 
         // Check the type of the resource and convert it accordingly
         if (resource instanceof Encounter encounter) {
-          ukbEncounters.add((UkbEncounter) ResourceConverter.convert(encounter));
+          encounters.add((MiiEncounter) ResourceConverter.convert(encounter));
         } else if (resource instanceof Patient patient) {
-          ukbPatients.add((UkbPatient) ResourceConverter.convert(patient));
+          patients.add((MiiPatient) ResourceConverter.convert(patient));
         } else if (resource instanceof Condition condition) {
-          ukbConditions.add((UkbCondition) ResourceConverter.convert(condition));
+          conditions.add((MiiCondition) ResourceConverter.convert(condition));
         } else if (resource instanceof Observation observation) {
-          ukbObservations.add((UkbObservation) ResourceConverter.convert(observation));
+          observations.add((MiiObservation) ResourceConverter.convert(observation));
         } else if (resource instanceof Procedure procedure) {
-          ukbProcedures.add((UkbProcedure) ResourceConverter.convert(procedure));
+          procedures.add((MiiProcedure) ResourceConverter.convert(procedure));
         } else if (resource instanceof Location location) {
-          ukbLocations.add((UkbLocation) ResourceConverter.convert(location));
+          locations.add((MiiLocation) ResourceConverter.convert(location));
         } else if (resource instanceof Consent consent) {
-          ukbConsents.add((UkbConsent) ResourceConverter.convert(consent));
+          consents.add((MiiConsent) ResourceConverter.convert(consent));
+        } else if (resource instanceof QuestionnaireResponse questionnaireResponse) {
+          questionnaireResponses.add(
+              (MiiQuestionnaireResponse) ResourceConverter.convert(questionnaireResponse));
         }
       }
     } catch (IOException e) {
@@ -205,13 +239,13 @@ public class ResultFunctionalityTests {
   }
 
   private static void clearResourceLists() {
-    ukbLocations.clear();
-    ukbEncounters.clear();
-    ukbPatients.clear();
-    ukbObservations.clear();
-    ukbProcedures.clear();
-    ukbConditions.clear();
-    ukbConsents.clear();
+    locations.clear();
+    encounters.clear();
+    patients.clear();
+    observations.clear();
+    procedures.clear();
+    conditions.clear();
+    consents.clear();
   }
 
   @Test
@@ -225,13 +259,7 @@ public class ResultFunctionalityTests {
     // First load the data items from the covid-19 sample file.
     parseSampleFile(SAMPLE_FILE_COVID);
     List<DiseaseDataItem> resultDataCovid =
-        new DataItemGenerator(
-                ukbConditions,
-                ukbObservations,
-                ukbPatients,
-                ukbEncounters,
-                ukbProcedures,
-                ukbLocations)
+        new DataItemGenerator(conditions, observations, patients, encounters, procedures, locations)
             .getDataItems(
                 mapExcludeDataItems,
                 null,

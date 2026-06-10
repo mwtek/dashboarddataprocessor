@@ -19,9 +19,13 @@ package de.ukbonn.mwtek.dashboard.controller;
 
 import static de.ukbonn.mwtek.dashboard.controller.UkbModelController.generateUkbModelData;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.ACRIBIS;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.BCT;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.COVID;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.INFLUENZA;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR_KJP;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR_PED;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.SNID;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.UKB_MODEL;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,14 +63,17 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -94,8 +101,8 @@ public class DataRetrievalController {
   public static final int DAYS_DIFFERENCE = 3;
 
   public static final String WORKFLOW_ABORTED = "Workflow aborted: ";
-  public static final String CURRENT_DATASET_VERSION = "0.5.4";
-  public static final String CURRENT_DDP_VERSION = "0.5.4+update.12";
+  public static final String CURRENT_DATASET_VERSION = "0.5.6";
+  public static final String CURRENT_DDP_VERSION = "0.5.6";
   public static final String FILE_GENERATOR = "ddp";
   public static final String EXPORT_TIMESTAMP = "exporttimestamp";
   public static final String DDP_VERSION = "ddp_version";
@@ -164,20 +171,40 @@ public class DataRetrievalController {
     // Checking if any scope is activated via rest parametrization -> if so, overwrite the yaml
     // settings
     boolean anyScopeActivated =
-        Stream.of(COVID, INFLUENZA, KIDS_RADAR, UKB_MODEL, ACRIBIS)
+        Stream.of(
+                COVID,
+                INFLUENZA,
+                KIDS_RADAR,
+                KIDS_RADAR_PED,
+                KIDS_RADAR_KJP,
+                UKB_MODEL,
+                ACRIBIS,
+                BCT,
+                SNID)
             .anyMatch(scope -> isScopeActivatedViaParameters(scopes, scope));
 
     boolean generateCovidData =
         shouldGenerate(COVID, config.getGenerateCovidData(), scopes, anyScopeActivated);
     boolean generateInfluenzaData =
         shouldGenerate(INFLUENZA, config.getGenerateInfluenzaData(), scopes, anyScopeActivated);
+    // generateKidsRadarData = kiradar ped AND kjp data
     boolean generateKidsRadarData =
         shouldGenerate(KIDS_RADAR, config.getGenerateKidsRadarData(), scopes, anyScopeActivated);
+    boolean generateKidsRadarPedData =
+        shouldGenerate(
+            KIDS_RADAR_PED, config.getGenerateKidsRadarPedData(), scopes, anyScopeActivated);
+    boolean generateKidsRadarKjpData =
+        shouldGenerate(
+            KIDS_RADAR_KJP, config.getGenerateKidsRadarKjpData(), scopes, anyScopeActivated);
     boolean generateUkbRenalReplacementModelData =
         shouldGenerate(
             UKB_MODEL, config.getGenerateUkbRenalReplacementModelData(), scopes, anyScopeActivated);
     boolean generateAcribisData =
         shouldGenerate(ACRIBIS, config.getGenerateAcribisData(), scopes, anyScopeActivated);
+    boolean generateBctData =
+        shouldGenerate(BCT, config.getGenerateBctData(), scopes, anyScopeActivated);
+    boolean generateSnidData =
+        shouldGenerate(SNID, config.getGenerateSnidData(), scopes, anyScopeActivated);
 
     // If custom codes are set in the yaml file -> update the default values.
     InputCodeSettings inputCodeSettings =
@@ -220,8 +247,9 @@ public class DataRetrievalController {
                 result));
         // End workflow if no resources were found
         if (LoggingHelper.gotWorkflowAborted(COVID)) {
-          return new ResponseEntity<>(
-              LoggingHelper.getAbortMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+          // Reset of the error level
+          LoggingHelper.resetAbortStatus();
+          return new ResponseEntity<>(LoggingHelper.getAbortMessage(), HttpStatus.NO_CONTENT);
         }
       }
 
@@ -240,15 +268,22 @@ public class DataRetrievalController {
                 result));
         // End workflow if no resources were found
         if (LoggingHelper.gotWorkflowAborted(INFLUENZA)) {
-          return new ResponseEntity<>(
-              LoggingHelper.getAbortMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+          // Reset of the error level
+          LoggingHelper.resetAbortStatus();
+          return new ResponseEntity<>(LoggingHelper.getAbortMessage(), HttpStatus.NO_CONTENT);
         }
       }
 
-      if (generateKidsRadarData) {
+      // Determine which contexts to generate
+      Set<DataItemContext> dataItemContexts =
+          buildKidsRadarContexts(
+              generateKidsRadarData, generateKidsRadarPedData, generateKidsRadarKjpData);
+
+      // Only run workflow if at least one relevant context exists
+      if (!dataItemContexts.isEmpty()) {
         dataItems.addAll(
-            KidsRadarDataController.generateData(
-                KIDS_RADAR,
+            KiRaDataController.generateData(
+                dataItemContexts,
                 dataRetrievalService,
                 reportConfiguration,
                 processTimer,
@@ -258,10 +293,12 @@ public class DataRetrievalController {
                 qualitativeLabCodesSettings,
                 exclDataItems,
                 result));
+
         // End workflow if no resources were found
         if (LoggingHelper.gotWorkflowAborted(KIDS_RADAR)) {
-          return new ResponseEntity<>(
-              LoggingHelper.getAbortMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+          // Reset of the error level
+          LoggingHelper.resetAbortStatus();
+          return new ResponseEntity<>(LoggingHelper.getAbortMessage(), HttpStatus.NO_CONTENT);
         }
       }
 
@@ -280,15 +317,33 @@ public class DataRetrievalController {
                 result));
         // End workflow if no resources were found
         if (LoggingHelper.gotWorkflowAborted(ACRIBIS)) {
-          return new ResponseEntity<>(
-              LoggingHelper.getAbortMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+          return new ResponseEntity<>(LoggingHelper.getAbortMessage(), HttpStatus.NO_CONTENT);
+        }
+      }
+
+      if (generateBctData) {
+        dataItems.addAll(
+            BctDataController.generateData(
+                BCT,
+                dataRetrievalService,
+                reportConfiguration,
+                processTimer,
+                customGlobalConfiguration,
+                variantConfiguration,
+                inputCodeSettings,
+                qualitativeLabCodesSettings,
+                exclDataItems,
+                result));
+        // End workflow if no resources were found
+        if (LoggingHelper.gotWorkflowAborted(BCT)) {
+          return new ResponseEntity<>(LoggingHelper.getAbortMessage(), HttpStatus.NO_CONTENT);
         }
       }
 
       ArrayNode dataItemsArrayNode = mapper.valueToTree(dataItems);
       result.putArray(DATA_ITEMS).addAll(dataItemsArrayNode);
       result.put(PROVIDER, this.providerService.provConf.getName());
-      result.put(DASHBOARD_DATASET_VERSION, CURRENT_DATASET_VERSION);
+      result.put(DASHBOARD_DATASET_VERSION, customGlobalConfiguration.getDsdVersion());
       result.put(AUTHOR, this.providerService.provConf.getAuthor());
       result.put(FILE_GENERATED_BY, FILE_GENERATOR);
       result.put(DDP_VERSION, CURRENT_DDP_VERSION);
@@ -308,9 +363,7 @@ public class DataRetrievalController {
     } catch (HttpServerErrorException ex) {
       // Server unavailable
       return handleError(
-          ex,
-          "Error in the data retrieval from the FHIR server:",
-          HttpStatus.valueOf(ex.getRawStatusCode()));
+          ex, "Error in the data retrieval from the FHIR server:", ex.getStatusCode());
     } catch (ResourceAccessException ex) {
       return handleError(
           ex, "Connection to the FHIR/Acuwave server failed:", HttpStatus.SERVICE_UNAVAILABLE);
@@ -346,10 +399,13 @@ public class DataRetrievalController {
       case INFLUENZA -> lowerCaseScopes.contains("influenza");
       case KIDS_RADAR -> lowerCaseScopes.contains("kiradar");
       // May be used in the future to split the kidsradar-context up
-      case KIDS_RADAR_KJP -> lowerCaseScopes.contains("kjp");
-      case KIDS_RADAR_RSV -> lowerCaseScopes.contains("rsv");
+      case KIDS_RADAR_PED, KIDS_RADAR_PED_COV, KIDS_RADAR_PED_INFL, KIDS_RADAR_PED_RSV ->
+          lowerCaseScopes.contains("kiradar_ped");
+      case KIDS_RADAR_KJP -> lowerCaseScopes.contains("kiradar_kjp");
       case UKB_MODEL -> lowerCaseScopes.contains("ukbmodel");
       case ACRIBIS -> lowerCaseScopes.contains("acribis");
+      case BCT -> lowerCaseScopes.contains("bct");
+      case SNID -> lowerCaseScopes.contains("snid");
     };
   }
 
@@ -377,8 +433,40 @@ public class DataRetrievalController {
     return new ResponseEntity<>(errorMessage + "\n\n" + ex.getMessage(), status);
   }
 
+  private ResponseEntity<String> handleError(
+      Exception ex, String errorMessage, HttpStatusCode httpStatusCode) {
+    logger.error(WORKFLOW_ABORTED, ex); // Log the exception stack trace
+    return new ResponseEntity<>(errorMessage + "\n\n" + ex.getMessage(), httpStatusCode);
+  }
+
   private boolean shouldGenerate(
       DataItemContext scope, boolean configFlag, List<String> scopes, boolean anyScopeActivated) {
     return isScopeActivatedViaParameters(scopes, scope) || (!anyScopeActivated && configFlag);
+  }
+
+  // Build the set of contexts to generate
+  private static Set<DataItemContext> buildKidsRadarContexts(
+      boolean generateKidsRadarData,
+      boolean generateKidsRadarPedData,
+      boolean generateKidsRadarKjpData) {
+
+    // Use EnumSet for enum-backed sets (memory- and performance-friendly)
+    EnumSet<DataItemContext> contexts = EnumSet.noneOf(DataItemContext.class);
+
+    if (generateKidsRadarData) {
+      // KIDS_RADAR implies both sub-contexts
+      contexts.add(DataItemContext.KIDS_RADAR_PED);
+      contexts.add(DataItemContext.KIDS_RADAR_KJP);
+    } else {
+      // Add selected sub-contexts individually
+      if (generateKidsRadarPedData) {
+        contexts.add(DataItemContext.KIDS_RADAR_PED);
+      }
+      if (generateKidsRadarKjpData) {
+        contexts.add(DataItemContext.KIDS_RADAR_KJP);
+      }
+    }
+
+    return contexts;
   }
 }

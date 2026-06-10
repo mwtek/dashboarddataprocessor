@@ -20,6 +20,8 @@ package de.ukbonn.mwtek.dashboard.controller;
 
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.INFLUENZA;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_GENDER;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_LENGTHOFSTAY_HOSPITAL;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_LENGTHOFSTAY_ICU_ALIVE;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_LENGTHOFSTAY_ICU_DEAD;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_MAXTREATMENTLEVEL;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CUMULATIVE_RESULTS;
@@ -69,20 +71,21 @@ public class InfluenzaDataItemTests extends CovidInfluenzaDataItemTests {
   @Test
   @DisplayName("Testing infl.cumulative.zipcode")
   void testCumulativeZipCodes() {
-    assertListEqual(INFLUENZA, CUMULATIVE_ZIPCODE, List.of("12345", "72453", "77777"));
+    assertListExactly(
+        INFLUENZA, CUMULATIVE_ZIPCODE, List.of("12345", "72453", "77777", "77777", "77777"));
     assertListIsSortedAscending(INFLUENZA, CUMULATIVE_ZIPCODE);
   }
 
   @Test
   @DisplayName("Testing infl.current.age.maxtreatmentlevel.icu_with_ventilation")
   void testCurrentAgeMaxTreatmentLevelVentilation() {
-    assertListEqual(INFLUENZA, CURRENT_AGE_MAXTREATMENTLEVEL_ICU_WITH_VENTILATION, List.of(50L));
+    assertListExactly(INFLUENZA, CURRENT_AGE_MAXTREATMENTLEVEL_ICU_WITH_VENTILATION, List.of(50L));
   }
 
   @Test
   @DisplayName("Testing infl.cumulative.gender")
   void testCumulativeGender() {
-    assertCumulativeGender(INFLUENZA, CUMULATIVE_GENDER, 3, 1, 0);
+    assertCumulativeGender(INFLUENZA, CUMULATIVE_GENDER, 4, 1, 0);
   }
 
   // 1712448000
@@ -110,9 +113,27 @@ public class InfluenzaDataItemTests extends CovidInfluenzaDataItemTests {
   }
 
   @Test
+  @DisplayName("Testing infl.cumulative.lengthofstay.icu.alive")
+  void testCumulativeLengthOfStayIcuAlive() {
+    assertListSize(INFLUENZA, CUMULATIVE_LENGTHOFSTAY_ICU_ALIVE, 2);
+    assertListIsSortedAscending(INFLUENZA, CUMULATIVE_LENGTHOFSTAY_ICU_ALIVE);
+    // There's one case in the data with 2 influenza icu cases each 15 days on icu (336h*2)
+    assertListContains(INFLUENZA, CUMULATIVE_LENGTHOFSTAY_ICU_ALIVE, 672L);
+  }
+
+  @Test
+  @DisplayName("Testing infl.cumulative.lengthofstay.hospital")
+  void testCumulativeLengthOfStayHospital() {
+    assertListSize(INFLUENZA, CUMULATIVE_LENGTHOFSTAY_HOSPITAL, 3);
+    assertListIsSortedAscending(INFLUENZA, CUMULATIVE_LENGTHOFSTAY_HOSPITAL);
+    // There's one case in the data with 3 influenza cases each 30 days
+    assertListContains(INFLUENZA, CUMULATIVE_LENGTHOFSTAY_HOSPITAL, 90L);
+  }
+
+  @Test
   @DisplayName("Testing infl.cumulative.maxtreatmentlevel")
   void testCumulativeMaxTreatmentlevel() {
-    assertTreatmentLevel(INFLUENZA, CUMULATIVE_MAXTREATMENTLEVEL, 2, 0, 0, 1, 1);
+    assertTreatmentLevel(INFLUENZA, CUMULATIVE_MAXTREATMENTLEVEL, 2, 0, 1, 1, 1);
   }
 
   @Test
@@ -126,8 +147,9 @@ public class InfluenzaDataItemTests extends CovidInfluenzaDataItemTests {
     assertTimelineValueByDay(INFLUENZA, TIMELINE_MAXTREATMENTLEVEL, 1704067200L, 1, NORMAL_WARD);
     assertTimelineValueByDay(INFLUENZA, TIMELINE_MAXTREATMENTLEVEL, 1704153600L, 1, NORMAL_WARD);
     assertTimelineValueByDay(INFLUENZA, TIMELINE_MAXTREATMENTLEVEL, 1704240000L, 1, NORMAL_WARD);
+    assertTimelineValueByDay(INFLUENZA, TIMELINE_MAXTREATMENTLEVEL, 1735776000L, 1, NORMAL_WARD);
 
-    assertTimelineValueByDay(INFLUENZA, TIMELINE_MAXTREATMENTLEVEL, 1705190400L, 0, ICU);
+    assertTimelineValueByDay(INFLUENZA, TIMELINE_MAXTREATMENTLEVEL, 1705190400L, 1, ICU);
     assertTimelineValueByDay(INFLUENZA, TIMELINE_MAXTREATMENTLEVEL, 1705276800L, 1, ICU);
     assertTimelineValueByDay(INFLUENZA, TIMELINE_MAXTREATMENTLEVEL, 1705363200L, 1, ICU);
 

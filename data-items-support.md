@@ -64,20 +64,39 @@
 - infl.timeline.test.positive
 - infl.timeline.maxtreatmentlevel
 - infl.timeline.deaths
-- kira.kjp.cumulative.diags.zipcode
+- acr.current.recruitment
+- acr.timeline.recruitment
+- acr.current.dischargediags.cohorts
+- acr.timeline.dischargediags.cohorts
+- kira.ped.current.treatmentlevel
+- kira.ped.current.zipcode
+- kira.ped.timeline.maxtreatmentlevel
+- kira.ped.rsv.cumulative.diags.zipcode
+- kira.ped.rsv.cumulative.diags.age
+- kira.ped.rsv.cumulative.diags.gender
+- kira.ped.rsv.cumulative.diags.lengthofstay
+- kira.ped.rsv.timeline.diags.occurrence
+- kira.ped.rsv.timeline.age
+- kira.ped.rsv.timeline.age.pcr
+- kira.ped.covid.timeline.age
+- kira.ped.covid.timeline.age.pcr
+- kira.ped.influenza.timeline.age
+- kira.ped.influenza.timeline.age.pcr
+- kira.ped.pertussis.timeline.age
+- kira.ped.pertussis.timeline.age.pcr
 - kira.kjp.cumulative.diags.age
 - kira.kjp.cumulative.diags.gender
 - kira.kjp.cumulative.diags.lengthofstay
 - kira.kjp.timeline.diags.occurrence
-- kira.rsv.cumulative.diags.zipcode
-- kira.rsv.cumulative.diags.age
-- kira.rsv.cumulative.diags.gender
-- kira.rsv.cumulative.diags.lengthofstay
-- kira.rsv.timeline.diags.occurrence
-- acr.current.recruitment (without the follow-up subitem)
-- acr.timeline.recruitment (without the follow-up subitem)
-- acr.current.dischargediags.cohorts
-- acr.timeline.dischargediags.cohorts
+- kira.kjp.timeline.age
+- kira.kjp.timeline.intensivecare
+- kira.kjp.timeline.intensivecare_ratio
+- kira.kjp.timeline.intensivecare_change
+- kira.kjp.cumulative.intensivecare_3months
+- kira.kjp.timeline.admission
+- kira.kjp.timeline.diags.admission
+- bct.current.consent
+- bct.timeline.consent
 
 #### The processor currently doesn't generate the following data items (and sub items):
 
@@ -87,6 +106,11 @@
 - current.nosocomialcases.*
 - infl.cumulative.subtypetestresults
 - infl.timeline.subtypetestresults
+- snid.current.recruitment.modules
+- snid.current.recruitment.sites
+- snid.current.recruitment.diz
+- snid.timeline.recruitment
+- snid.timeline.recruitment.diz
 
 As well as all prediction model related items:
 

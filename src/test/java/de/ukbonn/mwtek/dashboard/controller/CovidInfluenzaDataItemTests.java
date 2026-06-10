@@ -27,15 +27,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
+import java.io.IOException;
 import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 /** Tests that are used for covid and influenza items */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class CovidInfluenzaDataItemTests extends DataItemTests {
 
   /** Each subclass provides its own context (COVID or INFLUENZA). */
   protected abstract DataItemContext getContext();
+
+  @BeforeAll
+  void setupSampleData() throws IOException {
+    // Only load the bundle for the specific context provided by the subclass
+    sampleData = loadSampleData(getContext());
+  }
 
   @Test
   @DisplayName("Verify cumulative age sums across treatment levels")

@@ -14,8 +14,8 @@ Feedback regarding import in FHIR servers of other types (e.g. IBM FHIR) is very
 Currently, the following sample bundles exist with the following content characteristics:
 
 * <a href="./SampleBundle_Covid.json" target="_blank">SampleBundle_Covid.json</a>
-    * Bundle of 6 patients.
-        * 5 patients with inpatient icu covid-19 cases
+    * Bundle of 7 patients.
+        * 6 patients with inpatient icu covid-19 cases
             * one with an in-progress encounter
             * one who got a finished case with discharge disposition 'dead' and who also got an
               alpha variant test result
@@ -24,9 +24,11 @@ Currently, the following sample bundles exist with the following content charact
             * one with a positive lab result that also uses an internal lab codes.
             * one with a positive lab result who was never on any icu but received short
               ventilation, probably while having an operation.
+            * one with 2 encounters, one semi stationary short stay and one inpatient encounter,
+              both with a positive lab result
         * 1 patient with an outpatient covid-19 encounter
 * <a href="./SampleBundle_Influenza.json" target="_blank">SampleBundle_Influenza.json</a>
-    * Bundle of 5 patients.
+    * Bundle of 6 patients.
         * 2 patients with inpatient influenza cases
             * 1 patient with an in-progress encounter on icu, an active ventilation and an influenza
               icd-diagnosis
@@ -37,8 +39,9 @@ Currently, the following sample bundles exist with the following content charact
         * 1 female patient with a pre-stationary influenza encounter and an influenza icd-diagnosis
         * 1 female patient with an influenza encounter with status `unknown` that should get
           filtered if not forced to use as a `finished` one in the `application.yaml`
-* <a href="./SampleBundle_KidsRadar.json" target="_blank">SampleBundle_KidsRadar.json</a>
-    * Bundle of 4 patients.
+        * 1 patient with three positive influenza encounters in different years.
+* <a href="./SampleBundle_KiRadar.json" target="_blank">SampleBundle_KiRadar.json</a>
+    * Bundle of 10 patients.
         * A patient with 5 cases, of which the second and the third case qualify for the case
           merging logic and getting merged with the first due to the short time intervals between
           the
@@ -55,23 +58,43 @@ Currently, the following sample bundles exist with the following content charact
               valid for further logic
         * One patient with 2 different diagnoses (F62.88, F63.1) within one diagnosis group ('
           other-psychological-disorders')
+        * A patient with 2 different diagnoses (F71.1, F63.1) in two diagnosis groups ('
+          intellectual-developmental-disorders', 'other-psychological-disorders')
+        * A patient with 2 different diagnoses (F90.9, F63.1) in two diagnosis groups ('
+          attention-deficit-hyperactivity-disorder', 'other-psychological-disorders')
         * A patient with a J21.0 (acute-rsv-bronchiolitis) and J12.1 (rsv-pneumonia) condition
         * A patient who got a rsv diagnosis (J21.0) and also a KJP diagnosis (F94.1).
+        * A patient with an active case and a rsv diagnosis (J21.0) who also got an active high-flow
+          procedure.
+        * A patient with 2 cases (one active; one completed), a rsv diagnosis (J21.0), a covid
+          diagnosis (U07.1), a pertussis diagnosis (A37.8), who also got an active cpap procedure.
+        * A patient with an active case, a finished ventilation procedure and a pertussis pcr.
+        * A kjp patient with a finished case in 2024 with 3 intensive care procedures.
 * <a href="./SampleBundle_Acribis.json" target="_blank">SampleBundle_Acribis.json</a>
     * Bundle of 8 patients with 11 consent formulars in total.
         * 2 Patients with 2 consents forms each (valid main + valid acribis form with data usage
           permission).
-        * One patient with a declined main consent form.
+            * One with 2 different follow-up forms
+        * One patient with a declined main consent form who also got a positive follow-up, which
+          should not be used in the further logic.
         * One patient who got main and acribis consent in one single resource and got 2 discharge
           diagnosis (I50.* + Q20.*) that assigns him to cohort 3 but includes an exclusion criteria
           for cohort 1.
         * One patient who got main and acribis consent in one single resource, belongs to
           cohort 1 (I50.*) and 2 (I48.*) and who got an encounter (with linked condition I63.0) that
           is older than the consent approval and should get ignored.
+            * Got also a positive follow-up questionnaire response.
         * 3 Consent patients, each using a different code assignment
             * the first uses only level 1 provision codes
             * the second uses only level 2 provision codes
             * the third is missing a single provision code and should not count to the results
+* <a href="./SampleBundle_Bct.json" target="_blank">SampleBundle_Bct.json</a>
+    * Bundle of 5 patients with 8 consent formulars in total.
+        * 1 Patients with 2 consents forms each where both a valid
+        * 1 Patient with a valid consent but some of the modules are denied
+        * 1 Patient with a revoked consent
+        * 1 Patient with a revoked consent, followed by a valid consent
+        * 1 Patient with 2 valid consents
 
 More bundles with sample data will surely follow in the future.
 

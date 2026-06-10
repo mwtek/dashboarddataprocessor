@@ -1,27 +1,199 @@
-# Release Notes - Version V0.5.4+update.13
+# Release Notes - Version V0.5.6
 
-09/Dec/25
+29/May/26
 
 ## New Features
 
 <div style='margin-left:30px;'>
 
-* Removed the recontacting option from the acribis checks since it's deprecated with the new data
-  set description.
+* Added support for all `kira.ped.*` and `kira.kjp.*` items from data set description 0.5.6.
+* Added support for all data items from the `bct.*` project
+* Configuration changes in the `application.yaml` will now also be added to the `changelog.md`.
 
 </div> 
 
 ## Improvements
 
-No improvements were part of this version.
+<div style='margin-left:30px;'>
+
+* Enabled the configuration option `useEncounterConditionReference` for linking Condition resources
+  via `Encounter.diagnosis` in the acribis project.
+* Upgraded Java from 17 to 25 and Spring from 2.x to 4.x, including Dockerfiles.
+* Fix `extractReferenceId` to safely handle null, empty, and malformed FHIR references and prevent
+  invalid or empty ID extraction.
+* The `debug`-item for `cumulative.lengthofstay.hospital` now shows all encounters that are used for
+  the length of stay sum generation.
+* Improvement of the `Dockerfile`
+  regarding [PR #5](https://github.com/mwtek/dashboarddataprocessor-experimental/pull/5)
+
+</div> 
 
 ## Tasks
 
-No tasks were part of this version.
+<div style='margin-left:30px;'>
+
+* Removed the deprecated recontacting option from acribis checks.
+* Added additional example data and extended unit test coverage.
+* Refactored FHIR resources to align with the updated nomenclature.
+* Condition resources are not forced to hold a subject reference anymore.
+* `use-post-instead-of-get` now also implemented on the `Condition` queries.
+* Changed the gender of one example `Patient` to `diverse`, so that this is also getting tested via
+  unit tests.
+* If no resources for a given input parameter are found (e.g. conditions and observations for
+  covid/influenza) there will be a `204` http status code (`No Content`) now instead of a `500` (
+  `Internal server error`).
+* The `timeline.maxtreatmentlevel` now determines the highest treatment level per individual case
+  instead of per patient id. Historical treatment levels from previous cases of
+  the same patient are no longer carried forward, so each case is evaluated independently based only
+  on its own encounter history.
+
+</div> 
 
 ## Bugs
 
-No bug fixes were part of this version.
+<div style='margin-left:30px;'>
+
+* Fixed a rare `IndexOutOfBoundsException` when splitting ID input lists into smaller chunks.
+* Fixed condition calls to use the correct date filter (`recorded-date` instead of `date`).
+* Fixed unit tests comparing list results.
+* Fixed termination messages so they are reliably reset when the data situation has improved.
+* Fixed consent provision detection across all policy `Code` objects, not just the first
+  one ([PR #2](https://github.com/mwtek/utilities/pull/2)).
+* Fixed incorrect code value used in consent
+  handling ([#1](https://github.com/mwtek/utilities/issues/1)).
+* Fixed `diverse` gender counting.
+* Fixed minor counting issue on the `timeline.maxtreatmentlevel`when `use-icu-undifferentiated` is
+  activated.
+
+</div> 
+
+## Configuration Changes
+
+<div style='margin-left:30px;'>
+
+### Added support for BCT data generation
+
+```diff
+global:
++ generate-bct-data: false
+```
+
+---
+
+### Added BCT related data items
+
+```diff
+data-items:
+  excludes:
+
++   bct.current.consent: true
++   bct.timeline.consent: true
+``` 
+
+---
+
+### Added new KIRA PED related data items
+
+```diff
+data-items:
+  excludes:
+
++   kira.ped.current.treatmentlevel: false
++   kira.ped.current.zipcode: false
++   kira.ped.timeline.maxtreatmentlevel: false
++   kira.ped.rsv.timeline.age: false
++   kira.ped.rsv.timeline.age.pcr: false
++   kira.ped.covid.timeline.age: false
++   kira.ped.covid.timeline.age.pcr: false
++   kira.ped.influenza.timeline.age: false
++   kira.ped.influenza.timeline.age.pcr: false
++   kira.ped.pertussis.timeline.age: false
++   kira.ped.pertussis.timeline.age.pcr: false
+```
+
+---
+
+### Added new KJP timeline related data items
+
+```diff
+data-items:
+  excludes:
+
++   kira.kjp.timeline.age: false
++   kira.kjp.timeline.admission: false
++   kira.kjp.timeline.diags.admission: false
++   kira.kjp.timeline.intensivecare: false
++   kira.kjp.timeline.intensivecare_ratio: false
++   kira.kjp.timeline.intensivecare_change: false
++   kira.kjp.timeline.intensivecare_3months: false
+```
+
+---
+
+### Refactored Kids Radar PED configuration structure
+
+```diff
+global:
+  inputcodes:
+    kids-radar:
+
+-     rsv:
++     ped:
+``` 
+
+---
+
+### Updated SARS-CoV-2 PCR observation codes
+
+```diff
+global:
+  inputcodes:
+    observation:
+
+-     pcr: 94640-0,94306-8,96763-8,94500-6,94759-8
++     pcr: 96957-6,94306-8,94640-0,96765-3,...
+```
+
+---
+
+### Updated influenza observation codes
+
+```diff
+global:
+  inputcodes:
+    influenza:
+
+-     observations: 34487-9,60416-5,49521-8,...
++     observations: 100343-3,100344-1,100973-7,...
+```
+
+---
+
+### Removed deprecated internal UKB item
+
+```diff
+data-items:
+  excludes:
+
+-   current.treatmentlevel.crosstab: true
+```
+
+---
+
+### Removed legacy RSV KIRA items
+
+```diff
+data-items:
+  excludes:
+
+-   kira.rsv.cumulative.diags.zipcode: false
+-   kira.rsv.cumulative.diags.age: false
+-   kira.rsv.cumulative.diags.gender: false
+-   kira.rsv.cumulative.diags.lengthofstay: false
+-   kira.rsv.timeline.diags.occurrence: false
+```
+
+</div>
 
 # Release Notes - Version V0.5.4+update.12
 
