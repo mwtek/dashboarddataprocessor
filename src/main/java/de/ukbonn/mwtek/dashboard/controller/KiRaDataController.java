@@ -122,9 +122,10 @@ public class KiRaDataController {
       } else log.info("Skipping observation retrieval since just kjp data is asked for.");
 
       // If undifferentiated and ped we don't need to retrieve icu procedure data
-      if (dataItemContexts.contains(KIDS_RADAR_KJP)
-          || (dataItemContexts.contains(KIDS_RADAR_PED) || dataItemContexts.contains(KIDS_RADAR))
-              && !customGlobalConfiguration.getUseIcuUndifferentiated()) {
+      if ((dataItemContexts.contains(KIDS_RADAR_KJP)
+              || (dataItemContexts.contains(KIDS_RADAR_PED)
+                  || dataItemContexts.contains(KIDS_RADAR)))
+          && !customGlobalConfiguration.getUseIcuUndifferentiated()) {
         processTimer.startLoggingTime(ResourceType.Procedure);
         // Retrieval of kira related procedures
         ukbProcedures = getUkbProcedures(KIDS_RADAR, dataRetrievalService, miiEncounters);

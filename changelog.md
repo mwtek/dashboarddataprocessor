@@ -1,3 +1,34 @@
+# Release Notes - Version V0.5.7
+
+25/June/26
+
+## New Features
+
+No new features were part of this version.
+
+## Improvements
+
+No improvements were part of this version.
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* The updated system url of the 2026 consent module is now also supported.
+* Removal of deprecated policies (like `2.16.840.1.113883.3.1937.777.24.5.3.16`) in the bct module
+  assignment logic.
+* Update dataset description to v0.5.7
+
+</div> 
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* The `use-icu-undifferentiated` option should now also work properly on the kiradar project.
+
+</div> 
+
 # Release Notes - Version V0.5.6
 
 29/May/26

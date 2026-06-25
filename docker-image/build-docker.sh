@@ -31,7 +31,7 @@ name="dashboard-data-processor"
 version="0.5.6"
 
 echo -e "Build $name"
-docker build --quiet -f Dockerfile -t "$name":"$version" .
+docker build --quiet --no-cache -f Dockerfile -t "$name":"$version" .
 
 echo -e "Save $name"
 docker save "$name":"$version" -o "DDP-V$version.tar"

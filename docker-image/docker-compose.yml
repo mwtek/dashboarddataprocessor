@@ -3,7 +3,7 @@ version: '3.4'
 services:
   dashboard-data-processor:
     # Local build Image
-    image: dashboard-data-processor:0.5.6
+    image: dashboard-data-processor:0.5.7
     # Docker-Hub Image
     #    image: mwtek/dashboarddataprocessor
     container_name: dashboard-data-processor
@@ -18,7 +18,7 @@ services:
     volumes:
       - type: bind
         source: ./application.yaml
-        target: /opt/dashboardprocessor/dashboarddataprocessor/src/main/resources/application.yaml
+        target: /opt/dashboarddataprocessor/dashboarddataprocessor/src/main/resources/application.yaml
         read_only: true
       # Mount Java cacerts from host. path for SUSE, adjust as necessary
-      #- /var/lib/ca-certificates/java-cacerts:/usr/lib/jvm/java-17-amazon-corretto/lib/security/cacerts:ro
+      #- /var/lib/ca-certificates/java-cacerts:/etc/ssl/certs/java/cacerts:ro

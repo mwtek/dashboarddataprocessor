@@ -246,10 +246,12 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
   @Override
   public String getConsents(
       AbstractDataRetrievalService dataRetrievalService, DataItemContext dataItemContext) {
-    String versions = dataItemContext == DataItemContext.BCT ? "1.6,1.7.2" : "1.6,1.7.2,acribis";
+
     return "kdsconsent?versions="
-        + versions
-        + "&hideResourceTypes=Encounter&dateFrom="
+        + (dataItemContext == DataItemContext.BCT ? "1.6,1.7.2" : "1.6,1.7.2,acribis")
+        // BCT doesn't need encounter information; acribis though
+        + (dataItemContext == DataItemContext.BCT ? "&hideResourceTypes=Encounter" : "")
+        + "&dateFrom="
         + getStartingDate(dataItemContext);
   }
 

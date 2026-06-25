@@ -101,8 +101,8 @@ public class DataRetrievalController {
   public static final int DAYS_DIFFERENCE = 3;
 
   public static final String WORKFLOW_ABORTED = "Workflow aborted: ";
-  public static final String CURRENT_DATASET_VERSION = "0.5.6";
-  public static final String CURRENT_DDP_VERSION = "0.5.6";
+  public static final String CURRENT_DATASET_VERSION = "0.5.7";
+  public static final String CURRENT_DDP_VERSION = "0.5.7";
   public static final String FILE_GENERATOR = "ddp";
   public static final String EXPORT_TIMESTAMP = "exporttimestamp";
   public static final String DDP_VERSION = "ddp_version";

@@ -24,6 +24,7 @@ import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.INFLUENZA;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR;
 import static de.ukbonn.mwtek.utilities.enums.ConsentFixedValues.CONSENT_CATEGORY_CODE;
 import static de.ukbonn.mwtek.utilities.enums.ConsentFixedValues.CONSENT_CATEGORY_SYSTEM;
+import static de.ukbonn.mwtek.utilities.enums.ConsentFixedValues.CONSENT_CATEGORY_SYSTEM_2026;
 
 import de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration;
 import de.ukbonn.mwtek.dashboard.interfaces.DataSourceType;
@@ -570,7 +571,12 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
   public String getConsents(
       AbstractDataRetrievalService dataRetrievalService, DataItemContext dataItemContext) {
     return "Consent?category="
+        // supporting former category systems to make it backwards compatible
         + CONSENT_CATEGORY_SYSTEM
+        + PIPE
+        + CONSENT_CATEGORY_CODE
+        + ","
+        + CONSENT_CATEGORY_SYSTEM_2026
         + PIPE
         + CONSENT_CATEGORY_CODE
         + DATE_GE

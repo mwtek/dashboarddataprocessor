@@ -178,8 +178,8 @@ public class RestConsumer {
       return restTemplate;
 
     } catch (Exception ex) {
-      log.error("Couldn't set up client SSL context", ex);
-      return new RestTemplate();
+      log.debug("Configured keystore: {}", restConfiguration.getKeyStore());
+      throw new RuntimeException("SSL initialization failed", ex);
     }
   }
 }
