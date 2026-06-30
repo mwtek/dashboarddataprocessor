@@ -25,7 +25,8 @@ Currently, the following sample bundles exist with the following content charact
             * one with a positive lab result who was never on any icu but received short
               ventilation, probably while having an operation.
             * one with 2 encounters, one semi stationary short stay and one inpatient encounter,
-              both with a positive lab result
+              both with a positive lab result. The second encounter also got an icu procedure that
+              links to the supply contact, not the facility contact.
         * 1 patient with an outpatient covid-19 encounter
 * <a href="./SampleBundle_Influenza.json" target="_blank">SampleBundle_Influenza.json</a>
     * Bundle of 6 patients.

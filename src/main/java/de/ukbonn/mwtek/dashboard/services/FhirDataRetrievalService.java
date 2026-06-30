@@ -719,7 +719,7 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
                     icuLocationIdsServiceProvider,
                     serviceProviderIdentifierFound,
                     dataItemContext,
-                    false);
+                    getCustomGlobalConfiguration().getUseOutpatientEncounterWithStatusUnknown());
                 // Handle pagination for additional pages of encounter resources
                 while (initialBundle.hasLink() && initialBundle.getLink(NEXT) != null) {
                   initialBundle =
@@ -732,7 +732,7 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
                       icuLocationIdsServiceProvider,
                       serviceProviderIdentifierFound,
                       dataItemContext,
-                      false);
+                      getCustomGlobalConfiguration().getUseOutpatientEncounterWithStatusUnknown());
                 }
               });
       return new ArrayList<>(encounters);

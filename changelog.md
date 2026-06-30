@@ -1,3 +1,34 @@
+# Release Notes - Version V0.5.7+update.0
+
+30/May/26
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* ICU procedures that link to a supply contact (`Versorgungsstellenkontakt`) are now also supported.
+
+</div> 
+
+## Improvements
+
+No improvements were part of this version.
+
+## Tasks
+
+No tasks were part of this version.
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* Temporary changes to the excluded data item configuration no longer persist across runs. The
+  configuration is reset to the YAML settings at the beginning of each run.
+* The `use-outpatient-encounter-with-status-unknown` workaround function should now reliably work
+  again.
+
+</div>  
+
 # Release Notes - Version V0.5.7
 
 25/June/26

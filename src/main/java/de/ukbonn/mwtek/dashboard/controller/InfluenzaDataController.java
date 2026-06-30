@@ -21,6 +21,7 @@ import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.addResourceSizesToOut
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.logAbortWorkflowMessage;
 import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.addDeceasedStatusToEncounters;
 import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.addDummyIcuLocationIfNeeded;
+import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.addFacilityContactLinkageToProcedures;
 import static de.ukbonn.mwtek.dashboard.misc.ThresholdCheck.filterDataItemsByThreshold;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -68,29 +69,29 @@ public class InfluenzaDataController {
 
     // Retrieval of the Observation resources
     processTimer.startLoggingTime(ResourceType.Observation);
-    List<MiiObservation> ukbObservations =
+    List<MiiObservation> miiObservations =
         (List<MiiObservation>)
             ResourceConverter.convert(dataRetrievalService.getObservations(dataItemContext));
-    processTimer.stopLoggingTime(ukbObservations);
+    processTimer.stopLoggingTime(miiObservations);
 
     // Retrieval of the Condition resources
     processTimer.startLoggingTime(ResourceType.Condition);
     // map fhir resources into ukb resources
-    List<MiiCondition> ukbConditions =
+    List<MiiCondition> miiConditions =
         (List<MiiCondition>)
             ResourceConverter.convert(dataRetrievalService.getConditions(dataItemContext));
-    processTimer.stopLoggingTime(ukbConditions);
+    processTimer.stopLoggingTime(miiConditions);
 
     // If no conditions or observations were found, the following further data retrievals /
     // calculation steps are irrelevant
-    if (!ukbObservations.isEmpty() || !ukbConditions.isEmpty()) {
+    if (!miiObservations.isEmpty() || !miiConditions.isEmpty()) {
       // Retrieval of the Patient resources
       processTimer.startLoggingTime(ResourceType.Patient);
       List<MiiPatient> miiPatients =
           (List<MiiPatient>)
               ResourceConverter.convert(
                   dataRetrievalService.getPatients(
-                      ukbObservations, ukbConditions, dataItemContext));
+                      miiObservations, miiConditions, dataItemContext));
       processTimer.stopLoggingTime(miiPatients);
 
       // Retrieval of the Encounter resources
@@ -108,19 +109,21 @@ public class InfluenzaDataController {
       processTimer.stopLoggingTime(miiLocations);
 
       // Retrieval of the Procedure resources
-      List<MiiProcedure> ukbProcedures = new ArrayList<>();
+      List<MiiProcedure> miiProcedures = new ArrayList<>();
       if (!customGlobalConfiguration.getUseIcuUndifferentiated()) {
         processTimer.startLoggingTime(ResourceType.Procedure);
-        ukbProcedures =
+        miiProcedures =
             (List<MiiProcedure>)
                 ResourceConverter.convert(
                     dataRetrievalService.getProcedures(
                         miiEncounters,
                         miiLocations,
-                        ukbObservations,
-                        ukbConditions,
+                        miiObservations,
+                        miiConditions,
                         dataItemContext));
-        processTimer.stopLoggingTime(ukbProcedures);
+
+        addFacilityContactLinkageToProcedures(miiProcedures, miiEncounters);
+        processTimer.stopLoggingTime(miiProcedures);
       } else
         log.info(
             "Skipping the retrieval of procedure resources, as the generation of"
@@ -139,11 +142,11 @@ public class InfluenzaDataController {
       // Start of the processing logic -> Formatting of resources in JSON specification
       DataItemGenerator dataItemGenerator =
           new DataItemGenerator(
-              ukbConditions,
-              ukbObservations,
+              miiConditions,
+              miiObservations,
               miiPatients,
               miiEncounters,
-              ukbProcedures,
+              miiProcedures,
               miiLocations);
 
       // Creation of the data items of the dataset specification
@@ -172,12 +175,12 @@ public class InfluenzaDataController {
       if (customGlobalConfiguration.getDebug()) {
         addResourceSizesToOutput(
             result,
-            ukbConditions,
-            ukbObservations,
+            miiConditions,
+            miiObservations,
             miiPatients,
             miiEncounters,
             miiLocations,
-            ukbProcedures,
+            miiProcedures,
             dataItemContext);
       }
 

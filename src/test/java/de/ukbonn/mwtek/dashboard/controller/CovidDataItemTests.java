@@ -131,7 +131,7 @@ public class CovidDataItemTests extends CovidInfluenzaDataItemTests {
   @Test
   @DisplayName("Testing cumulative.lengthofstay.icu.dead")
   void testCumulativeLengthOfStayIcuDead() {
-    assertListExactly(COVID, CUMULATIVE_LENGTHOFSTAY_ICU_DEAD, List.of(223L, 223L, 223L, 223L));
+    assertListExactly(COVID, CUMULATIVE_LENGTHOFSTAY_ICU_DEAD, List.of(223L, 223L, 223L, 446L));
     assertListIsSortedAscending(COVID, CUMULATIVE_LENGTHOFSTAY_ICU_DEAD);
   }
 

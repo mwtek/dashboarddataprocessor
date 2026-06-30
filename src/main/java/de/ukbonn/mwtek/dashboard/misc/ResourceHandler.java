@@ -50,6 +50,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
@@ -750,5 +751,77 @@ public class ResourceHandler {
             ukbConditions.stream().map(MiiCondition::getPatientId))
         .distinct()
         .toList();
+  }
+
+  /**
+   * Replaces supply contact encounter references in procedures with the corresponding facility
+   * contact of the same visit.
+   */
+  public static void addFacilityContactLinkageToProcedures(
+      List<MiiProcedure> miiProcedures, List<MiiEncounter> miiEncounters) {
+    // Map supply contact IDs to encounters.
+    Map<String, MiiEncounter> supplyContactByReference =
+        miiEncounters.stream()
+            .filter(MiiEncounter::isSupplyContact)
+            .filter(e -> e.getId() != null)
+            .collect(Collectors.toMap(MiiEncounter::getId, Function.identity(), (a, b) -> a));
+
+    // Skip method if no procedure references a supply contact.
+    boolean requiresRelinking =
+        miiProcedures.stream()
+            .map(MiiProcedure::getEncounterReferenceValue)
+            .filter(Objects::nonNull)
+            .anyMatch(supplyContactByReference::containsKey);
+
+    if (!requiresRelinking) {
+      return;
+    }
+
+    // Map visit numbers to facility contact IDs.
+    Map<String, String> facilityContactIdByVisitNumber =
+        miiEncounters.stream()
+            .filter(MiiEncounter::isFacilityContact)
+            .filter(e -> e.getVisitNumberIdentifierValue() != null)
+            .filter(e -> e.getId() != null)
+            .collect(
+                Collectors.toMap(
+                    MiiEncounter::getVisitNumberIdentifierValue, MiiEncounter::getId, (a, b) -> a));
+
+    // Logging doings
+    int updatedProcedures = 0;
+    String exampleProcedureId = null;
+
+    for (MiiProcedure procedure : miiProcedures) {
+      if (procedure.getEncounter() == null || procedure.getEncounter().getReference() == null) {
+        continue;
+      }
+
+      // Resolve the referenced supply contact.
+      MiiEncounter supplyContact =
+          supplyContactByReference.get(procedure.getEncounterReferenceValue());
+
+      if (supplyContact == null) {
+        continue;
+      }
+      String facilityContactId =
+          facilityContactIdByVisitNumber.get(supplyContact.getVisitNumberIdentifierValue());
+      // Replace the reference with the corresponding facility contact.
+      if (facilityContactId != null) {
+        procedure.setCaseId(facilityContactId);
+        updatedProcedures++;
+        // procedure.setEncounter(new Reference("Encounter/" + facilityContactId));
+        // Log one example
+        if (exampleProcedureId == null) {
+          exampleProcedureId = procedure.getId();
+        }
+      }
+    }
+
+    if (updatedProcedures > 0) {
+      log.info(
+          "Updated supply -> facility contact linkage for {} procedure(s). Example procedure: {}",
+          updatedProcedures,
+          exampleProcedureId);
+    }
   }
 }

@@ -20,6 +20,7 @@ package de.ukbonn.mwtek.dashboard.controller;
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.addResourceSizesToOutput;
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.logAbortWorkflowMessage;
 import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.addDummyIcuLocationIfNeeded;
+import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.addFacilityContactLinkageToProcedures;
 import static de.ukbonn.mwtek.dashboard.misc.ThresholdCheck.filterDataItemsByThreshold;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR_KJP;
@@ -73,7 +74,7 @@ public class KiRaDataController {
       throws SearchException {
     List<DiseaseDataItem> dataItems = new ArrayList<>();
 
-    List<MiiProcedure> ukbProcedures = new ArrayList<>();
+    List<MiiProcedure> miiProcedures = new ArrayList<>();
     List<MiiObservation> ukbObservations = new ArrayList<>();
 
     // Retrieval of the Condition resources
@@ -128,8 +129,9 @@ public class KiRaDataController {
           && !customGlobalConfiguration.getUseIcuUndifferentiated()) {
         processTimer.startLoggingTime(ResourceType.Procedure);
         // Retrieval of kira related procedures
-        ukbProcedures = getUkbProcedures(KIDS_RADAR, dataRetrievalService, miiEncounters);
-        processTimer.stopLoggingTime(ukbProcedures);
+        miiProcedures = getUkbProcedures(KIDS_RADAR, dataRetrievalService, miiEncounters);
+        addFacilityContactLinkageToProcedures(miiProcedures, miiEncounters);
+        processTimer.stopLoggingTime(miiProcedures);
       } else
         log.info(
             "Skipping the retrieval of procedure resources, as the generation of"
@@ -155,7 +157,7 @@ public class KiRaDataController {
               ukbObservations,
               miiPatients,
               miiEncounters,
-              ukbProcedures,
+              miiProcedures,
               miiLocations);
 
       // Creation of the data items of the dataset specification
@@ -198,7 +200,7 @@ public class KiRaDataController {
             miiPatients,
             miiEncounters,
             miiLocations,
-            ukbProcedures,
+            miiProcedures,
             KIDS_RADAR);
       }
       processTimer.stopLoggingTime();

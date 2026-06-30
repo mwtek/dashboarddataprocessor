@@ -4581,7 +4581,7 @@
               ]
             },
             "system": "http://localIdentifier.de/identifiers/encounter",
-            "value": "T-TWO-ENCOUNTER-TWO-DIAG"
+            "value": "T-TWO-ENCOUNTER-TWO-DIAG-2"
           },
           {
             "use": "secondary",
@@ -5094,6 +5094,51 @@
       "request": {
         "method": "PUT",
         "url": "Observation/T-TWO-ENCOUNTER-TWO-DIAG-2"
+      }
+    },
+    {
+      "fullUrl": "Procedure/T-TWO-ENCOUNTER-TWO-DIAG-LINKED-TO-SUPPLY-CONTACT",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "T-TWO-ENCOUNTER-TWO-DIAG-LINKED-TO-SUPPLY-CONTACT",
+        "meta": {
+          "profile": [
+            "https://medizininformatik-initiative.de/fhir/ext/modul-icu/StructureDefinition/Beatmung"
+          ]
+        },
+        "status": "completed",
+        "category": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "40617009",
+              "display": "Artificial respiration (procedure)"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "243147009",
+              "display": "Controlled ventilation (procedure)"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-TWO-ENCOUNTER-TWO-DIAG"
+        },
+        "encounter": {
+          "reference": "Encounter/T-TWO-ENCOUNTER-TWO-DIAG-2-22222222-VK-0-0"
+        },
+        "performedPeriod": {
+          "start": "2025-10-01T10:00:00+02:00",
+          "end": "2025-10-01T17:00:00+02:00"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Procedure/T-TWO-ENCOUNTER-TWO-DIAG-LINKED-TO-SUPPLY-CONTACT"
       }
     }
   ]

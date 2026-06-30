@@ -943,7 +943,7 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
               addValidConsentEntries(
                   consents, miiEncounters, patientIds, ServerTypeEnum.ACUWAVE, bundleEntry));
     } catch (Exception e) {
-      logErrorRetrieval("Retrieval location resources: Unable to build a json module chain: {}", e);
+      logErrorRetrieval("Retrieval consent resources: Unable to build a json module chain: {}", e);
     }
     return new ArrayList<>(consents);
   }
