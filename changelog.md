@@ -1,3 +1,51 @@
+# Release Notes - Version V0.5.7+update.1
+
+15/July/26
+
+## New Features
+
+No features were part of this version.
+
+## Improvements
+
+<div style='margin-left:30px;'>
+
+* Update of the kjp items in the `Data_Items_Composition.md` file.
+
+</div> 
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* If `icu_undifferentiated` is activated the ops code retrieval will now work solely on kiradar.
+
+</div> 
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* `kira.kjp.cumulative.diags.lengthofstay` now outputs the right `stacks` label.
+
+</div>  
+
+## Configuration Changes
+
+<div style='margin-left:30px;'>
+
+### Extended influenza observation codes
+
+```diff
+global:
+  inputcodes:
+    influenza:
+      observations:
++       48509-4
+```
+
+</div>
+
 # Release Notes - Version V0.5.7+update.0
 
 30/May/26

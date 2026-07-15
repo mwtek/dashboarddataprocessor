@@ -234,18 +234,46 @@ checks, which are also carried out again in the items due to clustering, the ana
 condition diagnosis resources is mandatory. The necessary attributes are `Condition.recordedDate`
 and `Condition.code.coding.code`.
 
-| Item name                                | FHIR attributes            | Forced Condition      | Separation criterium |
-|------------------------------------------|----------------------------|-----------------------|----------------------|
-| `kira.kjp.cumulative.diags.zipcode`      | Patient.address.postalCode |                       |                      |
-|                                          | Patient.address.country    |                       | `DE` or not          |
-| `kira.kjp.cumulative.diags.age`          | Patient.birthDate          |                       |                      |
-|                                          | Encounter.type             | `Einrichtungskontakt` |                      |
-|                                          | Encounter.period.start     |                       |                      |
-|                                          | Encounter.class            | `IMP`                 |                      |
-| `kira.kjp.cumulative.diags.gender`       | Patient.gender             |                       |                      |
-| `kira.kjp.cumulative.diags.lengthofstay` | Encounter.type             | `Einrichtungskontakt` |                      |
-|                                          | Encounter.period           |                       |                      |
-| `kira.kjp.timeline.diags.occurrence`     | Encounter.period.start     |                       |                      |
+| Item name                                      | FHIR attributes             | Forced Condition      | Separation criterium           |
+|------------------------------------------------|-----------------------------|-----------------------|--------------------------------|
+| `kira.kjp.cumulative.diags.age`                | Patient.birthDate           |                       |                                |
+|                                                | Encounter.type              | `Einrichtungskontakt` |                                |
+|                                                | Encounter.period.start      |                       |                                |
+|                                                | Encounter.class             | `IMP`                 |                                |
+| `kira.kjp.cumulative.diags.gender`             | Patient.gender              |                       |                                |
+| `kira.kjp.cumulative.diags.lengthofstay`       | Encounter.type              | `Einrichtungskontakt` |                                |
+|                                                | Encounter.period            |                       |                                |
+| `kira.kjp.timeline.diags.occurrence`           | Encounter.period.start      |                       |                                |
+| `kira.kjp.timeline.age`                        | Patient.birthDate           |                       |                                |
+|                                                | Encounter.type              | `Einrichtungskontakt` |                                |
+|                                                | Encounter.period.start      |                       |                                |
+|                                                | Encounter.class             | `IMP`                 |                                |
+| `kira.kjp.timeline.psychintensivecare`         | Encounter.type              | `Einrichtungskontakt` |                                |
+|                                                | Encounter.period.start      |                       |                                |
+|                                                | Encounter.period.end        |                       |                                |
+|                                                | Procedure.code              |                       | OPS code beginning with `9-67` |
+|                                                | Procedure.performedDateTime |                       |                                |
+| `kira.kjp.timeline.psychintensivecare_ratio`   | Encounter.type              | `Einrichtungskontakt` |                                |
+|                                                | Encounter.period.start      |                       |                                |
+|                                                | Encounter.period.end        |                       |                                |
+|                                                | Procedure.code              |                       | OPS code beginning with `9-67` |
+|                                                | Procedure.performedDateTime |                       |                                |
+| `kira.kjp.timeline.psychintensivecare_change`  | Encounter.type              | `Einrichtungskontakt` |                                |
+|                                                | Encounter.period.start      |                       |                                |
+|                                                | Encounter.period.end        |                       |                                |
+|                                                | Procedure.code              |                       | OPS code beginning with `9-67` |
+|                                                | Procedure.performedDateTime |                       |                                |
+| `kira.kjp.timeline.psychintensivecare_3months` | Encounter.type              | `Einrichtungskontakt` |                                |
+|                                                | Encounter.period.start      |                       |                                |
+|                                                | Encounter.period.end        |                       |                                |
+|                                                | Procedure.code              |                       | OPS code beginning with `9-67` |
+|                                                | Procedure.performedDateTime |                       |                                |
+| `kira.kjp.timeline.admission`                  | Encounter.type              | `Einrichtungskontakt` |                                |
+|                                                | Encounter.period.start      |                       |                                |
+|                                                | Encounter.period.end        |                       |                                |
+| `kira.kjp.timeline.diags.admission`            | Encounter.type              | `Einrichtungskontakt` |                                |
+|                                                | Encounter.period.start      |                       |                                |
+|                                                | Encounter.period.end        |                       |                                |
 
 # Kiradar - PED
 

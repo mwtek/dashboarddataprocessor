@@ -24,6 +24,7 @@ import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.addFacilityContactL
 import static de.ukbonn.mwtek.dashboard.misc.ThresholdCheck.filterDataItemsByThreshold;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR_KJP;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR_KJP_NO_ICU;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR_PED;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -132,11 +133,12 @@ public class KiRaDataController {
         miiProcedures = getUkbProcedures(KIDS_RADAR, dataRetrievalService, miiEncounters);
         addFacilityContactLinkageToProcedures(miiProcedures, miiEncounters);
         processTimer.stopLoggingTime(miiProcedures);
-      } else
+      } else {
+        miiProcedures = dataRetrievalService.getProcedures(miiEncounters, KIDS_RADAR_KJP_NO_ICU);
         log.info(
-            "Skipping the retrieval of procedure resources, as the generation of"
+            "Skipping the retrieval of icu procedure resources, as the generation of"
                 + " icu_undifferentiated items is activated.");
-
+      }
       // Retrieval of the Location resources
       processTimer.startLoggingTime(ResourceType.Location);
       List<MiiLocation> miiLocations =

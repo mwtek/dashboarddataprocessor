@@ -102,7 +102,7 @@ public class DataRetrievalController {
 
   public static final String WORKFLOW_ABORTED = "Workflow aborted: ";
   public static final String CURRENT_DATASET_VERSION = "0.5.7";
-  public static final String CURRENT_DDP_VERSION = "0.5.7+update.0";
+  public static final String CURRENT_DDP_VERSION = "0.5.7+update.1";
   public static final String FILE_GENERATOR = "ddp";
   public static final String EXPORT_TIMESTAMP = "exporttimestamp";
   public static final String DDP_VERSION = "ddp_version";
@@ -401,7 +401,7 @@ public class DataRetrievalController {
       // May be used in the future to split the kidsradar-context up
       case KIDS_RADAR_PED, KIDS_RADAR_PED_COV, KIDS_RADAR_PED_INFL, KIDS_RADAR_PED_RSV ->
           lowerCaseScopes.contains("kiradar_ped");
-      case KIDS_RADAR_KJP -> lowerCaseScopes.contains("kiradar_kjp");
+      case KIDS_RADAR_KJP, KIDS_RADAR_KJP_NO_ICU -> lowerCaseScopes.contains("kiradar_kjp");
       case UKB_MODEL -> lowerCaseScopes.contains("ukbmodel");
       case ACRIBIS -> lowerCaseScopes.contains("acribis");
       case BCT -> lowerCaseScopes.contains("bct");

@@ -131,6 +131,8 @@ public class ConfigurationTransformer {
   public static final Map<String, List<String>> DEFAULT_KIDS_RADAR_PED_LOINC_MAP;
 
   public static final String DEFAULT_KIDS_RADAR_KJP_OPS_CODE_PREFIX = "9-67";
+  // Code that is just used in fhir search query if icu_undiff is activated
+  public static final String DEFAULT_KIDS_RADAR_KJP_OPS_CODE_NO_ICU = "9-672";
 
   public static final String PERTUSSIS_1 = "A37.0";
   public static final String PERTUSSIS_2 = "A37.1";

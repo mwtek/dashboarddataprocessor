@@ -17,6 +17,8 @@
  */
 package de.ukbonn.mwtek.dashboard.misc;
 
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_KIDS_RADAR_KJP_OPS_CODE_NO_ICU;
+import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.DEFAULT_KIDS_RADAR_KJP_OPS_CODE_PREFIX;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.getListAsString;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.ACRIBIS;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.COVID;
@@ -457,6 +459,11 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
             CODE_PARAM
                 + getProcedureCodesAsString(
                     dataRetrievalService, dataItemContext, TerminologySystems.SNOMED));
+      case KIDS_RADAR_KJP_NO_ICU:
+        params.add(
+            CODE_PARAM
+                + getProcedureCodesAsString(
+                    dataRetrievalService, dataItemContext, TerminologySystems.OPS));
     }
     if (Boolean.TRUE.equals(askTotal)) {
       params.add(SUMMARY_COUNT_PARAM);
@@ -514,6 +521,17 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
               + highFlowCodes
               + DELIMITER
               + cpapCodes;
+
+      // Workaround for sites that just can offer icu_undiff -> fhir search parameter customizing
+      // needed instead of post-filtering
+      case KIDS_RADAR_KJP_NO_ICU ->
+          TerminologySystems.OPS
+              + PIPE
+              + DEFAULT_KIDS_RADAR_KJP_OPS_CODE_PREFIX
+              + DELIMITER
+              + TerminologySystems.OPS
+              + PIPE
+              + DEFAULT_KIDS_RADAR_KJP_OPS_CODE_NO_ICU;
       default -> null;
     };
   }
