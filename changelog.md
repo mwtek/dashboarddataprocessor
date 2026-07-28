@@ -1,3 +1,36 @@
+# Release Notes - Version V0.5.7+update.2
+
+28/July/26
+
+## New Features
+
+No features were part of this version.
+
+## Improvements
+
+No improvements were part of this version.
+
+## Tasks
+
+No tasks were part of this version.
+
+## Bugs
+
+No bug fixes were part of this version.
+
+## Configuration Changes
+
+<div style='margin-left:30px;'>
+
+### Explicitly enabled ICU undifferentiated processing for Kiradar
+
+```diff
+global:
+  use-icu-undifferentiated-kiradar: true
+```
+
+</div>
+
 # Release Notes - Version V0.5.7+update.1
 
 15/July/26

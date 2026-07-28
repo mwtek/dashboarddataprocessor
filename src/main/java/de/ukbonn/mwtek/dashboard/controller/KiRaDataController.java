@@ -75,7 +75,7 @@ public class KiRaDataController {
       throws SearchException {
     List<DiseaseDataItem> dataItems = new ArrayList<>();
 
-    List<MiiProcedure> miiProcedures = new ArrayList<>();
+    List<MiiProcedure> miiProcedures;
     List<MiiObservation> ukbObservations = new ArrayList<>();
 
     // Retrieval of the Condition resources
@@ -127,9 +127,10 @@ public class KiRaDataController {
       if ((dataItemContexts.contains(KIDS_RADAR_KJP)
               || (dataItemContexts.contains(KIDS_RADAR_PED)
                   || dataItemContexts.contains(KIDS_RADAR)))
-          && !customGlobalConfiguration.getUseIcuUndifferentiated()) {
+          && (!customGlobalConfiguration.getUseIcuUndifferentiated()
+              || !customGlobalConfiguration.getUseIcuUndifferentiatedKiradar())) {
         processTimer.startLoggingTime(ResourceType.Procedure);
-        // Retrieval of kira related procedures
+        // Retrieval of kiradar related procedures
         miiProcedures = getUkbProcedures(KIDS_RADAR, dataRetrievalService, miiEncounters);
         addFacilityContactLinkageToProcedures(miiProcedures, miiEncounters);
         processTimer.stopLoggingTime(miiProcedures);
@@ -230,15 +231,14 @@ public class KiRaDataController {
       List<MiiEncounter> miiEncounters) {
     List<MiiProcedure> ukbProcedures = new ArrayList<>();
     switch (dataRetrievalService.getServerType()) {
-      case FHIR -> {
-        ukbProcedures =
-            (List<MiiProcedure>)
-                ResourceConverter.convert(
-                    dataRetrievalService.getProcedures(
-                        miiEncounters.stream().filter(MiiEncounter::isFacilityContact).toList(),
-                        dataItemContext,
-                        null));
-      }
+      case FHIR ->
+          ukbProcedures =
+              (List<MiiProcedure>)
+                  ResourceConverter.convert(
+                      dataRetrievalService.getProcedures(
+                          miiEncounters.stream().filter(MiiEncounter::isFacilityContact).toList(),
+                          dataItemContext,
+                          null));
       // Acuwave asks two different servers relaying whether archive data or live data is needed.
       case ACUWAVE -> {
         ukbProcedures =

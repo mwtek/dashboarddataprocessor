@@ -15,6 +15,8 @@ global:
   #use-patient-deceased: true
   ## Replacing all data (sub)items that separate between icu + icu_ventilation + icu_ecmo with icu_undifferentiated [default: false]
   #use-icu-undifferentiated: true
+  ## Activating the icu_undiff function explicitly on the kiradar workflow
+  #use-icu-undifferentiated-kiradar: true
   ## Should procedures that don't have a linked encounter with at least one icu stay get filtered? [default: true]
   #check-procedures-icu-stays: true
   ## Handle outpatient encounters with status = UNKNOWN as FINISHED
