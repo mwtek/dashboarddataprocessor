@@ -35,7 +35,6 @@ import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
 import de.ukbonn.mwtek.dashboardlogic.settings.QualitativeLabCodesSettings;
 import de.ukbonn.mwtek.utilities.fhir.resources.MiiConsent;
-import de.ukbonn.mwtek.utilities.fhir.resources.MiiPatient;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +62,6 @@ public class BctDataController {
     // Unusual in the acuwave workflow is
     // that the consent call also gives the valid encounter resources back.
     List<MiiConsent> miiConsents = dataRetrievalService.getConsents();
-    List<MiiPatient> miiPatients = new ArrayList<>();
 
     processTimer.stopLoggingTime(miiConsents);
 
@@ -89,7 +87,7 @@ public class BctDataController {
                 globalConfiguration));
 
     // Add resource sizes information to the output if needed
-    if (globalConfiguration.getDebug()) {
+    if (globalConfiguration.getOutputDebugItems()) {
       result.put("bctConsentsSize", miiConsents.size());
     }
     processTimer.stopLoggingTime();

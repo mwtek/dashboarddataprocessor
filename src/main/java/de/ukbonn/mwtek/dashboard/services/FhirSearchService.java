@@ -18,8 +18,6 @@
 
 package de.ukbonn.mwtek.dashboard.services;
 
-import static org.springframework.http.HttpMethod.*;
-
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import de.ukbonn.mwtek.dashboard.auth.RestConsumer;
@@ -41,6 +39,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -114,27 +114,51 @@ public class FhirSearchService extends RestConsumer implements SearchService {
    * @return The response from the FHIR search query, parsed into a FHIR {@link Bundle} object
    */
   public Bundle getInitialBundle(String querySuffix, HttpMethod httpMethod, String resourceType) {
+
     IParser parser = ctx.newJsonParser();
     String fhirServerEndpoint = this.fhirServerConf.getRestUrl();
     RestTemplate rest = this.getRestTemplate();
-    switch (httpMethod.name()) {
-      case "GET" -> {
-        String restUrl = fhirServerEndpoint + querySuffix;
-        log.debug(restUrl);
-        ResponseEntity<String> searchRequest = rest.getForEntity(restUrl, String.class);
-        return parser.parseResource(Bundle.class, searchRequest.getBody());
+
+    try {
+      switch (httpMethod.name()) {
+        case "GET" -> {
+          String restUrl = fhirServerEndpoint + querySuffix;
+          log.debug("FHIR GET request: {}", restUrl);
+          ResponseEntity<String> response = rest.getForEntity(restUrl, String.class);
+          return parser.parseResource(Bundle.class, response.getBody());
+        }
+        case "POST" -> {
+          String restUrl = fhirServerEndpoint + resourceType + "/_search";
+          logPostBody(querySuffix, restUrl);
+          HttpHeaders headers = new HttpHeaders();
+          headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+          headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+          HttpEntity<String> entity = new HttpEntity<>(querySuffix, headers);
+          ResponseEntity<String> response = rest.postForEntity(restUrl, entity, String.class);
+          return parser.parseResource(Bundle.class, response.getBody());
+        }
+
+        default -> throw new IllegalArgumentException("Unsupported HTTP method: " + httpMethod);
       }
-      case "POST" -> {
-        String restUrl = fhirServerEndpoint + resourceType + "/_search";
-        logPostBody(querySuffix, restUrl);
-        HttpHeaders header = new HttpHeaders();
-        header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<String> entity = new HttpEntity<>(querySuffix, header);
-        ResponseEntity<String> searchRequest = rest.postForEntity(restUrl, entity, String.class);
-        return parser.parseResource(Bundle.class, searchRequest.getBody());
+    } catch (HttpStatusCodeException ex) {
+      HttpHeaders headers = ex.getResponseHeaders();
+      log.error("Method: {}", httpMethod);
+      log.error("Endpoint: {}", fhirServerEndpoint);
+      log.error("Status: {}", ex.getStatusCode());
+      log.error("Response Headers: {}", headers);
+      log.error("Response Body: {}", ex.getResponseBodyAsString());
+      if (httpMethod == HttpMethod.POST) {
+        log.error("Request body: {}", querySuffix);
       }
+      throw ex;
+    } catch (ResourceAccessException ex) {
+      log.error(
+          "FHIR connection or TLS error: method={}, endpoint={}",
+          httpMethod,
+          fhirServerEndpoint,
+          ex);
+      throw ex;
     }
-    return null;
   }
 
   private static void logPostBody(String querySuffix, String restUrl) {

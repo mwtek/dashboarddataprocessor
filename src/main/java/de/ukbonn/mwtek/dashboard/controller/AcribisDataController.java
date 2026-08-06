@@ -142,7 +142,7 @@ public class AcribisDataController {
                 globalConfiguration));
 
     // Add resource sizes information to the output if needed
-    if (globalConfiguration.getDebug()) {
+    if (globalConfiguration.getOutputDebugItems()) {
       result.put("acribisConsentsSize", miiConsents.size());
       result.put("acribisEncountersSize", miiEncounters.size());
       result.put("acribisPatientsSize", miiPatients.size());

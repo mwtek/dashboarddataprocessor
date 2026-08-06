@@ -175,7 +175,7 @@ public class CovidDataController {
       }
 
       // Add resource sizes information to the output if needed
-      if (customGlobalConfiguration.getDebug()) {
+      if (customGlobalConfiguration.getOutputDebugItems()) {
         addResourceSizesToOutput(
             result,
             miiConditions,

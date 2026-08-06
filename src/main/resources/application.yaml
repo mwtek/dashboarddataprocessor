@@ -3,8 +3,8 @@ provider:
   author: Universitätsklinikum Bonn, Stabsstelle Medizinisch-Wissenschaftliche Technologieentwicklung und -koordination, Datenintegrationszentrum, Venusberg-Campus 1, 53127 Bonn
 
 global:
-  ## This will add additional data items to the output that hold size and resource id information
-  debug: false
+  ## WARNING: This will add additional data items to the output that hold size and resource id information
+  output-debug-items: false
   ## The type of the server that is used for data retrieval whether its FHIR (any fhir server) or ACUWAVE
   server-type: FHIR
   ## Should the Encounter.partOf value be used instead (or more precise: ADDITIONALLY) of the visit-number in Encounter.identifier to assign 'Versorgungsstellenkontakt' -> 'Einrichtungskontakt'?

@@ -26,12 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
-import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
-import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
-import org.apache.hc.client5.http.ssl.DefaultHostnameVerifier;
-import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
-import org.apache.hc.core5.http.config.Registry;
-import org.apache.hc.core5.http.config.RegistryBuilder;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.ClientTlsStrategyBuilder;
+import org.apache.hc.client5.http.ssl.TlsSocketStrategy;
+import org.apache.hc.core5.http.ssl.TLS;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
@@ -131,54 +129,54 @@ public class RestConsumer {
    */
   protected RestTemplate getRestTemplateCertificateAuth() {
 
+    String keyStoreLocation = restConfiguration.getKeyStore();
+    String trustStoreLocation = restConfiguration.getTrustStore();
+    char[] keyStorePassword = restConfiguration.getKeyStorePassword().toCharArray();
+    char[] trustStorePassword = restConfiguration.getTrustStorePassword().toCharArray();
+
     try {
       File keyStoreFile = ResourceUtils.getFile(restConfiguration.getKeyStore());
       File trustStoreFile = ResourceUtils.getFile(restConfiguration.getTrustStore());
 
-      char[] keyStorePassword = restConfiguration.getKeyStorePassword().toCharArray();
-      char[] trustStorePassword = restConfiguration.getTrustStorePassword().toCharArray();
-
-      // Build SSLContext
+      // Build SSLContext using the configured client certificate and trusted CAs
       SSLContext sslContext =
           SSLContextBuilder.create()
               .loadKeyMaterial(keyStoreFile, keyStorePassword, keyStorePassword)
               .loadTrustMaterial(trustStoreFile, trustStorePassword)
               .build();
 
-      // Hostname verifier (HttpClient 5)
-      DefaultHostnameVerifier hostnameVerifier = new DefaultHostnameVerifier();
+      // Configure TLS for the HTTP client
+      TlsSocketStrategy tlsSocketStrategy =
+          ClientTlsStrategyBuilder.create()
+              .setSslContext(sslContext)
+              .setTlsVersions(TLS.V_1_3, TLS.V_1_2)
+              .buildClassic();
 
-      // SSL socket factory (classic client, deprecated but REQUIRED)
-      SSLConnectionSocketFactory sslSocketFactory =
-          new SSLConnectionSocketFactory(
-              sslContext, new String[] {"TLSv1.3", "TLSv1.2"}, null, hostnameVerifier);
-
-      // Socket factory registry
-      Registry<ConnectionSocketFactory> socketFactoryRegistry =
-          RegistryBuilder.<ConnectionSocketFactory>create()
-              .register("https", sslSocketFactory)
-              .register("http", PlainConnectionSocketFactory.getSocketFactory())
-              .build();
-
-      // Connection manager
+      // Create a connection manager and the http client
       PoolingHttpClientConnectionManager connectionManager =
-          new PoolingHttpClientConnectionManager(socketFactoryRegistry);
-
-      // HttpClient
+          PoolingHttpClientConnectionManagerBuilder.create()
+              .setTlsSocketStrategy(tlsSocketStrategy)
+              .build();
       CloseableHttpClient httpClient =
           HttpClients.custom().setConnectionManager(connectionManager).build();
 
-      RestTemplate restTemplate =
-          new RestTemplate(new HttpComponentsClientHttpRequestFactory(httpClient));
+      // Create a request factory
+      HttpComponentsClientHttpRequestFactory requestFactory =
+          new HttpComponentsClientHttpRequestFactory(httpClient);
+      RestTemplate restTemplate = new RestTemplate(requestFactory);
 
+      // Ensure UTF-8 encoding for String responses
       restTemplate
           .getMessageConverters()
           .addFirst(new StringHttpMessageConverter(StandardCharsets.UTF_8));
-
       return restTemplate;
 
     } catch (Exception ex) {
-      log.debug("Configured keystore: {}", restConfiguration.getKeyStore());
+      log.error(
+          "Could not initialize mTLS client with key store '{}' and trust store '{}'",
+          keyStoreLocation,
+          trustStoreLocation,
+          ex);
       throw new RuntimeException("SSL initialization failed", ex);
     }
   }

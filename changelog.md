@@ -1,3 +1,47 @@
+# Release Notes - Version V0.5.7+update.3
+
+06/August/26
+
+## New Features
+
+No features were part of this version.
+
+## Improvements
+
+<div style='margin-left:30px;'>
+
+* Updated the X.509 RestTemplate configuration to use the HttpClient 5 TLS APIs required by
+  the recent Spring lib upgrade and also improved the logging here.
+* Enhanced filter logging on kira data item generation.
+
+</div> 
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* Renamed the `debug` parameter to prevent misunderstandings.
+
+</div> 
+
+## Bugs
+
+No bug fixes were part of this version.
+
+## Configuration Changes
+
+<div style='margin-left:30px;'>
+
+### Configuration key renamed to prevent wrong interpretation
+
+```diff
+global:
+- debug: false
++ output-debug-items: false
+```
+
+</div>
+
 # Release Notes - Version V0.5.7+update.2
 
 28/July/26

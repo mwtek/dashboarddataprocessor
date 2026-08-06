@@ -27,7 +27,7 @@ public class GlobalConfigurationExamples {
     globalConfiguration.setUseIcuUndifferentiated(false);
     globalConfiguration.setUsePartOfInsteadOfIdentifier(false);
     globalConfiguration.setCheckProceduresIcuStays(true);
-    globalConfiguration.setDebug(true);
+    globalConfiguration.setOutputDebugItems(true);
     globalConfiguration.setUseOutpatientEncounterWithStatusUnknown(false);
     return globalConfiguration;
   }

@@ -26,6 +26,8 @@ import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR_KJP;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR_KJP_NO_ICU;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR_PED;
+import static de.ukbonn.mwtek.dashboardlogic.tools.KidsRadarTools.getIcdCodesAsString;
+import static de.ukbonn.mwtek.dashboardlogic.tools.KidsRadarTools.getKidsRadarIcdCodesKjp;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.ukbonn.mwtek.dashboard.configuration.CustomGlobalConfiguration;
@@ -77,6 +79,8 @@ public class KiRaDataController {
 
     List<MiiProcedure> miiProcedures;
     List<MiiObservation> ukbObservations = new ArrayList<>();
+
+    logInputCodeSettings(inputCodeSettings);
 
     // Retrieval of the Condition resources
     processTimer.startLoggingTime(ResourceType.Patient);
@@ -195,7 +199,7 @@ public class KiRaDataController {
         dataItems = filterDataItemsByThreshold(dataItems, dataItemsConfiguration.getThresholds());
       }
       // Add resource sizes information to the output if needed
-      if (customGlobalConfiguration.getDebug()) {
+      if (customGlobalConfiguration.getOutputDebugItems()) {
         addResourceSizesToOutput(
             result,
             ukbConditions,
@@ -212,6 +216,18 @@ public class KiRaDataController {
       logAbortWorkflowMessage(inputCodeSettings, KIDS_RADAR);
     }
     return dataItems;
+  }
+
+  private static void logInputCodeSettings(InputCodeSettings inputCodeSettings) {
+    log.trace(
+        "Following KJP ICD codes will be used: {}",
+        getKidsRadarIcdCodesKjp(inputCodeSettings.getKidsRadarConditionKjpIcdCodes()));
+    log.trace(
+        "Following PED ICD codes will be used: {}",
+        getIcdCodesAsString(inputCodeSettings.getKidsRadarConditionPedIcdCodes()));
+    log.trace(
+        "Following PED LOINC codes will be used: {}",
+        inputCodeSettings.getKidsRadarPedAllLoincCodes());
   }
 
   /**
