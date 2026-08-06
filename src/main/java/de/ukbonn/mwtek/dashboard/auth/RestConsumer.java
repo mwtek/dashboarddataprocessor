@@ -169,8 +169,20 @@ public class RestConsumer {
       restTemplate
           .getMessageConverters()
           .addFirst(new StringHttpMessageConverter(StandardCharsets.UTF_8));
-      return restTemplate;
 
+      // Also adding basic auth information IF configured in the application.yaml
+      if (restConfiguration.getRestUser() != null && !restConfiguration.getRestUser().isEmpty()
+          && restConfiguration.getRestPassword() != null) {
+        restTemplate.getInterceptors().add(
+            new BasicAuthenticationInterceptor(
+                restConfiguration.getRestUser(),
+                restConfiguration.getRestPassword()
+            )
+        );
+        log.debug("Added Basic Auth interceptor to mTLS RestTemplate for user: {}",
+            restConfiguration.getRestUser());
+      }
+      return restTemplate;
     } catch (Exception ex) {
       log.error(
           "Could not initialize mTLS client with key store '{}' and trust store '{}'",
