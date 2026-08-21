@@ -37,11 +37,23 @@ No tasks were part of this version.
 
 ### Configuration key renamed to prevent wrong interpretation
 
+### Added configurable encounter reference target types
+
+Added configuration options to define the target encounter type for references from different FHIR
+resource types. Default is `EK`.
+
 ```diff
 global:
-- debug: false
-+ output-debug-items: false
++ encounter-reference-target-types:
++   ops-procedure: EK
++   icu-procedure: EK
++   condition: EK
++   # Observation not supported yet
++   # observation: EK
 ```
+
+Supported target types are `EK` (Einrichtungskontakt), `AK` (Abteilungskontakt), and `VK` (
+Versorgungsstellenkontakt).
 
 </div>
 
@@ -85,23 +97,11 @@ No features were part of this version.
 
 ### Configuration key renamed to prevent wrong interpretation
 
-### Added configurable encounter reference target types
-
-Added configuration options to define the target encounter type for references from different FHIR
-resource types. Default is `EK`.
-
 ```diff
 global:
-+ encounter-reference-target-types:
-+   ops-procedure: EK
-+   icu-procedure: EK
-+   condition: EK
-+   # Observation not supported yet
-+   # observation: EK
+- debug: false
++ output-debug-items: false
 ```
-
-Supported target types are `EK` (Einrichtungskontakt), `AK` (Abteilungskontakt), and `VK` (
-Versorgungsstellenkontakt).
 
 </div>
 
