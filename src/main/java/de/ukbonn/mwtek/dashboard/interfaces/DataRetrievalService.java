@@ -244,5 +244,5 @@ public interface DataRetrievalService {
   List<CoreBaseDataItem> getUkbRenalReplacementObservations(
       Collection<String> encounterIds, Set<Integer> codes);
 
-  public CapabilityStatement getStatus();
+  CapabilityStatement getStatus();
 }

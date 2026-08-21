@@ -44,8 +44,10 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
 
 /** Building the templates of the individual REST requests to the Acuwaveles server. */
+@Slf4j
 public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
 
   private static final String COUNT_EQUALS = "&_count=";
@@ -454,16 +456,20 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
     }
     params.add(COUNT_EQUALS_PARAM + dataRetrievalService.getBatchSize());
     switch (dataItemContext) {
-      case COVID, INFLUENZA:
-        params.add(
-            CODE_PARAM
-                + getProcedureCodesAsString(
-                    dataRetrievalService, dataItemContext, TerminologySystems.SNOMED));
-      case KIDS_RADAR_KJP_NO_ICU:
-        params.add(
-            CODE_PARAM
-                + getProcedureCodesAsString(
-                    dataRetrievalService, dataItemContext, TerminologySystems.OPS));
+      case COVID, INFLUENZA ->
+          params.add(
+              CODE_PARAM
+                  + getProcedureCodesAsString(
+                      dataRetrievalService, dataItemContext, TerminologySystems.SNOMED));
+      case KIDS_RADAR_KJP_NO_ICU ->
+          params.add(
+              CODE_PARAM
+                  + getProcedureCodesAsString(
+                      dataRetrievalService, dataItemContext, TerminologySystems.OPS));
+      // Nothing to be done here since it's a call by encounter id without further params
+      case KIDS_RADAR -> {}
+      default ->
+          log.warn("Unhandled data context {} at buildProcedureQueryParams", dataItemContext);
     }
     if (Boolean.TRUE.equals(askTotal)) {
       params.add(SUMMARY_COUNT_PARAM);

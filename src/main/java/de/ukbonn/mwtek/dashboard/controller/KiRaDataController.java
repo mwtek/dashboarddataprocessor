@@ -17,6 +17,7 @@
  */
 package de.ukbonn.mwtek.dashboard.controller;
 
+import static de.ukbonn.mwtek.dashboard.misc.DataRetrievalFilter.filterEncountersByTargetTypes;
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.addResourceSizesToOutput;
 import static de.ukbonn.mwtek.dashboard.misc.LoggingHelper.logAbortWorkflowMessage;
 import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.addDummyIcuLocationIfNeeded;
@@ -40,6 +41,7 @@ import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.DataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.KidsRadarDataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
+import de.ukbonn.mwtek.dashboardlogic.enums.EncounterReferenceResourceType;
 import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
 import de.ukbonn.mwtek.dashboardlogic.settings.QualitativeLabCodesSettings;
@@ -136,14 +138,21 @@ public class KiRaDataController {
         processTimer.startLoggingTime(ResourceType.Procedure);
         // Retrieval of kiradar related procedures
         miiProcedures = getUkbProcedures(KIDS_RADAR, dataRetrievalService, miiEncounters);
-        addFacilityContactLinkageToProcedures(miiProcedures, miiEncounters);
         processTimer.stopLoggingTime(miiProcedures);
       } else {
+        // Get OPS procedures only
         miiProcedures = dataRetrievalService.getProcedures(miiEncounters, KIDS_RADAR_KJP_NO_ICU);
         log.info(
             "Skipping the retrieval of icu procedure resources, as the generation of"
                 + " icu_undifferentiated items is activated.");
       }
+      // Linking to facility contact if needed to prevent complex logic later
+      addFacilityContactLinkageToProcedures(
+          miiProcedures,
+          miiEncounters,
+          customGlobalConfiguration.getEncounterReferenceTargetTypes(
+              EncounterReferenceResourceType.ICU_PROCEDURE,
+              EncounterReferenceResourceType.OPS_PROCEDURE));
       // Retrieval of the Location resources
       processTimer.startLoggingTime(ResourceType.Location);
       List<MiiLocation> miiLocations =
@@ -252,7 +261,17 @@ public class KiRaDataController {
               (List<MiiProcedure>)
                   ResourceConverter.convert(
                       dataRetrievalService.getProcedures(
-                          miiEncounters.stream().filter(MiiEncounter::isFacilityContact).toList(),
+                          filterEncountersByTargetTypes(
+                              miiEncounters,
+                              List.of(
+                                  dataRetrievalService
+                                      .getCustomGlobalConfiguration()
+                                      .getEncounterReferenceTargetType(
+                                          EncounterReferenceResourceType.OPS_PROCEDURE),
+                                  dataRetrievalService
+                                      .getCustomGlobalConfiguration()
+                                      .getEncounterReferenceTargetType(
+                                          EncounterReferenceResourceType.ICU_PROCEDURE))),
                           dataItemContext,
                           null));
       // Acuwave asks two different servers relaying whether archive data or live data is needed.

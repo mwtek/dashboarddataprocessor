@@ -136,22 +136,18 @@ public class UkbModelController {
         icuLocalCaseIds.stream().filter(x -> !recentCaseIds.contains(x)).toList();
     processTimer.stopLoggingTime(icuLocalCaseIds);
 
-    log.debug("The amount of ALL cases is: " + icuLocalCaseIds.size());
+    log.debug("The amount of ALL cases is: {}", icuLocalCaseIds.size());
     if (!recentCaseIds.isEmpty()) {
       log.debug(
-          "The amount of current cases is: "
-              + recentCaseIds.size()
-              + " [example case: "
-              + recentCaseIds.get(0)
-              + " ]");
+          "The amount of current cases is: {} [example case: {} ]",
+          recentCaseIds.size(),
+          recentCaseIds.getFirst());
     }
     if (!icuLocalCaseIdsWithoutRecents.isEmpty()) {
       log.debug(
-          "The amount of ALL cases without current cases is: "
-              + icuLocalCaseIdsWithoutRecents.size()
-              + " [example case: "
-              + icuLocalCaseIdsWithoutRecents.get(0)
-              + " ]");
+          "The amount of ALL cases without current cases is: {} [example case: {} ]",
+          icuLocalCaseIdsWithoutRecents.size(),
+          icuLocalCaseIdsWithoutRecents.getFirst());
     }
 
     // Retrieval of the ICU EPISODE information (including internal case ids) which is needed for
@@ -207,7 +203,7 @@ public class UkbModelController {
 
     for (String caseId : icuLocalCaseIds) {
       if (!filteredCaseIds.contains(caseId)) {
-        log.trace("Couldn't find an observation with lab value information for case: " + caseId);
+        log.trace("Couldn't find an observation with lab value information for case: {}", caseId);
       }
     }
 
@@ -404,7 +400,7 @@ public class UkbModelController {
 
       mapCaseIdEpisodes.compute(
           hisCaseId,
-          (key, existingIntervals) -> {
+          (_, existingIntervals) -> {
             if (existingIntervals == null) {
               List<Interval> intervals = new ArrayList<>();
               intervals.add(interval);
@@ -443,9 +439,9 @@ public class UkbModelController {
     List<CoreBaseDataItem> filteredValues = new ArrayList<>();
 
     log.debug(
-        context
-            + ": Size of entries before filtering to intersections only: "
-            + inputEntries.size());
+        "{}: Size of entries before filtering to intersections only: {}",
+        context,
+        inputEntries.size());
     for (CoreBaseDataItem labValue : inputEntries) {
       String hisCaseId = labValue.hisCaseId();
       Date labValueDateFrom = labValue.dateFrom();
@@ -586,12 +582,10 @@ public class UkbModelController {
       if (noRecentUsage) {
         for (String resourceId : resourceIdsNotInBothByType) {
           log.debug(
-              resourceId
-                  + " [resourceId] "
-                  + renalReplacementRiskParameter
-                  + " for case "
-                  + resourceIdsByCaseId.get(resourceId)
-                  + " is just in CLAPP not in ReportingDB ");
+              "{} [resourceId] {} for case {} is just in CLAPP not in ReportingDB ",
+              resourceId,
+              renalReplacementRiskParameter,
+              resourceIdsByCaseId.get(resourceId));
         }
       }
     }
@@ -639,12 +633,11 @@ public class UkbModelController {
       resourceIdsClappAllByTypeClone.forEach(
           resourceId ->
               log.debug(
-                  resourceId
-                      + " "
-                      + renalReplacementRiskParameter
-                      + " [Resource] is just in CLAPP(ALL) not in ReportingDB or recent CLAPP."
-                      + " CaseId: "
-                      + resourceIdsByCaseId.get(resourceId)));
+                  "{} {} [Resource] is just in CLAPP(ALL) not in ReportingDB or recent CLAPP."
+                      + " CaseId: {}",
+                  resourceId,
+                  renalReplacementRiskParameter,
+                  resourceIdsByCaseId.get(resourceId)));
 
       log.debug(
           "Delta [ResourceIds] in {} between CLAPP-ALL [{}] and REPORTING DB [{}] + CLAPP-RECENT "

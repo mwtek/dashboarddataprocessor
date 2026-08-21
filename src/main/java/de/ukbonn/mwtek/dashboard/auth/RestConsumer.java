@@ -21,6 +21,7 @@ package de.ukbonn.mwtek.dashboard.auth;
 import de.ukbonn.mwtek.dashboard.configuration.AbstractRestConfiguration;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.net.ssl.SSLContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -42,6 +43,7 @@ import org.springframework.web.client.RestTemplate;
 public class RestConsumer {
 
   protected AbstractRestConfiguration restConfiguration;
+  private final AtomicBoolean basicAuthLogged = new AtomicBoolean(false);
 
   public RestConsumer(AbstractRestConfiguration restConfiguration) {
     this.restConfiguration = restConfiguration;
@@ -171,16 +173,19 @@ public class RestConsumer {
           .addFirst(new StringHttpMessageConverter(StandardCharsets.UTF_8));
 
       // Also adding basic auth information IF configured in the application.yaml
-      if (restConfiguration.getRestUser() != null && !restConfiguration.getRestUser().isEmpty()
+      if (restConfiguration.getRestUser() != null
+          && !restConfiguration.getRestUser().isEmpty()
           && restConfiguration.getRestPassword() != null) {
-        restTemplate.getInterceptors().add(
-            new BasicAuthenticationInterceptor(
-                restConfiguration.getRestUser(),
-                restConfiguration.getRestPassword()
-            )
-        );
-        log.debug("Added Basic Auth interceptor to mTLS RestTemplate for user: {}",
-            restConfiguration.getRestUser());
+        if (basicAuthLogged.compareAndSet(false, true)) {
+          log.debug(
+              "Added Basic Auth interceptor to mTLS RestTemplate for user: {}",
+              restConfiguration.getRestUser());
+        }
+        restTemplate
+            .getInterceptors()
+            .add(
+                new BasicAuthenticationInterceptor(
+                    restConfiguration.getRestUser(), restConfiguration.getRestPassword()));
       }
       return restTemplate;
     } catch (Exception ex) {

@@ -1,3 +1,50 @@
+# Release Notes - Version V0.5.7+update.4
+
+21/August/26
+
+## New Features
+
+No features were part of this version.
+
+## Improvements
+
+<div style='margin-left:30px;'>
+
+* Added configuration options to define the target encounter level for resource-to-encounter
+  references (e.g. encounter referencing in a condition to the `Versorgungsstellenkontakt` or
+  `Abteilungskontakt` instead of the default `Einrichtungskontakt`).
+
+</div> 
+
+## Tasks
+
+No tasks were part of this version.
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* Fixed FHIR POST search requests where query parameters could be lost by properly encoding them as
+  URL-encoded form data.
+* Fixed ICU status detection on the `UKBModel` workflow for facility encounters by deriving location
+  information from the associated supply contacts not facility contacts anymore.
+
+</div> 
+
+## Configuration Changes
+
+<div style='margin-left:30px;'>
+
+### Configuration key renamed to prevent wrong interpretation
+
+```diff
+global:
+- debug: false
++ output-debug-items: false
+```
+
+</div>
+
 # Release Notes - Version V0.5.7+update.3
 
 06/August/26
@@ -26,7 +73,11 @@ No features were part of this version.
 
 ## Bugs
 
-No bug fixes were part of this version.
+<div style='margin-left:30px;'>
+
+* Renamed the `debug` parameter to prevent misunderstandings.
+
+</div> 
 
 ## Configuration Changes
 
@@ -34,11 +85,23 @@ No bug fixes were part of this version.
 
 ### Configuration key renamed to prevent wrong interpretation
 
+### Added configurable encounter reference target types
+
+Added configuration options to define the target encounter type for references from different FHIR
+resource types. Default is `EK`.
+
 ```diff
 global:
-- debug: false
-+ output-debug-items: false
++ encounter-reference-target-types:
++   ops-procedure: EK
++   icu-procedure: EK
++   condition: EK
++   # Observation not supported yet
++   # observation: EK
 ```
+
+Supported target types are `EK` (Einrichtungskontakt), `AK` (Abteilungskontakt), and `VK` (
+Versorgungsstellenkontakt).
 
 </div>
 

@@ -39,9 +39,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Service for providing the {@link FhirSearchConfiguration} (e.g. which Loinc codes are to be used)
@@ -53,6 +55,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class FhirSearchService extends RestConsumer implements SearchService {
 
+  public static final String SEARCH_ENDPOINT = "/_search";
   FhirContext ctx = FhirContext.forR4();
 
   protected FhirServerRestConfiguration fhirServerConf;
@@ -90,11 +93,16 @@ public class FhirSearchService extends RestConsumer implements SearchService {
         return requestBundle.getEntry();
       }
       case "POST" -> {
-        String restUrl = fhirServerEndpoint + resourceType + "/_search";
-        logPostBody(parametersInputString, restUrl);
-        HttpHeaders header = new HttpHeaders();
-        header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        HttpEntity<String> entity = new HttpEntity<>(parametersInputString, header);
+        String restUrl = fhirServerEndpoint + resourceType + SEARCH_ENDPOINT;
+        MultiValueMap<String, String> form =
+            UriComponentsBuilder.newInstance()
+                .query(parametersInputString)
+                .build()
+                .getQueryParams();
+        logPostBody(form, restUrl);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(form, headers);
         ResponseEntity<String> searchRequest = rest.postForEntity(restUrl, entity, String.class);
         Bundle requestBundle = parser.parseResource(Bundle.class, searchRequest.getBody());
         return requestBundle.getEntry();
@@ -128,16 +136,20 @@ public class FhirSearchService extends RestConsumer implements SearchService {
           return parser.parseResource(Bundle.class, response.getBody());
         }
         case "POST" -> {
-          String restUrl = fhirServerEndpoint + resourceType + "/_search";
-          logPostBody(querySuffix, restUrl);
+          String restUrl = fhirServerEndpoint + resourceType + SEARCH_ENDPOINT;
+          // Convert query parameters into form data for the FHIR POST search
+          MultiValueMap<String, String> form =
+              UriComponentsBuilder.newInstance().query(querySuffix).build().getQueryParams();
+          logPostBody(form, restUrl);
+
+          // Configure the request as URL-encoded form data
           HttpHeaders headers = new HttpHeaders();
           headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-          headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-          HttpEntity<String> entity = new HttpEntity<>(querySuffix, headers);
+          headers.setAccept(List.of(MediaType.valueOf("application/fhir+json")));
+          HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(form, headers);
           ResponseEntity<String> response = rest.postForEntity(restUrl, entity, String.class);
           return parser.parseResource(Bundle.class, response.getBody());
         }
-
         default -> throw new IllegalArgumentException("Unsupported HTTP method: " + httpMethod);
       }
     } catch (HttpStatusCodeException ex) {
@@ -161,8 +173,8 @@ public class FhirSearchService extends RestConsumer implements SearchService {
     }
   }
 
-  private static void logPostBody(String querySuffix, String restUrl) {
-    log.trace("{} with body {}", restUrl, querySuffix);
+  private static void logPostBody(MultiValueMap<String, String> searchParams, String restUrl) {
+    log.trace("{} with body {}", restUrl, searchParams);
   }
 
   /**

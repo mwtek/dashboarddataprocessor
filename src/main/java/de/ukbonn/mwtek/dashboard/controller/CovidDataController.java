@@ -34,6 +34,7 @@ import de.ukbonn.mwtek.dashboard.misc.ProcessTimer;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
 import de.ukbonn.mwtek.dashboardlogic.DataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
+import de.ukbonn.mwtek.dashboardlogic.enums.EncounterReferenceResourceType;
 import de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality;
 import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
 import de.ukbonn.mwtek.dashboardlogic.settings.InputCodeSettings;
@@ -47,6 +48,7 @@ import de.ukbonn.mwtek.utilities.fhir.resources.MiiPatient;
 import de.ukbonn.mwtek.utilities.fhir.resources.MiiProcedure;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r4.model.ResourceType;
 
@@ -129,7 +131,12 @@ public class CovidDataController {
                         dataItemContext));
         processTimer.stopLoggingTime(miiProcedures);
 
-        addFacilityContactLinkageToProcedures(miiProcedures, miiEncounters);
+        addFacilityContactLinkageToProcedures(
+            miiProcedures,
+            miiEncounters,
+            Set.of(
+                customGlobalConfiguration.getEncounterReferenceTargetType(
+                    EncounterReferenceResourceType.ICU_PROCEDURE)));
       } else
         log.info(
             "Skipping the retrieval of procedure resources, as the generation of"

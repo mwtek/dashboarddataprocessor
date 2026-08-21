@@ -30,6 +30,7 @@ import de.ukbonn.mwtek.dashboard.DashboardApplication;
 import de.ukbonn.mwtek.dashboard.enums.ServerTypeEnum;
 import de.ukbonn.mwtek.dashboard.exceptions.SearchException;
 import de.ukbonn.mwtek.dashboard.services.AbstractDataRetrievalService;
+import de.ukbonn.mwtek.dashboardlogic.enums.EncounterReferenceTargetType;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
 import de.ukbonn.mwtek.utilities.fhir.misc.LocationTools;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
@@ -451,17 +452,20 @@ public class ResourceHandler {
     Set<CoreBaseDataItem> coreBaseDataItems = ConcurrentHashMap.newKeySet();
     Set<CoreBaseDataItem> icuEpisodes = ConcurrentHashMap.newKeySet();
     // Just the top level resources are needed
+    List<MiiEncounter> encounters =
+        (List<MiiEncounter>) ResourceConverter.convert(dataRetrievalService.getIcuEncounters());
+
     List<MiiEncounter> facilityContacts =
-        ((List<MiiEncounter>) ResourceConverter.convert(dataRetrievalService.getIcuEncounters()))
-            .parallelStream().filter(MiiEncounter::isFacilityContact).toList();
+        encounters.stream().filter(MiiEncounter::isFacilityContact).toList();
+
+    List<MiiEncounter> supplyContacts =
+        encounters.stream().filter(MiiEncounter::isSupplyContact).toList();
 
     // To detect cases that are currently in ICU, we need to find the active transfers and check
     // for ICU status.
     Set<String> locationIds =
-        facilityContacts.stream()
+        supplyContacts.stream()
             .flatMap(x -> x.getLocation().stream())
-            .collect(Collectors.toSet())
-            .stream()
             .map(EncounterLocationComponent::getLocation)
             .filter(Element::hasId)
             .map(Element::getIdBase)
@@ -480,28 +484,40 @@ public class ResourceHandler {
                 .map(Resource::getIdBase)
                 .toList();
 
+    // Determine ICU state by facility case id from associated supply contacts.
+    Map<String, Boolean> currentlyOnIcuByCaseId =
+        supplyContacts.stream()
+            .collect(
+                Collectors.toMap(
+                    MiiEncounter::getCaseId,
+                    x -> x.isCurrentlyOnIcu(icuWardIds),
+                    Boolean::logicalOr));
+
     facilityContacts.parallelStream()
         .forEach(
             x -> {
-              // The main key is the local case id, found in the identifier.
-              // Just add an item if it's found.
-              if (x.hasIdentifier()) {
-                // Set value = 1.0 if the encounter is currently on an icu location
-                x.getIdentifier().stream()
-                    .filter(y -> y.hasUse() && y.getUse() == IdentifierUse.OFFICIAL)
-                    .findFirst()
-                    .ifPresent(
-                        identifier ->
-                            coreBaseDataItems.add(
-                                new CoreBaseDataItem(
-                                    identifier.getValue(),
-                                    null,
-                                    x.isCurrentlyOnIcu(icuWardIds) ? 1.0 : 0.0,
-                                    x.getPeriod().getStart(),
-                                    x.getPeriod().getEnd(),
-                                    x.getId())));
+              if (!x.hasIdentifier()) {
+                return;
               }
+              x.getIdentifier().stream()
+                  .filter(y -> y.hasUse() && y.getUse() == IdentifierUse.OFFICIAL)
+                  .findFirst()
+                  .ifPresent(
+                      identifier -> {
+                        boolean currentlyOnIcu =
+                            currentlyOnIcuByCaseId.getOrDefault(x.getCaseId(), false);
+
+                        coreBaseDataItems.add(
+                            new CoreBaseDataItem(
+                                identifier.getValue(),
+                                null,
+                                currentlyOnIcu ? 1.0 : 0.0,
+                                x.getPeriod().getStart(),
+                                x.getPeriod().getEnd(),
+                                x.getId()));
+                      });
             });
+
     return new ArrayList<>(coreBaseDataItems);
   }
 
@@ -754,72 +770,90 @@ public class ResourceHandler {
   }
 
   /**
-   * Replaces supply contact encounter references in procedures with the corresponding facility
-   * contact of the same visit.
+   * Replaces configured encounter references in procedures with the corresponding facility contact
+   * of the same visit.
+   *
+   * @param miiProcedures the procedures to update
+   * @param miiEncounters the available encounters
+   * @param configuredTargetTypes the encounter types used for procedure retrieval
    */
   public static void addFacilityContactLinkageToProcedures(
-      List<MiiProcedure> miiProcedures, List<MiiEncounter> miiEncounters) {
-    // Map supply contact IDs to encounters.
-    Map<String, MiiEncounter> supplyContactByReference =
-        miiEncounters.stream()
-            .filter(MiiEncounter::isSupplyContact)
-            .filter(e -> e.getId() != null)
-            .collect(Collectors.toMap(MiiEncounter::getId, Function.identity(), (a, b) -> a));
+      List<MiiProcedure> miiProcedures,
+      List<MiiEncounter> miiEncounters,
+      Collection<EncounterReferenceTargetType> configuredTargetTypes) {
 
-    // Skip method if no procedure references a supply contact.
+    // Only non-EK references need to be mapped to facility contacts
+    Set<EncounterReferenceTargetType> sourceTypes =
+        configuredTargetTypes.stream()
+            .filter(type -> type != EncounterReferenceTargetType.EK)
+            .collect(Collectors.toSet());
+
+    // No relinking required if all configured references already point to facility contacts
+    if (sourceTypes.isEmpty()) {
+      return;
+    }
+    // Map relevant source encounters by their resource ID
+    Map<String, MiiEncounter> sourceEncounterByReference =
+        miiEncounters.stream()
+            .filter(encounter -> sourceTypes.stream().anyMatch(type -> type.matches(encounter)))
+            .filter(encounter -> encounter.getId() != null)
+            .collect(
+                Collectors.toMap(
+                    MiiEncounter::getId, Function.identity(), (first, second) -> first));
+
+    // Check if any procedure requires relinking
     boolean requiresRelinking =
         miiProcedures.stream()
             .map(MiiProcedure::getEncounterReferenceValue)
             .filter(Objects::nonNull)
-            .anyMatch(supplyContactByReference::containsKey);
+            .anyMatch(sourceEncounterByReference::containsKey);
 
     if (!requiresRelinking) {
       return;
     }
 
-    // Map visit numbers to facility contact IDs.
+    // Map visit numbers to facility contact IDs
     Map<String, String> facilityContactIdByVisitNumber =
         miiEncounters.stream()
             .filter(MiiEncounter::isFacilityContact)
-            .filter(e -> e.getVisitNumberIdentifierValue() != null)
-            .filter(e -> e.getId() != null)
+            .filter(encounter -> encounter.getVisitNumberIdentifierValue() != null)
+            .filter(encounter -> encounter.getId() != null)
             .collect(
                 Collectors.toMap(
-                    MiiEncounter::getVisitNumberIdentifierValue, MiiEncounter::getId, (a, b) -> a));
+                    MiiEncounter::getVisitNumberIdentifierValue,
+                    MiiEncounter::getId,
+                    (first, second) -> first));
 
-    // Logging doings
     int updatedProcedures = 0;
     String exampleProcedureId = null;
 
     for (MiiProcedure procedure : miiProcedures) {
-      if (procedure.getEncounter() == null || procedure.getEncounter().getReference() == null) {
+      String encounterReference = procedure.getEncounterReferenceValue();
+
+      if (encounterReference == null) {
         continue;
       }
 
-      // Resolve the referenced supply contact.
-      MiiEncounter supplyContact =
-          supplyContactByReference.get(procedure.getEncounterReferenceValue());
-
-      if (supplyContact == null) {
+      MiiEncounter sourceEncounter = sourceEncounterByReference.get(encounterReference);
+      if (sourceEncounter == null) {
         continue;
       }
+      // Find the facility contact of the same visit
       String facilityContactId =
-          facilityContactIdByVisitNumber.get(supplyContact.getVisitNumberIdentifierValue());
-      // Replace the reference with the corresponding facility contact.
+          facilityContactIdByVisitNumber.get(sourceEncounter.getVisitNumberIdentifierValue());
       if (facilityContactId != null) {
+        // Normalize the procedure reference to the facility contact
         procedure.setCaseId(facilityContactId);
         updatedProcedures++;
-        // procedure.setEncounter(new Reference("Encounter/" + facilityContactId));
-        // Log one example
         if (exampleProcedureId == null) {
           exampleProcedureId = procedure.getId();
         }
       }
     }
-
     if (updatedProcedures > 0) {
       log.info(
-          "Updated supply -> facility contact linkage for {} procedure(s). Example procedure: {}",
+          "Updated encounter linkage {} -> EK for {} procedure(s). Example procedure id: {}",
+          sourceTypes,
           updatedProcedures,
           exampleProcedureId);
     }

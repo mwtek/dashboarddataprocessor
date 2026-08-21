@@ -97,6 +97,7 @@ public class AcribisDataController {
       processTimer.stopLoggingTime(miiConditions);
 
       // Retrieval of procedure resources
+      processTimer.startLoggingTime(ResourceType.Procedure);
       miiProcedures = dataRetrievalService.getProcedures(miiEncounters, dataItemContext);
       processTimer.stopLoggingTime(miiProcedures);
 

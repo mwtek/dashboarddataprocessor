@@ -51,8 +51,10 @@ import org.springframework.web.client.RestTemplate;
 public class TokenAuthHelper {
 
   public static final String CLIENT_CREDENTIALS = "client_credentials";
+  // betterleaks:ignore
   public static final String PASSWORD = "password";
   public static final String UME_SPECIFIC = "ume_specific";
+  // betterleaks:ignore
   public static final String USERNAME = "username";
   private String accessToken;
   private String refreshToken;

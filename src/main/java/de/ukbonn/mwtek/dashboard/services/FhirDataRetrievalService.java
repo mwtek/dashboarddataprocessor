@@ -29,6 +29,7 @@ import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.Configurat
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.ConfigurationContext.KIDS_RADAR_OPS_BASE;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.extractInputCodes;
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.extractKidsRadarDiagnosisConditions;
+import static de.ukbonn.mwtek.dashboard.misc.DataRetrievalFilter.filterEncountersByTargetType;
 import static de.ukbonn.mwtek.dashboard.misc.FhirServerQuerySuffixBuilder.getIcuProcedureCodesAsList;
 import static de.ukbonn.mwtek.dashboard.misc.IcuStayDetection.addIcuDummyLocationDueOtherCriteria;
 import static de.ukbonn.mwtek.dashboard.misc.KiRaChecks.isConditionNeeded;
@@ -43,6 +44,7 @@ import static de.ukbonn.mwtek.dashboard.misc.ResourceHandler.removeNotNeededAttr
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.ACRIBIS;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.BCT;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR;
+import static de.ukbonn.mwtek.dashboardlogic.enums.EncounterReferenceResourceType.OPS_PROCEDURE;
 import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.KJP;
 import static de.ukbonn.mwtek.dashboardlogic.enums.KidsRadarDataItemContext.PED;
 import static de.ukbonn.mwtek.dashboardlogic.logic.CoronaResultFunctionality.extractIdFromReference;
@@ -66,6 +68,8 @@ import de.ukbonn.mwtek.dashboard.misc.ResourceHandler;
 import de.ukbonn.mwtek.dashboardlogic.enums.AcribisCohortOpsCodes;
 import de.ukbonn.mwtek.dashboardlogic.enums.DashboardLogicFixedValues;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
+import de.ukbonn.mwtek.dashboardlogic.enums.EncounterReferenceResourceType;
+import de.ukbonn.mwtek.dashboardlogic.enums.EncounterReferenceTargetType;
 import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.KidsRadar;
 import de.ukbonn.mwtek.dashboardlogic.models.PidTimestampCohortMap;
 import de.ukbonn.mwtek.dashboardlogic.predictiondata.ukb.renalreplacement.models.CoreBaseDataItem;
@@ -384,12 +388,24 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
       return List.of();
     }
 
+    EncounterReferenceTargetType conditionTargetType =
+        getCustomGlobalConfiguration()
+            .getEncounterReferenceTargetType(EncounterReferenceResourceType.CONDITION);
+    // Already adding a (maybe later needed) encounter type filter here though we're currently just
+    // using facility encounters on acribis anyway
+    Collection<MiiEncounter> conditionEncounters =
+        filterEncountersByTargetType(encounters, conditionTargetType);
+    log.debug(
+        "{} encounters remain after filtering for condition target type {}.",
+        conditionEncounters.size(),
+        conditionTargetType);
+
     boolean isUseEncounterConditionReference =
         fhirSearchConfiguration.isUseEncounterConditionReference();
 
     // Extract case ids
     Set<String> encounterCaseIds =
-        encounters.stream()
+        conditionEncounters.stream()
             .map(Resource::getId)
             .filter(Objects::nonNull)
             .collect(Collectors.toSet());
@@ -1174,13 +1190,20 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
   @Override
   public List<MiiProcedure> getProcedures(
       Collection<MiiEncounter> encounters, DataItemContext dataItemContext) {
-
-    List<String> facilityContactIds =
-        encounters.stream().filter(MiiEncounter::isFacilityContact).map(Resource::getId).toList();
+    EncounterReferenceTargetType icuProcedureTargetType =
+        getCustomGlobalConfiguration().getEncounterReferenceTargetType(OPS_PROCEDURE);
+    List<String> procedureEncounterIds =
+        filterEncountersByTargetType(encounters, icuProcedureTargetType).stream()
+            .map(Resource::getId)
+            .toList();
+    log.debug(
+        "{} encounters remain after filtering for procedure.encounter target type {}.",
+        procedureEncounterIds.size(),
+        icuProcedureTargetType);
 
     // If no case ids could be found, no procedures need to be determined, because the evaluation
     // logic is based on data from the encounter resource.
-    if (!encounterIdsCouldBeFound(facilityContactIds, ResourceType.Procedure)) {
+    if (!encounterIdsCouldBeFound(procedureEncounterIds, ResourceType.Procedure)) {
       return new ArrayList<>();
     }
 
@@ -1194,7 +1217,8 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
     AtomicLong overallTotal = new AtomicLong(0);
 
     // Input handling
-    List<List<String>> facilityContactsSubList = splitList(facilityContactIds, this.getBatchSize());
+    List<List<String>> facilityContactsSubList =
+        splitList(procedureEncounterIds, this.getBatchSize());
 
     facilityContactsSubList.parallelStream()
         .forEach(
@@ -1276,7 +1300,7 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
                                 bundleEntry, setProcedures, AcribisCohortOpsCodes.ALL_CODES));
               }
               logStatusDataRetrievalParallel(
-                  facilityContactIds.size(),
+                  procedureEncounterIds.size(),
                   countProcessedProcedures.getAndIncrement(),
                   FHIRAllTypes.PROCEDURE.getDisplay());
             });
@@ -1560,19 +1584,6 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
               String resourceTypeQ = ResourceType.Questionnaire.name();
 
               if (useGet) {
-                // TODO remove if not needed
-                // First: Figure out the ids of the acribis questionnaires
-                //                Bundle questionnaires =
-                //                    this.getSearchService()
-                //                        .getInitialBundle(
-                //                            fhirServerQuerySuffixBuilder.getQuestionnaires(this,
-                // true),
-                //                            httpMethod,
-                //                            resourceTypeQ);
-                //               followUpQuestionnaireIds =
-                //                    questionnaires.getEntry().stream()
-                //                        .map(entry ->  entry.getResource().getIdPart())
-                //                        .collect(Collectors.toSet());
 
                 // GET: fetch total count for comparison
                 totalBundle =
@@ -1595,20 +1606,6 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
                     "QuestionnaireResponses for this part bundle (total): {}",
                     totalBundle.getTotal());
               } else {
-
-                // First: Figure out the ids of the acribis questionnaires
-                //                Bundle questionnaires =
-                //                    this.getSearchService()
-                //                        .getInitialBundle(
-                //                            fhirServerQuerySuffixBuilder.getQuestionnaires(this,
-                // false),
-                //                            httpMethod,
-                //                            resourceTypeQ);
-                //               followUpQuestionnaireIds =
-                //                    questionnaires.getEntry().stream()
-                //                        .map(entry -> "Questionnaire/"+
-                // entry.getResource().getIdPart())
-                //                        .collect(Collectors.toSet());
 
                 // POST: load first page via POST body
                 initialBundle =

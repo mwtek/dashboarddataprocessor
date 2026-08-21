@@ -28,6 +28,14 @@ global:
   #  older-than-x-days: 365
   ## Optional: Ignore encounter from the updating process that are newer than the given base date [default: null]
   #  base-date: 2025-01-21
+  ## Configures the target encounter type for encounter references by resource type.
+  ## Supported values: EK (Einrichtungskontakt), AK (Abteilungskontakt), VK (Versorgungsstellenkontakt)
+  encounter-reference-target-types:
+    ops-procedure: EK
+    icu-procedure: EK
+    condition: EK
+    ## Observation not supported yet
+    # observation: EK
   ## Comma-separated list of codes used for Corona patient identification (icd = Condition resources; loinc = Observation resources).
   inputcodes:
     ## ICD codes SARS-CoV-2
