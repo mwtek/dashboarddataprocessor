@@ -1,0 +1,1575 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "Consent/SNID-BASE-1",
+      "resource": {
+        "resourceType": "Consent",
+        "id": "SNID-BASE-1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+          ]
+        },
+        "status": "active",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "research",
+              "display": "Research"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "57016-8",
+                "display": "Privacy policy acknowledgement Document"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-version-modules",
+                "code": "2.16.840.1.113883.3.1937.777.24.2.184"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/PAT-WITH-SNID-CONSENT",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "PAT-WITH-SNID-CONSENT"
+          }
+        },
+        "dateTime": "2026-01-27T00:00:00+01:00",
+        "organization": [
+          {
+            "display": "Universitätsklinikum Bonn"
+          }
+        ],
+        "policy": [
+          {
+            "uri": "urn:oid:2.16.840.1.113883.3.1937.777.24.2.1790"
+          }
+        ],
+        "provision": {
+          "type": "deny",
+          "period": {
+            "start": "2026-01-27T00:00:00+01:00",
+            "end": "2031-01-27T00:00:00+01:00"
+          },
+          "provision": [
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2031-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.11",
+                      "display": "KKDAT_5J_retro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2056-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.12",
+                      "display": "KKDAT_5J_retro_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2056-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.13",
+                      "display": "KKDAT_5J_retro_wissenschaftlich_nutzen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2031-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.38",
+                      "display": "KKDAT_5J_retro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2056-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2056-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2056-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.2",
+                      "display": "IDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2056-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.3",
+                      "display": "IDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2056-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.4",
+                      "display": "IDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2056-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.5",
+                      "display": "IDAT_bereitstellen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2031-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.6",
+                      "display": "MDAT_erheben"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2056-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.7",
+                      "display": "MDAT_speichern_verarbeiten"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2056-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.8",
+                      "display": "MDAT_wissenschaftlich_nutzen_EU_DSGVO_NIVEAU"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2056-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.9",
+                      "display": "MDAT_zusammenfuehren_Dritte"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2056-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.31",
+                      "display": "Rekontaktierung_Zusatzbefund"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2031-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.15",
+                      "display": "KKDAT_5J_pro_uebertragen"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2031-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.39",
+                      "display": "KKDAT_5J_pro_uebertragen_KVNR"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2056-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.27",
+                      "display": "Rekontaktierung_Verknuepfung_Datenbanken"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2056-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.28",
+                      "display": "Rekontaktierung_weitere_Erhebung"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2056-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.29",
+                      "display": "Rekontaktierung_weitere_Studien"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-04-03T00:00:00+02:00",
+                "end": "2056-04-03T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.37",
+                      "display": "Rekontaktierung_Ergebnisse_erheblicher_Bedeutung"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Consent/SNID-BASE-1"
+      }
+    },
+    {
+      "fullUrl": "Consent/SNID-1",
+      "resource": {
+        "resourceType": "Consent",
+        "id": "SNID-1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+          ]
+        },
+        "status": "active",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "research",
+              "display": "Research"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "57016-8",
+                "display": "Privacy policy acknowledgement Document"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-version-modules",
+                "code": "2.16.840.1.113883.3.1937.777.24.2.184"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/PAT-WITH-SNID-CONSENT",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "PAT-WITH-SNID-CONSENT"
+          }
+        },
+        "dateTime": "2026-01-27T00:00:00+01:00",
+        "organization": [
+          {
+            "display": "Universitätsklinikum Bonn"
+          }
+        ],
+        "policy": [
+          {
+            "uri": "urn:oid:2.16.840.1.113883.3.1937.777.24.2.4037"
+          }
+        ],
+        "provision": {
+          "type": "deny",
+          "period": {
+            "start": "2026-01-27T00:00:00+01:00",
+            "end": "2031-01-27T00:00:00+01:00"
+          },
+          "provision": [
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2056-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.68",
+                      "display": "IDAT speichern verabeiten (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2031-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.69",
+                      "display": "CONSENT speichern verarbeiten (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2056-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.70",
+                      "display": "IDAT Einsicht Monitoring (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2031-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.71",
+                      "display": "MDAT erheben (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2056-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.72",
+                      "display": "MDAT speichern verarbeiten (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2056-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.73",
+                      "display": "MDAT bereitstellen (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2056-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.74",
+                      "display": "MDAT Einsicht Monitoring (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2056-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.75",
+                      "display": "BIOMAT Eigentum uebertragen NUM (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2056-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.76",
+                      "display": "CONSENT BC bereitstellen (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2031-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.77",
+                      "display": "CONSENT BC speichern verarbeiten (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2056-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.79",
+                      "display": "IDAT ePA bereitstellen (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2031-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.80",
+                      "display": "MDAT ePA erheben (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2056-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.81",
+                      "display": "MDAT ePA speichern verarbeiten (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2056-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.83",
+                      "display": "MDAT KReg speichern verarbeiten (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2056-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.84",
+                      "display": "IDAT KReg KVNR speichern verarbeiten (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2031-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.86",
+                      "display": "IDAT KVNR KReg bereitstellen retrospektiv (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2031-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.87",
+                      "display": "MDAT KReg erheben retrospektiv (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2031-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.89",
+                      "display": "IDAT KVNR KReg bereitstellen prospektiv (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2031-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.90",
+                      "display": "MDAT KReg erheben prospektiv (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2056-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.95",
+                      "display": "Rekontaktierung Gesundheitszustand nach Studienabschluss (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2056-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.97",
+                      "display": "Rekontaktierung weitere Studien (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2056-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.98",
+                      "display": "IDAT SNID bereitstellen OE"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2056-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.100",
+                      "display": "MDAT Hausarzt erheben speichern verarbeiten nutzen (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-01-27T00:00:00+01:00",
+                "end": "2056-01-27T00:00:00+01:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.101",
+                      "display": "IDAT bereitstellen Hausarzt"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Consent/SNID-1"
+      }
+    },
+    {
+      "fullUrl": "Patient/PAT-WITH-SNID-CONSENT",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "PAT-WITH-SNID-CONSENT",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "PAT-WITH-SNID-CONSENT"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "SNID-PATIENT-WITH-APPROVED-CONSENT",
+            "given": [
+              "Deceased"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1970-01-01",
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "line": [
+              "Test avenue 33"
+            ],
+            "city": "Test city",
+            "postalCode": "12345",
+            "country": "EN"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/PAT-WITH-SNID-CONSENT"
+      }
+    },
+    {
+      "fullUrl": "Consent/SNID-2",
+      "resource": {
+        "resourceType": "Consent",
+        "id": "SNID-2",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/modul-consent/StructureDefinition/mii-pr-consent-einwilligung"
+          ]
+        },
+        "status": "active",
+        "scope": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/consentscope",
+              "code": "research",
+              "display": "Research"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "57016-8",
+                "display": "Privacy policy acknowledgement Document"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-version-modules",
+                "code": "2.16.840.1.113883.3.1937.777.24.2.184"
+              }
+            ]
+          }
+        ],
+        "patient": {
+          "reference": "Patient/PAT-WITH-SNID-CONSENT-JUNE-2026",
+          "type": "Patient",
+          "identifier": {
+            "system": "http://localidentifier.com/identifiers/patient",
+            "value": "PAT-WITH-SNID-CONSENT-JUNE-2026"
+          }
+        },
+        "dateTime": "2026-06-15T00:00:00+02:00",
+        "organization": [
+          {
+            "display": "Universitätsklinikum Bonn"
+          }
+        ],
+        "policy": [
+          {
+            "uri": "urn:oid:2.16.840.1.113883.3.1937.777.24.2.4037"
+          }
+        ],
+        "provision": {
+          "type": "deny",
+          "period": {
+            "start": "2026-06-15T00:00:00+02:00",
+            "end": "2031-06-15T00:00:00+02:00"
+          },
+          "provision": [
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2056-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.68",
+                      "display": "IDAT speichern verabeiten (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2031-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.69",
+                      "display": "CONSENT speichern verarbeiten (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2056-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.70",
+                      "display": "IDAT Einsicht Monitoring (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2031-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.71",
+                      "display": "MDAT erheben (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2056-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.72",
+                      "display": "MDAT speichern verarbeiten (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2056-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.73",
+                      "display": "MDAT bereitstellen (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2056-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.74",
+                      "display": "MDAT Einsicht Monitoring (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2056-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.75",
+                      "display": "BIOMAT Eigentum uebertragen NUM (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2056-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.76",
+                      "display": "CONSENT BC bereitstellen (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2031-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.77",
+                      "display": "CONSENT BC speichern verarbeiten (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2056-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.79",
+                      "display": "IDAT ePA bereitstellen (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2031-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.80",
+                      "display": "MDAT ePA erheben (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2056-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.81",
+                      "display": "MDAT ePA speichern verarbeiten (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2056-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.83",
+                      "display": "MDAT KReg speichern verarbeiten (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2056-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.84",
+                      "display": "IDAT KReg KVNR speichern verarbeiten (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2031-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.86",
+                      "display": "IDAT KVNR KReg bereitstellen retrospektiv (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2031-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.87",
+                      "display": "MDAT KReg erheben retrospektiv (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2031-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.89",
+                      "display": "IDAT KVNR KReg bereitstellen prospektiv (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2031-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.90",
+                      "display": "MDAT KReg erheben prospektiv (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2056-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.95",
+                      "display": "Rekontaktierung Gesundheitszustand nach Studienabschluss (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2056-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.97",
+                      "display": "Rekontaktierung weitere Studien (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2056-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.98",
+                      "display": "IDAT SNID bereitstellen OE"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2056-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.100",
+                      "display": "MDAT Hausarzt erheben speichern verarbeiten nutzen (SNID)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "permit",
+              "period": {
+                "start": "2026-06-15T00:00:00+02:00",
+                "end": "2056-06-15T00:00:00+02:00"
+              },
+              "code": [
+                {
+                  "coding": [
+                    {
+                      "system": "urn:oid:2.16.840.1.113883.3.1937.777.24.5.3",
+                      "code": "2.16.840.1.113883.3.1937.777.24.5.3.101",
+                      "display": "IDAT bereitstellen Hausarzt"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Consent/SNID-2"
+      }
+    },
+    {
+      "fullUrl": "Patient/PAT-WITH-SNID-CONSENT-JUNE-2026",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "PAT-WITH-SNID-CONSENT-JUNE-2026",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "PAT-WITH-SNID-CONSENT-JUNE-2026"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "SNID-PATIENT-JUNE-2026-WITH-APPROVED-CONSENT",
+            "given": [
+              "Deceased"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1970-01-01",
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "line": [
+              "Test avenue 33"
+            ],
+            "city": "Test city",
+            "postalCode": "12345",
+            "country": "EN"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/PAT-WITH-SNID-CONSENT-JUNE-2026"
+      }
+    }
+  ]
+}

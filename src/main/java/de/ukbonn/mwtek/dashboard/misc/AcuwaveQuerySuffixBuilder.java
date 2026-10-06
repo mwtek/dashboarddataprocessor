@@ -18,6 +18,7 @@
 package de.ukbonn.mwtek.dashboard.misc;
 
 import static de.ukbonn.mwtek.dashboard.misc.ConfigurationTransformer.getListAsString;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.SNID;
 import static de.ukbonn.mwtek.dashboardlogic.logic.DiseaseResultFunctionality.getKickOffDateStringFormat;
 
 import de.ukbonn.mwtek.dashboard.enums.AcuwaveDataSourceType;
@@ -34,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.jena.atlas.lib.NotImplemented;
 
 /** Building the templates of the individual REST requests to the Acuwaveles server. */
 public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
@@ -246,6 +248,7 @@ public class AcuwaveQuerySuffixBuilder implements QuerySuffixBuilder {
   @Override
   public String getConsents(
       AbstractDataRetrievalService dataRetrievalService, DataItemContext dataItemContext) {
+    if (dataItemContext == SNID) throw new NotImplemented();
 
     return "kdsconsent?versions="
         + (dataItemContext == DataItemContext.BCT ? "1.6,1.7.2" : "1.6,1.7.2,acribis")

@@ -90,6 +90,7 @@ global:
   generate-ukb-renal-replacement-model-data: false
   generate-acribis-data: false
   generate-bct-data: false
+  generate-snid-data: false
   ## Option to overwrite the assignment from the value set here: https://simplifier.net/medizininformatikinitiative-modullabor/valuesetqualitativelaborergebnisse
   qualitative-lab-codes:
     positive: 10828004,260373001,52101004
@@ -251,8 +252,11 @@ data-items:
     acr.current.dischargediags.cohorts: false
     acr.timeline.dischargediags.cohorts: false
     ## BCT related items
-    bct.current.consent: true
-    bct.timeline.consent: true
+    bct.current.consent: false
+    bct.timeline.consent: false
+    ## SNID related items
+    snid.current.recruitment.diz: false
+    snid.timeline.recruitment.diz: false
   ## Configure individual thresholds for specific data elements.
   thresholds:
   ## Use the format <element.name>: <threshold.value>

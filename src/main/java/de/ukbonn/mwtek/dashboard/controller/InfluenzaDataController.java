@@ -26,6 +26,7 @@ import static de.ukbonn.mwtek.dashboard.misc.ThresholdCheck.filterDataItemsByThr
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.ukbonn.mwtek.dashboard.configuration.CustomGlobalConfiguration;
+import de.ukbonn.mwtek.dashboard.configuration.CustomProviderConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.DataItemsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.ReportsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.VariantConfiguration;
@@ -61,6 +62,7 @@ public class InfluenzaDataController {
       ReportsConfiguration reportConfiguration,
       ProcessTimer processTimer,
       CustomGlobalConfiguration customGlobalConfiguration,
+      CustomProviderConfiguration providerConfiguration,
       VariantConfiguration variantConfiguration,
       InputCodeSettings inputCodeSettings,
       QualitativeLabCodesSettings qualitativeLabCodesSettings,
@@ -164,7 +166,8 @@ public class InfluenzaDataController {
               inputCodeSettings,
               qualitativeLabCodesSettings,
               dataItemContext,
-              customGlobalConfiguration));
+              customGlobalConfiguration,
+              providerConfiguration));
 
       // Generate an export with current case/encounter ids by treatment level on demand
       if (reportConfiguration.getCaseIdFileGeneration()) {

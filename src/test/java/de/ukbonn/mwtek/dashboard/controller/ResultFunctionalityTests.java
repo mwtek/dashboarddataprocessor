@@ -23,6 +23,7 @@ import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.ACRIBIS;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.COVID;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.INFLUENZA;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.SNID;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CURRENT_MAXTREATMENTLEVEL;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.CURRENT_TREATMENTLEVEL;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItems.TIMELINE_MAXTREATMENTLEVEL;
@@ -37,6 +38,7 @@ import de.ukbonn.mwtek.dashboardlogic.AcribisDataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.BctDataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.DataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.KidsRadarDataItemGenerator;
+import de.ukbonn.mwtek.dashboardlogic.SnidDataItemGenerator;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
 import de.ukbonn.mwtek.utilities.fhir.misc.ResourceConverter;
@@ -87,6 +89,7 @@ public class ResultFunctionalityTests {
   public static final String SAMPLE_FILE_KIDS_RADAR = "./samples/SampleBundle_KiRadar.json";
   public static final String SAMPLE_FILE_ACRIBIS = "./samples/SampleBundle_Acribis.json";
   public static final String SAMPLE_FILE_BCT = "./samples/SampleBundle_Bct.json";
+  public static final String SAMPLE_FILE_SNID = "./samples/SampleBundle_Snid.json";
   static List<DiseaseDataItem> sampleData;
 
   @DisplayName("Getting data items for a run with at least one example patient.")
@@ -141,7 +144,8 @@ public class ResultFunctionalityTests {
               getExampleData(),
               null,
               determineContext(sampleFile),
-              GlobalConfigurationExamples.getExampleSettings()));
+              GlobalConfigurationExamples.getExampleSettings(),
+              GlobalConfigurationExamples.getExampleProviderConfiguration()));
     }
 
     // Merge all results into the final output list
@@ -158,6 +162,7 @@ public class ResultFunctionalityTests {
           case KIDS_RADAR -> SAMPLE_FILE_KIDS_RADAR;
           case ACRIBIS -> SAMPLE_FILE_ACRIBIS;
           case BCT -> SAMPLE_FILE_BCT;
+          case SNID -> SAMPLE_FILE_SNID;
           default -> throw new IllegalArgumentException("Unsupported context: " + context);
         };
 
@@ -172,6 +177,9 @@ public class ResultFunctionalityTests {
               new AcribisDataItemGenerator(
                   consents, conditions, patients, encounters, procedures, questionnaireResponses);
           case BCT -> new BctDataItemGenerator(consents);
+          case SNID ->
+              new SnidDataItemGenerator(
+                  consents, conditions, patients, encounters, procedures, questionnaireResponses);
           default ->
               new DataItemGenerator(
                   conditions, observations, patients, encounters, procedures, locations);
@@ -183,7 +191,8 @@ public class ResultFunctionalityTests {
         getExampleData(),
         null,
         context,
-        GlobalConfigurationExamples.getExampleSettings());
+        GlobalConfigurationExamples.getExampleSettings(),
+        GlobalConfigurationExamples.getExampleProviderConfiguration());
   }
 
   private static DataItemContext determineContext(String sampleFile) {
@@ -192,6 +201,7 @@ public class ResultFunctionalityTests {
       case SAMPLE_FILE_INFLUENZA -> INFLUENZA;
       case SAMPLE_FILE_KIDS_RADAR -> KIDS_RADAR;
       case SAMPLE_FILE_ACRIBIS -> ACRIBIS;
+      case SAMPLE_FILE_SNID -> SNID;
       default -> throw new IllegalArgumentException("Unknown sample file: " + sampleFile);
     };
   }
@@ -266,7 +276,8 @@ public class ResultFunctionalityTests {
                 getExampleData(),
                 null,
                 COVID,
-                GlobalConfigurationExamples.getExampleSettings());
+                GlobalConfigurationExamples.getExampleSettings(),
+                GlobalConfigurationExamples.getExampleProviderConfiguration());
 
     assertAll(
         "Data items should be excluded",

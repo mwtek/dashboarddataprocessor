@@ -1,3 +1,57 @@
+# Release Notes - Version V0.5.7+update.5
+
+06/October/26
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* SNID project is now fully supported
+* Added a ZIP code mapping functionality, which may only be used and implemented after prior request
+  and coordination with us.
+
+</div> 
+
+## Improvements
+
+<div style='margin-left:30px;'>
+
+* Added pagination batch size to FHIR Consent queries using the configured `fhir.search.batchsize`
+  value to prevent excessively large responses.
+
+</div> 
+
+## Tasks
+
+No tasks were part of this version.
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* No bug fixes were part of this version.
+
+</div> 
+
+## Configuration Changes
+
+<div style='margin-left:30px;'>
+
+### Added SNID recruitment configuration
+
+Added SNID recruitment data items, and set the defaults of the bct items to false.
+
+```diff
+- bct.current.consent: true
+- bct.timeline.consent: true
++ bct.current.consent: false
++ bct.timeline.consent: false
++ snid.current.recruitment.diz: false
++ snid.timeline.recruitment.diz: false
+```
+
+</div>
+
 # Release Notes - Version V0.5.7+update.4
 
 21/August/26

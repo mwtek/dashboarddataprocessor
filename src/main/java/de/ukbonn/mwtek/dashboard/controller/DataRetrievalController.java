@@ -35,6 +35,7 @@ import de.ukbonn.mwtek.dashboard.DashboardApplication;
 import de.ukbonn.mwtek.dashboard.configuration.AcuwaveSearchConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.AcuwaveServerRestConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.CustomGlobalConfiguration;
+import de.ukbonn.mwtek.dashboard.configuration.CustomProviderConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.DataItemsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.FhirSearchConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.FhirServerRestConfiguration;
@@ -102,7 +103,7 @@ public class DataRetrievalController {
 
   public static final String WORKFLOW_ABORTED = "Workflow aborted: ";
   public static final String CURRENT_DATASET_VERSION = "0.5.7";
-  public static final String CURRENT_DDP_VERSION = "0.5.7+update.4";
+  public static final String CURRENT_DDP_VERSION = "0.5.7+update.5";
   public static final String FILE_GENERATOR = "ddp";
   public static final String EXPORT_TIMESTAMP = "exporttimestamp";
   public static final String DDP_VERSION = "ddp_version";
@@ -118,6 +119,7 @@ public class DataRetrievalController {
 
   private final ProviderService providerService;
   @Autowired private CustomGlobalConfiguration customGlobalConfiguration;
+  @Autowired private CustomProviderConfiguration customProviderConfiguration;
   @Autowired private DataItemsConfiguration exclDataItems;
   @Autowired private FhirSearchConfiguration fhirSearchConfiguration;
   @Autowired private FhirServerRestConfiguration fhirServerRestConfiguration;
@@ -240,6 +242,7 @@ public class DataRetrievalController {
                 reportConfiguration,
                 processTimer,
                 customGlobalConfiguration,
+                customProviderConfiguration,
                 variantConfiguration,
                 inputCodeSettings,
                 qualitativeLabCodesSettings,
@@ -261,6 +264,7 @@ public class DataRetrievalController {
                 reportConfiguration,
                 processTimer,
                 customGlobalConfiguration,
+                customProviderConfiguration,
                 variantConfiguration,
                 inputCodeSettings,
                 qualitativeLabCodesSettings,
@@ -288,6 +292,7 @@ public class DataRetrievalController {
                 reportConfiguration,
                 processTimer,
                 customGlobalConfiguration,
+                customProviderConfiguration,
                 variantConfiguration,
                 inputCodeSettings,
                 qualitativeLabCodesSettings,
@@ -310,6 +315,7 @@ public class DataRetrievalController {
                 reportConfiguration,
                 processTimer,
                 customGlobalConfiguration,
+                customProviderConfiguration,
                 variantConfiguration,
                 inputCodeSettings,
                 qualitativeLabCodesSettings,
@@ -329,6 +335,7 @@ public class DataRetrievalController {
                 reportConfiguration,
                 processTimer,
                 customGlobalConfiguration,
+                customProviderConfiguration,
                 variantConfiguration,
                 inputCodeSettings,
                 qualitativeLabCodesSettings,
@@ -336,6 +343,26 @@ public class DataRetrievalController {
                 result));
         // End workflow if no resources were found
         if (LoggingHelper.gotWorkflowAborted(BCT)) {
+          return new ResponseEntity<>(LoggingHelper.getAbortMessage(), HttpStatus.NO_CONTENT);
+        }
+      }
+
+      if (generateSnidData) {
+        dataItems.addAll(
+            SnidDataController.generateData(
+                SNID,
+                dataRetrievalService,
+                reportConfiguration,
+                processTimer,
+                customGlobalConfiguration,
+                customProviderConfiguration,
+                variantConfiguration,
+                inputCodeSettings,
+                qualitativeLabCodesSettings,
+                exclDataItems,
+                result));
+        // End workflow if no resources were found
+        if (LoggingHelper.gotWorkflowAborted(SNID)) {
           return new ResponseEntity<>(LoggingHelper.getAbortMessage(), HttpStatus.NO_CONTENT);
         }
       }

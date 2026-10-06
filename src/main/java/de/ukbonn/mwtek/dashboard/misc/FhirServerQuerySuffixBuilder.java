@@ -604,7 +604,9 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
         + PIPE
         + CONSENT_CATEGORY_CODE
         + DATE_GE
-        + getStartingDate(dataItemContext);
+        + getStartingDate(dataItemContext)
+        + COUNT_EQUALS
+        + dataRetrievalService.getBatchSize();
   }
 
   @Override

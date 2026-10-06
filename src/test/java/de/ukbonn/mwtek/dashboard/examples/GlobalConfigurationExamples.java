@@ -19,6 +19,7 @@
 package de.ukbonn.mwtek.dashboard.examples;
 
 import de.ukbonn.mwtek.dashboardlogic.settings.GlobalConfiguration;
+import de.ukbonn.mwtek.dashboardlogic.settings.ProviderConfiguration;
 
 public class GlobalConfigurationExamples {
 
@@ -30,5 +31,12 @@ public class GlobalConfigurationExamples {
     globalConfiguration.setOutputDebugItems(true);
     globalConfiguration.setUseOutpatientEncounterWithStatusUnknown(false);
     return globalConfiguration;
+  }
+
+  public static ProviderConfiguration getExampleProviderConfiguration() {
+    ProviderConfiguration providerConfiguration = new ProviderConfiguration();
+    providerConfiguration.setName("EP");
+    providerConfiguration.setAuthor("Example Provider");
+    return providerConfiguration;
   }
 }

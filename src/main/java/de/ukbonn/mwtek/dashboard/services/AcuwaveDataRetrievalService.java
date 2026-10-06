@@ -557,6 +557,12 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   @Override
+  public List<MiiPatient> getPatients(List<MiiConsent> consents) {
+    // Needed for snid
+    return List.of();
+  }
+
+  @Override
   public List<MiiEncounter> getEncounters(DataItemContext dataItemContext) {
     Set<MiiEncounter> setEncounters = ConcurrentHashMap.newKeySet();
 
@@ -931,13 +937,16 @@ public class AcuwaveDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   @Override
-  public List<MiiConsent> getConsents(Collection<MiiEncounter> miiEncounters) {
+  public List<MiiConsent> getConsents(
+      Collection<MiiEncounter> miiEncounters, DataItemContext dataItemContext) {
     Set<MiiConsent> consents = ConcurrentHashMap.newKeySet();
     try {
       List<Bundle.BundleEntryComponent> listTemp =
           this.getSearchService()
               .getBundleData(
-                  new AcuwaveQuerySuffixBuilder().getConsents(this, ACRIBIS), HttpMethod.GET, null);
+                  new AcuwaveQuerySuffixBuilder().getConsents(this, dataItemContext),
+                  HttpMethod.GET,
+                  null);
       listTemp.forEach(
           bundleEntry ->
               addValidConsentEntries(

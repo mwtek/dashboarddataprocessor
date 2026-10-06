@@ -89,7 +89,7 @@ public class ResourceHandler {
   static Logger logger = LoggerFactory.getLogger(DashboardApplication.class);
 
   /**
-   * Reads the Fhir bundle, adds all entries of the Observation type to a list and adds the {@link
+   * Reads the FHIR bundle, adds all entries of the Observation type to a list and adds the {@link
    * Patient patient} ids and {@link Encounter encounter} ids to a given set.
    *
    * @param bundleResponse A FHIR response bundle that contains {@link Observation} resources
@@ -614,7 +614,9 @@ public class ResourceHandler {
 
   private static boolean isConsentValid(MiiConsent ukbConsent) {
     // Prefiltering to consents that gave permission to use data
-    return ukbConsent.isPatDataUsageCurrentlyAllowed() || ukbConsent.isAcribisConsentAllowed();
+    return ukbConsent.isPatDataUsageCurrentlyAllowed()
+        || ukbConsent.isAcribisConsentAllowed()
+        || ukbConsent.isSnidConsentAllowed();
   }
 
   private static boolean isValidBroadConsent(MiiConsent ukbConsent) {

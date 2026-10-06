@@ -45,6 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext;
 import de.ukbonn.mwtek.dashboardlogic.enums.TreatmentLevels;
 import de.ukbonn.mwtek.dashboardlogic.models.DiseaseDataItem;
+import de.ukbonn.mwtek.dashboardlogic.models.ParametersTimelineItem;
 import de.ukbonn.mwtek.dashboardlogic.models.TimestampedListPair;
 import java.util.ArrayList;
 import java.util.List;
@@ -273,6 +274,45 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
     int indexByTimeStamp = getIndexByTimestamp(timeStamp, result.get(DATE.getValue()));
     Long resultValue = resultByTreatmentlevel.get(indexByTimeStamp);
     // Perform assertions for treatment level
+    assertEquals(sum, resultValue);
+  }
+
+  protected void assertParametersTimelineValueByDay(
+      DataItemContext context, String selectedDataItem, Long timeStamp, long sum) {
+
+    // Test setup
+    assertNotNull(sampleData);
+    assertFalse(sampleData.isEmpty());
+
+    // Get the data item
+    DiseaseDataItem dataItem = getTreatmentDataItem(context, selectedDataItem);
+
+    @SuppressWarnings("unchecked")
+    ParametersTimelineItem<Long> result = (ParametersTimelineItem<Long>) dataItem.getData();
+
+    int indexByTimeStamp = result.getDate().indexOf(timeStamp);
+
+    long resultValue = result.getValues().getFirst().get(indexByTimeStamp);
+
+    System.out.println("Expected timestamp: " + timeStamp);
+    System.out.println("Expected index: " + indexByTimeStamp);
+    System.out.println("Value at expected index: " + resultValue);
+    List<Long> values = result.getValues().getFirst();
+    for (int i = 0; i < values.size(); i++) {
+      if (values.get(i) != 0) {
+        System.out.println(
+            "Non-zero value: date="
+                + result.getDate().get(i)
+                + ", value="
+                + values.get(i)
+                + ", index="
+                + i);
+      }
+    }
+    assertTrue(indexByTimeStamp >= 0, "Timestamp not found: " + timeStamp);
+
+    //    long resultValue = result.getValues().getFirst().get(indexByTimeStamp);
+
     assertEquals(sum, resultValue);
   }
 

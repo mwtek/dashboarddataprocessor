@@ -97,6 +97,8 @@
 - kira.kjp.timeline.diags.admission
 - bct.current.consent
 - bct.timeline.consent
+- snid.current.recruitment.diz
+- snid.timeline.recruitment.diz
 
 #### The processor currently doesn't generate the following data items (and sub items):
 
@@ -108,9 +110,7 @@
 - infl.timeline.subtypetestresults
 - snid.current.recruitment.modules
 - snid.current.recruitment.sites
-- snid.current.recruitment.diz
 - snid.timeline.recruitment
-- snid.timeline.recruitment.diz
 
 As well as all prediction model related items:
 

@@ -120,6 +120,15 @@ public interface DataRetrievalService {
   List<MiiPatient> getPatients(List<MiiProcedure> ukbProcedures, List<MiiCondition> ukbConditions);
 
   /**
+   * The retrieval of FHIR {@link MiiPatient} resources.
+   *
+   * @param consents A list of all FHIR consent resources that are concerned within the given
+   *     context
+   * @return A list of all patient resources that have at least one positive inclusion criteria.
+   */
+  List<MiiPatient> getPatients(List<MiiConsent> consents);
+
+  /**
    * The retrieval of FHIR {@link MiiEncounter} resources.
    *
    * @return A list of all FHIR encounter resources of the detected patients after a specified
@@ -204,7 +213,8 @@ public interface DataRetrievalService {
    *
    * @return A list of all requested FHIR consent resources.
    */
-  List<MiiConsent> getConsents(Collection<MiiEncounter> encountersOutput);
+  List<MiiConsent> getConsents(
+      Collection<MiiEncounter> encountersOutput, DataItemContext dataItemContext);
 
   /**
    * The retrieval of FHIR {@link MiiConsent broad consent} resources.

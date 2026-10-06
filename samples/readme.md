@@ -96,6 +96,9 @@ Currently, the following sample bundles exist with the following content charact
         * 1 Patient with a revoked consent
         * 1 Patient with a revoked consent, followed by a valid consent
         * 1 Patient with 2 valid consents
+* <a href="./SampleBundle_Snid.json" target="_blank">SampleBundle_Snid.json</a>
+    * Bundle of 2 patients with 4 consent formulars in total.
+        * 2 valid main consent forms and 2 valid snid consent forms
 
 More bundles with sample data will surely follow in the future.
 

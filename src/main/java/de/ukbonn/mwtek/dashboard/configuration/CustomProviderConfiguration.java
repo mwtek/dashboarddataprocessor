@@ -18,6 +18,7 @@
 
 package de.ukbonn.mwtek.dashboard.configuration;
 
+import de.ukbonn.mwtek.dashboardlogic.settings.ProviderConfiguration;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -33,7 +34,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "provider")
 @Getter
 @Setter
-public class ProviderConfiguration {
+public class CustomProviderConfiguration extends ProviderConfiguration {
 
   /** The provider name */
   private String name;

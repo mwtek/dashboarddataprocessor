@@ -22,6 +22,7 @@ import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.BCT;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.ukbonn.mwtek.dashboard.configuration.CustomGlobalConfiguration;
+import de.ukbonn.mwtek.dashboard.configuration.CustomProviderConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.DataItemsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.ReportsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.VariantConfiguration;
@@ -49,6 +50,7 @@ public class BctDataController {
       ReportsConfiguration reportConfiguration,
       ProcessTimer processTimer,
       CustomGlobalConfiguration globalConfiguration,
+      CustomProviderConfiguration providerConfiguration,
       VariantConfiguration variantConfiguration,
       InputCodeSettings inputCodeSettings,
       QualitativeLabCodesSettings qualitativeLabCodesSettings,
@@ -84,7 +86,8 @@ public class BctDataController {
                 inputCodeSettings,
                 qualitativeLabCodesSettings,
                 dataItemContext,
-                globalConfiguration));
+                globalConfiguration,
+                providerConfiguration));
 
     // Add resource sizes information to the output if needed
     if (globalConfiguration.getOutputDebugItems()) {

@@ -18,7 +18,7 @@
 
 package de.ukbonn.mwtek.dashboard.services;
 
-import de.ukbonn.mwtek.dashboard.configuration.ProviderConfiguration;
+import de.ukbonn.mwtek.dashboardlogic.settings.ProviderConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

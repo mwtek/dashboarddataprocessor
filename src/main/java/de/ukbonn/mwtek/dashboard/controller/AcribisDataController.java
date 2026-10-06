@@ -23,6 +23,7 @@ import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.ACRIBIS;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.ukbonn.mwtek.dashboard.configuration.CustomGlobalConfiguration;
+import de.ukbonn.mwtek.dashboard.configuration.CustomProviderConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.DataItemsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.ReportsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.VariantConfiguration;
@@ -58,6 +59,7 @@ public class AcribisDataController {
       ReportsConfiguration reportConfiguration,
       ProcessTimer processTimer,
       CustomGlobalConfiguration globalConfiguration,
+      CustomProviderConfiguration providerConfiguration,
       VariantConfiguration variantConfiguration,
       InputCodeSettings inputCodeSettings,
       QualitativeLabCodesSettings qualitativeLabCodesSettings,
@@ -72,7 +74,7 @@ public class AcribisDataController {
     // that the consent call also gives the valid encounter resources back.
     List<MiiEncounter> miiEncounters = new ArrayList<>();
     // Retrieve consent data and also the valid encounters if acuwave server used
-    List<MiiConsent> miiConsents = dataRetrievalService.getConsents(miiEncounters);
+    List<MiiConsent> miiConsents = dataRetrievalService.getConsents(miiEncounters, ACRIBIS);
     List<MiiCondition> miiConditions = new ArrayList<>();
     List<MiiProcedure> miiProcedures = new ArrayList<>();
     List<MiiPatient> miiPatients = new ArrayList<>();
@@ -140,7 +142,8 @@ public class AcribisDataController {
                 inputCodeSettings,
                 qualitativeLabCodesSettings,
                 dataItemContext,
-                globalConfiguration));
+                globalConfiguration,
+                providerConfiguration));
 
     // Add resource sizes information to the output if needed
     if (globalConfiguration.getOutputDebugItems()) {

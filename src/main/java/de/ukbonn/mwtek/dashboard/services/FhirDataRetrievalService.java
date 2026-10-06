@@ -666,6 +666,56 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   @Override
+  public List<MiiPatient> getPatients(List<MiiConsent> consents) {
+
+    // The Initialization of the outgoing set
+    Set<MiiPatient> setPatients = ConcurrentHashMap.newKeySet();
+
+    if (!patientIdsCouldBeFound(patientIds, ResourceType.Patient)) {
+      return new ArrayList<>();
+    }
+    // Put (unique) pids into a list to facilitate the creation of subsets
+    List<String> patientIdList =
+        consents.stream().map(MiiConsent::getPatientId).collect(Collectors.toList());
+
+    List<List<String>> patientIdSublists = splitList(patientIdList, this.getBatchSize());
+
+    AtomicInteger counter = new AtomicInteger(0);
+
+    patientIdSublists.forEach(
+        patientSubList -> {
+          var initialBundle = new Bundle();
+          logStatusDataRetrievalParallel(
+              patientIdList.size(), counter.getAndIncrement(), FHIRAllTypes.PATIENT.getDisplay());
+
+          HttpMethod httpMethod = fhirSearchConfiguration.getHttpMethod();
+          if (httpMethod.equals(GET)) {
+            initialBundle =
+                this.getSearchService()
+                    .getInitialBundle(
+                        fhirServerQuerySuffixBuilder.getPatients(this, patientSubList), GET, null);
+          } else if (httpMethod.equals(POST)) {
+            initialBundle =
+                this.getSearchService()
+                    .getInitialBundle(
+                        fhirServerQuerySuffixBuilder.getPatientsPost(this, patientSubList),
+                        POST,
+                        ResourceType.Patient.name());
+          }
+          handlePatientRessource(initialBundle, setPatients);
+
+          // Handle pagination for additional pages of patient resources
+          while (initialBundle.hasLink() && initialBundle.getLink(NEXT) != null) {
+            initialBundle =
+                this.getSearchService()
+                    .getBundlePart(getNextUrl(fhirServerRestConfiguration, initialBundle), GET);
+            handlePatientRessource(initialBundle, setPatients);
+          }
+        });
+    return new ArrayList<>(setPatients);
+  }
+
+  @Override
   public List<MiiEncounter> getEncounters(DataItemContext dataItemContext) {
     return List.of();
   }
@@ -1283,10 +1333,9 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
               initialBundle
                   .getEntry()
                   .forEach(
-                      bundleEntry -> {
-                        handleProcedureResources(
-                            bundleEntry, setProcedures, AcribisCohortOpsCodes.ALL_CODES);
-                      });
+                      bundleEntry ->
+                          handleProcedureResources(
+                              bundleEntry, setProcedures, AcribisCohortOpsCodes.ALL_CODES));
               // Pagination through follow pages if existing
               while (initialBundle.hasLink() && initialBundle.getLink(NEXT) != null) {
                 initialBundle =
@@ -1488,10 +1537,12 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
   }
 
   @Override
-  public List<MiiConsent> getConsents(Collection<MiiEncounter> miiEncounters) {
+  public List<MiiConsent> getConsents(
+      Collection<MiiEncounter> miiEncounters, DataItemContext dataItemContext) {
     Bundle initialBundle =
         this.getSearchService()
-            .getInitialBundle(fhirServerQuerySuffixBuilder.getConsents(this, ACRIBIS), GET, null);
+            .getInitialBundle(
+                fhirServerQuerySuffixBuilder.getConsents(this, dataItemContext), GET, null);
     List<MiiConsent> consents = new ArrayList<>();
     int counter = 0;
     int resourcesTotal = initialBundle.getTotal();
@@ -1501,7 +1552,8 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
     if (!initialBundle.hasTotal()) {
       resourcesTotal =
           this.getSearchService()
-              .getInitialBundle(fhirServerQuerySuffixBuilder.getConsents(this, ACRIBIS), GET, null)
+              .getInitialBundle(
+                  fhirServerQuerySuffixBuilder.getConsents(this, dataItemContext), GET, null)
               .getTotal();
     }
 
@@ -1581,7 +1633,6 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
               HttpMethod httpMethod = fhirSearchConfiguration.getHttpMethod();
               boolean useGet = httpMethod.equals(GET);
               String resourceTypeQr = ResourceType.QuestionnaireResponse.name();
-              String resourceTypeQ = ResourceType.Questionnaire.name();
 
               if (useGet) {
 
@@ -1625,10 +1676,9 @@ public class FhirDataRetrievalService extends AbstractDataRetrievalService {
               initialBundle
                   .getEntry()
                   .forEach(
-                      bundleEntry -> {
-                        handleQuestionnaireResponseResources(
-                            bundleEntry, followUpQRsById, followUpQuestionnaireIds);
-                      });
+                      bundleEntry ->
+                          handleQuestionnaireResponseResources(
+                              bundleEntry, followUpQRsById, followUpQuestionnaireIds));
               // Pagination through follow pages if existing
               while (initialBundle.hasLink() && initialBundle.getLink(NEXT) != null) {
                 initialBundle =

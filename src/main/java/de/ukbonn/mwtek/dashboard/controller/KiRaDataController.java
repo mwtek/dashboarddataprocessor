@@ -32,6 +32,7 @@ import static de.ukbonn.mwtek.dashboardlogic.tools.KidsRadarTools.getKidsRadarIc
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.ukbonn.mwtek.dashboard.configuration.CustomGlobalConfiguration;
+import de.ukbonn.mwtek.dashboard.configuration.CustomProviderConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.DataItemsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.ReportsConfiguration;
 import de.ukbonn.mwtek.dashboard.configuration.VariantConfiguration;
@@ -71,6 +72,7 @@ public class KiRaDataController {
       ReportsConfiguration reportConfiguration,
       ProcessTimer processTimer,
       CustomGlobalConfiguration customGlobalConfiguration,
+      CustomProviderConfiguration customProviderConfiguration,
       VariantConfiguration variantConfiguration,
       InputCodeSettings inputCodeSettings,
       QualitativeLabCodesSettings qualitativeLabCodesSettings,
@@ -201,7 +203,8 @@ public class KiRaDataController {
                 inputCodeSettings,
                 qualitativeLabCodesSettings,
                 context,
-                customGlobalConfiguration));
+                customGlobalConfiguration,
+                customProviderConfiguration));
       }
 
       if (!dataItemsConfiguration.getThresholds().isEmpty()) {

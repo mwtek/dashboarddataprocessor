@@ -71,10 +71,10 @@ in all encounters, or alternatively can be navigated through the hierarchy via
 | `cumulative.lengthofstay.icu.*`      | Encounter.location                                                                      |                                              | referenced `Location.type` = `ICU`                                                                                                                                                                                                                                                |
 |                                      | Encounter.location.period / Encounter.period                                            |                                              |                                                                                                                                                                                                                                                                                   |
 |                                      | Encounter.type                                                                          | `Versorgungsstellenkontakt`                  |                                                                                                                                                                                                                                                                                   |
-|                                      | Encounter.hospitalization.dischargeDisposition<br>.EntlassungsgrundErsteUndZweiteStelle |                                              | `07`                                                                                                                                                                                                                                                                              |
+|                                      | Encounter.hospitalization.dischargeDisposition<br>.EntlassungsgrundErsteUndZweiteStelle | `Einrichtungskontakt`                        | `07`                                                                                                                                                                                                                                                                              |
 | `cumulative.lengthofstay.hospital.*` | Encounter.type                                                                          | `Einrichtungskontakt`                        |                                                                                                                                                                                                                                                                                   |
 |                                      | Encounter.period                                                                        |                                              |                                                                                                                                                                                                                                                                                   |
-|                                      | Encounter.hospitalization.dischargeDisposition<br>.EntlassungsgrundErsteUndZweiteStelle |                                              | `07`                                                                                                                                                                                                                                                                              |
+|                                      | Encounter.hospitalization.dischargeDisposition<br>.EntlassungsgrundErsteUndZweiteStelle | `Einrichtungskontakt`                        | `07`                                                                                                                                                                                                                                                                              |
 | `cumulative.varianttestresults`      | Observation.effective                                                                   | younger than kick-off-date                   |                                                                                                                                                                                                                                                                                   |
 |                                      | Observation.code                                                                        | IN (`96895-8`,`96741-4`)                     |                                                                                                                                                                                                                                                                                   |
 |                                      | Observation.valueCodeableConcept                                                        |                                              | Loinc codes from [this value set](https://loinc.org/96741-4)                                                                                                                                                                                                                      |
@@ -489,3 +489,53 @@ If additional special checks exist within the data items, these are listed here:
 |                        | Consent.provision.provision.period.start |                  |                      |
 |                        | Consent.provision.provision.period.end   |                  |                      |
 |                        | Consent.status                           | `active`         |                      |
+
+## SNID Module logic
+
+The two (.diz) items that can individually created by the sites are supported.
+
+## General queries
+
+The SNID patient pool is determined on the basis of the consent resources.
+
+### Retrieval input criteria
+
+The following fhir search queries are used:
+
+    1) [base]/Consent?category=https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category|2.16.840.1.113883.3.1937.777.24.2.184&date=ge2025-05-05
+
+### Further data retrieval
+
+    2) [base]/Patient?encounter=[ids_from_1]
+
+## Determination of the patient collective
+
+For a patient to be counted as recruited for SNID, a valid SNID consent resource must contain a
+`PERMIT` provision for the required SNID permission (
+see [provisions](https://simplifier.net/medizininformatikinitiative-modulconsent/2.16.840.1.113883.3.1937.777.24.5.3--20210423105554)):
+
+    1) "MDAT erheben (SNID)" [either via lvl 1 (2.16.840.1.113883.3.1937.777.24.5.3.67) or lvl 2 code (2.16.840.1.113883.3.1937.777.24.5.3.71)]
+
+## Data items composition
+
+The following attributes are checked to detect valid (acribis) consent resources:
+
+| Resource.attribute                         | Forced Condition                                                                                                                                            | Separation criterium |
+|--------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------|
+| `Consent.category[0].system`               | `http://loinc.org`                                                                                                                                          |                      |
+| `Consent.category[0].code`                 | `57016-8`                                                                                                                                                   |                      |
+| `Consent.category[1].system`               | `https://www.medizininformatik-initiative.de/fhir/modul-consent/CodeSystem/mii-cs-consent-consent_category`                                                 |                      |
+| `Consent.category[1].code`                 | `2.16.840.1.113883.3.1937.777.24.2.184`                                                                                                                     |                      |
+| `Consent.patient`                          |                                                                                                                                                             |                      |
+| `Consent.policy`                           | `urn:oid:2.16.840.1.113883.3.1937.777.24.2.1790` (any main form uri as 1.6d; 1.6f; 1.7.2...) or/and `urn:oid:2.16.840.1.113883.3.1937.777.24.2.4037` (snid) |                      |
+| `Consent.provision.provision.type`         | `PERMIT`                                                                                                                                                    |                      |
+| `Consent.provision.provision.period.start` | `>= 05.05.2025`                                                                                                                                             |                      |
+| `Consent.provision.provision.code.system`  | `urn:oid:2.16.840.1.113883.3.1937.777.24.5.3`                                                                                                               |                      |
+| `Consent.provision.provision.code.code`    | `2.16.840.1.113883.3.1937.777.24.5.3.67` or `2.16.840.1.113883.3.1937.777.24.5.3.71`                                                                        |                      |
+
+If additional special checks exist within the data items, these are listed here:
+
+| Item name                       | FHIR attributes                          | Forced Condition               | Separation criterium |
+|---------------------------------|------------------------------------------|--------------------------------|----------------------|
+| `snid.current.recruitment.diz`  | Consent provision                        | Valid SNID recruitment consent |                      |
+| `snid.timeline.recruitment.diz` | Consent.provision.provision.period.start |                                | Recruitment date     |

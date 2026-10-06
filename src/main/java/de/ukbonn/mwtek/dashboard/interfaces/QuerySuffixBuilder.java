@@ -26,6 +26,7 @@ import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.Bct;
 import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.Covid;
 import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.Influenza;
 import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.KidsRadar;
+import de.ukbonn.mwtek.dashboardlogic.enums.NumDashboardConstants.Snid;
 import de.ukbonn.mwtek.utilities.fhir.resources.MiiCondition;
 import de.ukbonn.mwtek.utilities.fhir.resources.MiiEncounter;
 import de.ukbonn.mwtek.utilities.fhir.resources.MiiLocation;
@@ -237,6 +238,13 @@ public interface QuerySuffixBuilder {
             + addLeadingZeroIfNeeded(Bct.QUALIFYING_MONTH)
             + "-"
             + addLeadingZeroIfNeeded(Bct.QUALIFYING_DAY);
+      }
+      case SNID -> {
+        return Snid.QUALIFYING_YEAR
+            + "-"
+            + addLeadingZeroIfNeeded(Snid.QUALIFYING_MONTH)
+            + "-"
+            + addLeadingZeroIfNeeded(Snid.QUALIFYING_DAY);
       }
     }
     // Default
