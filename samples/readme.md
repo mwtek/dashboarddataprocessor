@@ -42,7 +42,7 @@ Currently, the following sample bundles exist with the following content charact
           filtered if not forced to use as a `finished` one in the `application.yaml`
         * 1 patient with three positive influenza encounters in different years.
 * <a href="./SampleBundle_KiRadar.json" target="_blank">SampleBundle_KiRadar.json</a>
-    * Bundle of 10 patients.
+    * Bundle of 11 patients.
         * A patient with 5 cases, of which the second and the third case qualify for the case
           merging logic and getting merged with the first due to the short time intervals between
           the
@@ -71,6 +71,9 @@ Currently, the following sample bundles exist with the following content charact
           diagnosis (U07.1), a pertussis diagnosis (A37.8), who also got an active cpap procedure.
         * A patient with an active case, a finished ventilation procedure and a pertussis pcr.
         * A kjp patient with a finished case in 2024 with 3 intensive care procedures.
+        * Additional KJP diagnoses used to test suppression of complete age groups in
+          `kira.kjp.cumulative.diags.age` and complete months in
+          `kira.kjp.timeline.diags.occurrence`
 * <a href="./SampleBundle_Acribis.json" target="_blank">SampleBundle_Acribis.json</a>
     * Bundle of 8 patients with 11 consent formulars in total.
         * 2 Patients with 2 consents forms each (valid main + valid acribis form with data usage

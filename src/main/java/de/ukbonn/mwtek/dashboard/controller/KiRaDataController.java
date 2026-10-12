@@ -91,6 +91,7 @@ public class KiRaDataController {
     // This ped data specific call should include all the patients that we need for kjp as well
     List<MiiPatient> miiPatients =
         dataRetrievalService.getPatients(MAX_AGE_AT_KJP_MERGE_PROCESS, KIDS_RADAR);
+    processTimer.stopLoggingTime(miiPatients);
 
     // If no patients were found, the following further data retrievals / calculation steps are
     // irrelevant

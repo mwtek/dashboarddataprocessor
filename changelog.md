@@ -1,3 +1,39 @@
+# Release Notes - Version V0.5.7+update.6
+
+12/October/26
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* Added suppression handling for KJP diagnosis occurrence timelines and cumulative age statistics.
+
+</div> 
+
+## Improvements
+
+<div style='margin-left:30px;'>
+
+* No improvements were part of this version.
+
+</div> 
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* No tasks were part of this version.
+
+</div>
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* No bug fixes were part of this version.
+
+</div> 
+
 # Release Notes - Version V0.5.7+update.5
 
 06/October/26
@@ -23,7 +59,11 @@
 
 ## Tasks
 
-No tasks were part of this version.
+<div style='margin-left:30px;'>
+
+* No tasks were part of this version.
+
+</div>
 
 ## Bugs
 

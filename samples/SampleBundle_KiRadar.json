@@ -5442,6 +5442,379 @@
         "method": "PUT",
         "url": "Procedure/T-KJP-2024-INTENSIVE-3"
       }
+    },
+    {
+      "fullUrl": "Condition/T4-KJP-MULTIPLE-DIAGS-IN-ONE-GROUP-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-AGE-SUPPRESSION-F90-1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://localIdentifier.de/identifiers/condition",
+            "value": "T-AGE-SUPPRESSION-F90-1"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2021",
+              "code": "F90.9",
+              "display": "Hyperkinetische Störung, nicht näher bezeichnet"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T2-KJP-MULTIPLE-DIAGS-IN-ONE-GROUP"
+        },
+        "encounter": {
+          "reference": "Encounter/T2-KJP-MULTIPLE-DIAGS-IN-ONE-GROUP-000000-EK"
+        },
+        "onsetDateTime": "2021-06-01T10:00:00+01:00",
+        "recordedDate": "2021-06-01T10:00:00+01:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-AGE-SUPPRESSION-F90-1"
+      }
+    },
+    {
+      "fullUrl": "Condition/T4-KJP-MULTIPLE-DIAGS-IN-ONE-GROUP-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-AGE-SUPPRESSION-F90-2",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://localIdentifier.de/identifiers/condition",
+            "value": "T-AGE-SUPPRESSION-F90-2"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2021",
+              "code": "F90.9",
+              "display": "Hyperkinetische Störung, nicht näher bezeichnet"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T3-KJP-MULTIPLE-DIAGS-IN-ONE-GROUP"
+        },
+        "encounter": {
+          "reference": "Encounter/T3-KJP-MULTIPLE-DIAGS-IN-ONE-GROUP-000000-EK"
+        },
+        "onsetDateTime": "2021-06-30T10:00:00+01:00",
+        "recordedDate": "2021-06-30T10:00:00+01:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-AGE-SUPPRESSION-F90-2"
+      }
+    },
+    {
+      "fullUrl": "Patient/T4-KJP-MULTIPLE-DIAGS-IN-ONE-GROUP",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "T-SUPPRESSION-TRIGGER",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-person/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [
+          {
+            "use": "usual",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/patient",
+            "value": "T-SUPPRESSION-TRIGGER"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "Kids-Radar-Case-Multiple-Diags-Example-3-to-hit-threshold",
+            "given": [
+              "Alive"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "2015-01-30",
+        "address": [
+          {
+            "use": "home",
+            "type": "both",
+            "line": [
+              "Teststreet 23"
+            ],
+            "city": "Another test city",
+            "postalCode": "45678",
+            "country": "DE"
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient/T-SUPPRESSION-TRIGGER"
+      }
+    },
+    {
+      "fullUrl": "Encounter/T4-KJP-MULTIPLE-DIAGS-IN-ONE-GROUP-000000-EK",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "T-SUPPRESSION-TRIGGER-000000-EK",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-fall/StructureDefinition/KontaktGesundheitseinrichtung"
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://fhir.de/StructureDefinition/Aufnahmegrund",
+            "extension": [
+              {
+                "url": "ErsteUndZweiteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundErsteUndZweiteStelle",
+                  "code": "01",
+                  "display": "KH-Behandlung, vollstat."
+                }
+              },
+              {
+                "url": "DritteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundDritteStelle",
+                  "code": "0",
+                  "display": "Anderes"
+                }
+              },
+              {
+                "url": "VierteStelle",
+                "valueCoding": {
+                  "system": "http://fhir.de/CodeSystem/dkgev/AufnahmegrundVierteStelle",
+                  "code": "1",
+                  "display": "Normalfall"
+                }
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "VN"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter",
+            "value": "T-SUPPRESSION-TRIGGER-000000-EK"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_transferid",
+            "value": "T-SUPPRESSION-TRIGGER-000000-EK"
+          },
+          {
+            "use": "secondary",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "U"
+                }
+              ]
+            },
+            "system": "http://localIdentifier.de/identifiers/encounter_contactlevel",
+            "value": "T-SUPPRESSION-TRIGGER-000000-EK"
+          }
+        ],
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "IMP",
+          "display": "inpatient encounter"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/Kontaktebene",
+                "code": "einrichtungskontakt",
+                "display": "Einrichtungskontakt"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/T-SUPPRESSION-TRIGGER"
+        },
+        "period": {
+          "start": "2021-06-20T00:00:00+02:00",
+          "end": "2021-06-21T00:00:00+02:00"
+        },
+        "hospitalization": {
+          "admitSource": {
+            "coding": [
+              {
+                "system": "http://fhir.de/CodeSystem/dgkev/Aufnahmeanlass",
+                "code": "A",
+                "display": "Verlegung (mit Behandlungsdauer im verlegenden Krankenhaus bis zu 24 Stunden)"
+              }
+            ]
+          }
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Encounter/T-SUPPRESSION-TRIGGER-000000-EK"
+      }
+    },
+    {
+      "fullUrl": "Condition/T4-KJP-MULTIPLE-DIAGS-IN-ONE-GROUP-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-SUPPRESSION-TRIGGER-1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://localIdentifier.de/identifiers/condition",
+            "value": "T-SUPPRESSION-TRIGGER-1"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2021",
+              "code": "F90.9",
+              "display": "Hyperkinetische Störung, nicht näher bezeichnet"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T-SUPPRESSION-TRIGGER"
+        },
+        "encounter": {
+          "reference": "Encounter/T-SUPPRESSION-TRIGGER-000000-EK"
+        },
+        "onsetDateTime": "2021-06-20T00:00:00+02:00",
+        "recordedDate": "2021-06-20T00:00:00+02:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-SUPPRESSION-TRIGGER-1"
+      }
+    },
+    {
+      "fullUrl": "Condition/T-TIMELINE-SUPPRESSION-F71-1",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "T-TIMELINE-SUPPRESSION-F71-1",
+        "meta": {
+          "profile": [
+            "https://www.medizininformatik-initiative.de/fhir/core/modul-diagnose/StructureDefinition/Diagnose"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "http://localIdentifier.de/identifiers/condition",
+            "value": "T-TIMELINE-SUPPRESSION-F71-1"
+          }
+        ],
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+              "version": "2021",
+              "code": "F71.1",
+              "display": "Mittelgradige Intelligenzminderung Deutliche Verhaltensstörung, die Beobachtung oder Behandlung erfordert"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/T2-KJP-MULTIPLE-DIAGS-IN-ONE-GROUP"
+        },
+        "encounter": {
+          "reference": "Encounter/T2-KJP-MULTIPLE-DIAGS-IN-ONE-GROUP-000000-EK"
+        },
+        "onsetDateTime": "2021-06-15T09:00:00+02:00",
+        "recordedDate": "2021-06-15T09:00:00+02:00"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/T-TIMELINE-SUPPRESSION-F71-1"
+      }
     }
   ]
 }
