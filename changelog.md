@@ -1,3 +1,39 @@
+# Release Notes - Version V0.5.7+update.7
+
+19/October/26
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* No new features were part of this version.
+
+</div> 
+
+## Improvements
+
+<div style='margin-left:30px;'>
+
+* No improvements were part of this version.
+
+</div> 
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* No tasks were part of this version.
+
+</div>
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* Fixed `encounter.period` date validation for missing dates and data-absent-reason extensions.
+
+</div> 
+
 # Release Notes - Version V0.5.7+update.6
 
 12/October/26
