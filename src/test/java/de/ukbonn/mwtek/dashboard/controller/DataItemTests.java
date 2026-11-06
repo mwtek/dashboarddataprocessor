@@ -293,10 +293,7 @@ public abstract class DataItemTests extends ResultFunctionalityTests {
     int indexByTimeStamp = result.getDate().indexOf(timeStamp);
 
     long resultValue = result.getValues().getFirst().get(indexByTimeStamp);
-
-    System.out.println("Expected timestamp: " + timeStamp);
-    System.out.println("Expected index: " + indexByTimeStamp);
-    System.out.println("Value at expected index: " + resultValue);
+ 
     List<Long> values = result.getValues().getFirst();
     for (int i = 0; i < values.size(); i++) {
       if (values.get(i) != 0) {

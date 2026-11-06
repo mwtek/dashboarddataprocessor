@@ -20,6 +20,7 @@ package de.ukbonn.mwtek.dashboard.controller;
 
 import static de.ukbonn.mwtek.dashboard.examples.InputCodeSettingsExampleData.getExampleData;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.ACRIBIS;
+import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.BCT;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.COVID;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.INFLUENZA;
 import static de.ukbonn.mwtek.dashboardlogic.enums.DataItemContext.KIDS_RADAR;
@@ -67,6 +68,7 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Procedure;
 import org.hl7.fhir.r4.model.QuestionnaireResponse;
 import org.hl7.fhir.r4.model.Resource;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -97,6 +99,11 @@ public class ResultFunctionalityTests {
   void testGeneratingDataItems() {
     assertNotNull(sampleData);
     assertFalse(sampleData.isEmpty());
+  }
+
+  @BeforeAll
+  void setUp() throws IOException {
+    sampleData = loadSampleData();
   }
 
   @DisplayName("Getting data items for a run with at least one example patient.")
@@ -197,6 +204,7 @@ public class ResultFunctionalityTests {
 
   private static DataItemContext determineContext(String sampleFile) {
     return switch (sampleFile) {
+      case SAMPLE_FILE_BCT -> BCT;
       case SAMPLE_FILE_COVID -> COVID;
       case SAMPLE_FILE_INFLUENZA -> INFLUENZA;
       case SAMPLE_FILE_KIDS_RADAR -> KIDS_RADAR;
