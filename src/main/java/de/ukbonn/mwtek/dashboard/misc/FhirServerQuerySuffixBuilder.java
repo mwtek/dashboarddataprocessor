@@ -202,7 +202,11 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
     if (encounterIds == null || encounterIds.isEmpty()) {
       return httpMethodGet ? CONDITION_CALL : "";
     }
-    String params = ENCOUNTER_PARAM + getListAsString(encounterIds);
+    String params =
+        ENCOUNTER_PARAM
+            + getListAsString(encounterIds)
+            + COUNT_EQUALS
+            + fhirDataRetrievalService.getBatchSize();
     return httpMethodGet ? CONDITION_CALL + params : params;
   }
 
@@ -214,7 +218,12 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
       return httpMethodGet ? ENCOUNTER_CALL : "";
     }
 
-    String params = ID_START_PARAM + getListAsString(encounterIds) + ENCOUNTER_INCLUDE_DIAGNOSIS;
+    String params =
+        ID_START_PARAM
+            + getListAsString(encounterIds)
+            + ENCOUNTER_INCLUDE_DIAGNOSIS
+            + COUNT_EQUALS
+            + fhirDataRetrievalService.getBatchSize();
     return httpMethodGet ? ENCOUNTER_CALL + params : params;
   }
 
@@ -244,6 +253,8 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
         default -> {}
       }
     }
+    // Page size, analogous to the other FHIR search queries
+    sb.append(COUNT_EQUALS).append(fhirDataRetrievalService.getBatchSize());
 
     return sb.toString();
   }
@@ -687,7 +698,11 @@ public class FhirServerQuerySuffixBuilder implements QuerySuffixBuilder {
   @Override
   public String getQuestionnaires(
       FhirDataRetrievalService fhirDataRetrievalService, boolean useGet) {
-    return QUESTIONNAIRE_CALL + URL_PARAM + QUESTIONNAIRE_RESOURCE_URL;
+    return QUESTIONNAIRE_CALL
+        + URL_PARAM
+        + QUESTIONNAIRE_RESOURCE_URL
+        + COUNT_EQUALS
+        + fhirDataRetrievalService.getBatchSize();
   }
 
   public String getStatus(AbstractDataRetrievalService dataRetrievalService) {
