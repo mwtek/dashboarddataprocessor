@@ -1,3 +1,39 @@
+# Release Notes - Version V0.5.7+update.8
+
+19/November/26
+
+## New Features
+
+<div style='margin-left:30px;'>
+
+* No new features were part of this version.
+
+</div> 
+
+## Improvements
+
+<div style='margin-left:30px;'>
+
+* Improved TLS security by enforcing hostname verification for token requests.
+
+</div> 
+
+## Tasks
+
+<div style='margin-left:30px;'>
+
+* No tasks were part of this version.
+
+</div>
+
+## Bugs
+
+<div style='margin-left:30px;'>
+
+* No bug fixes were part of this version.
+
+</div> 
+
 # Release Notes - Version V0.5.7+update.7
 
 19/October/26

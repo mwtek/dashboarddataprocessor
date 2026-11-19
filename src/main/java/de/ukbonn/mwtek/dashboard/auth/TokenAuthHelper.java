@@ -210,7 +210,6 @@ public class TokenAuthHelper {
       TlsSocketStrategy tlsStrategy =
           ClientTlsStrategyBuilder.create()
               .setSslContext(sslContext)
-              .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
               .buildClassic();
 
       PoolingHttpClientConnectionManager connectionManager =
